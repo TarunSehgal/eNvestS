@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Access;
-
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.UserInfo;
 import com.eNvestDetails.Response.UserInfo.Address;

@@ -3,6 +3,7 @@ package com.eNvestDetails.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,11 +14,12 @@ import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.Response.EnvestResponse;
+import com.eNvestDetails.Response.UserInfo;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.util.UserServiceUtil;
 
 
-
+@CrossOrigin(origins= "*")
 @RestController
 public class UserService {
 	
@@ -39,7 +41,6 @@ public class UserService {
 		mes.setType("Success");
 		message.getMessage("message.success");
 		config.getResultString("key");
-		//return new ResponseEntity<String>(mes,HttpStatus.OK);
 		return mes;
 	}
 	
@@ -48,8 +49,10 @@ public class UserService {
 			@RequestParam(value="userID") String userId
 			,@RequestParam(value="password") String password
 			,@RequestParam(value="bank") String bank){
-		EnvestResponse response = plaidUtil.getInfo(userId, password, bank);	
-		response.setUserKey(UserInfoDao.saveUserInfo(response));
+		EnvestResponse response = plaidUtil.getInfo(userId, password, bank);
+		if(response instanceof UserInfo){
+			response.setUserKey(UserInfoDao.saveUserInfo(response));
+		}		
 		return response;		
 	}
 	

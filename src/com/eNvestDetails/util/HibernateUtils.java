@@ -5,9 +5,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import ch.qos.logback.classic.joran.action.LoggerAction;
 
 import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.dto.AccountsDTO;
