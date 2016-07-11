@@ -18,9 +18,17 @@ public class AccountDetail extends EnvestResponse {
     private String institutionType;
     private String type;
     private String subtype;
+    
+    private double yield;
 
    
-    public String getAccountId() {
+    public double getYield() {
+		return yield;
+	}
+	public void setYield(double yield) {
+		this.yield = yield;
+	}
+	public String getAccountId() {
 		return accountId;
 	}
 	public void setAccountId(String accountId) {

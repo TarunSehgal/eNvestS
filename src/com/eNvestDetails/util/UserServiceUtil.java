@@ -21,7 +21,6 @@ import com.plaid.client.PlaidUserClient;
 import com.plaid.client.exception.PlaidMfaException;
 import com.plaid.client.exception.PlaidServersideException;
 import com.plaid.client.request.Credentials;
-import com.plaid.client.response.Account;
 import com.plaid.client.response.InfoResponse;
 import com.plaid.client.response.InfoResponse.Address;
 import com.plaid.client.response.InfoResponse.Email;
@@ -69,7 +68,6 @@ public class UserServiceUtil {
 		}
 		
 		UserInfo userInfo = new UserInfo();
-		List<Account> acc = r.getAccounts();
 		Info f = r.getInfo();
 		
 		//userInfo.setId("1"); //this will be DB generated key

@@ -1,8 +1,13 @@
 package com.eNvestDetails.util;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+
+import org.apache.commons.lang.math.DoubleRange;
 
 import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.MfaResponseDetail;
@@ -66,25 +71,42 @@ public class CommonUtil {
 			balance.setCurrent(a.getBalance().getCurrent());
 			//accounts.setAvailableBalance(a.getBalance().getAvailable());
 			//accounts.setAvailableBalance(a.getBalance().getCurrent());
+			accounts.setBalance(balance);
 			AccountDetail.AccountMeta meta = new AccountDetail.AccountMeta();
 			
 			meta.setName(a.getMeta().getName());
 			meta.setNumber(a.getMeta().getNumber());
 			meta.setLimit(a.getMeta().getLimit());
-			
+			accounts.setMeta(meta);
 			if(null != a.getNumbers()){
 				AccountDetail.AccountNumbers accNumber = new AccountDetail.AccountNumbers();
 				accNumber.setAccount(a.getNumbers().getAccount());
 				accNumber.setRouting(a.getNumbers().getRouting());
+				accounts.setNumbers(accNumber);
 			}
 								
 			accounts.setType(a.getType());
 			accounts.setItem(a.getItem());
 			accounts.setAccountId(a.getId());
 			accounts.setResponseFor(bank);
+			accounts.setYield(getRandmonInterst());
 			accDetails.add(accounts);
 		}
 		return accDetails;
+	}
+	
+	/*
+	 * temp method will be removed later
+	 */
+	private static double getRandmonInterst(){
+		DecimalFormat df = new DecimalFormat("#.####");
+		double returnV = 0.0;
+		double minV = .01;
+		double maxV = .05;
+		returnV = (new Random().nextDouble()* (maxV -minV)) + minV;
+		BigDecimal bd = new BigDecimal(returnV);
+		
+		return bd.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 	
 	public static  List<TransactionDetail> parseTransaction(List<Transaction> transactions,Map<String,UserInfo.Summary> summaryMap){
