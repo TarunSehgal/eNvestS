@@ -1,5 +1,7 @@
 package com.eNvestDetails.util;
 
+import java.net.URI;
+
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -30,10 +32,16 @@ public class HibernateUtils {
 	public static SessionFactory getSessionFactory(){
 		try{
 			if(sessionFactory == null){
+		        URI dbUri = new URI(System.getenv("CLEARDB_DATABASE_URL"));
+
+		        String username = dbUri.getUserInfo().split(":")[0];
+		        String password = dbUri.getUserInfo().split(":")[1];
+		        String dbUrl = "jdbc:mysql://" + dbUri.getHost() + dbUri.getPath();
+
 				configuration.setProperty("hibernate.connection.driver_class", config.getResultString("jdbc.driverClassName"));
-                configuration.setProperty("hibernate.connection.url", config.getResultString("jdbc.url"));
-                configuration.setProperty("hibernate.connection.username",config.getResultString("jdbc.username"));
-                configuration.setProperty("hibernate.connection.password", config.getResultString("jdbc.password"));
+                configuration.setProperty("hibernate.connection.url", dbUrl);
+                configuration.setProperty("hibernate.connection.username", username);
+                configuration.setProperty("hibernate.connection.password", password);
                 configuration.setProperty("show_sql", config.getResultString("hibernate.show_sql"));
                // configuration.setProperty("url",configFactory.getResultString("ldap.url"));
 
