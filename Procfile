@@ -1,1 +1,1 @@
-web: sh target/bin/webapp
+web: sh /app/tmp/cache/.m2/repository/eNvestS/eNvestS/0.0.1-SNAPSHOT/
