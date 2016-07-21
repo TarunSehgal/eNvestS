@@ -51,7 +51,17 @@ public class CalculationService {
 	}
 	
 	@RequestMapping(value="/CalculationService/getGoalSeekTargetCashFlow",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
-	public double getGoalSeekTargetCashFlow(@RequestParam("targetValue") double targetValue, @RequestParam("tenor") String tenor, @RequestParam("annualInterestRate") double annualInterestRate,@RequestParam("years") double years) throws Exception{
+	public PayoutResponse getGoalSeekTargetCashFlow(@RequestParam("targetValue") double targetValue, @RequestParam("tenor") String tenor, @RequestParam("annualInterestRate") double annualInterestRate,@RequestParam("years") double years) throws Exception{
 		return goalSeekCalculator.getAnnuityDueRequiredCashFlow(targetValue, years, annualInterestRate, tenor);		
+	}
+	
+	@RequestMapping(value="/CalculationService/getAnnuityPayout",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
+	public PayoutResponse getAnnuityPayout(@RequestParam("initialAmount") double initialAmount, @RequestParam("tenor") String tenor, @RequestParam("annualInterestRate") double annualInterestRate,@RequestParam("years") double years) throws Exception{
+		return annuityCalculator.getAnnuityPayout(initialAmount, years, annualInterestRate, tenor);		
+	}
+	
+	@RequestMapping(value="/CalculationService/getAnnuityPayoutYears",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
+	public PayoutResponse getAnnuityPayoutYears(@RequestParam("initialAmount") double initialAmount, @RequestParam("tenor") String tenor, @RequestParam("annualInterestRate") double annualInterestRate,@RequestParam("payout") double payout) throws Exception{
+		return annuityCalculator.getAnnuityPayoutYears(initialAmount, payout, annualInterestRate, tenor);		
 	}
 }
