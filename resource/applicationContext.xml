@@ -63,7 +63,22 @@
 	<bean id="template" class="org.springframework.orm.hibernate4.HibernateTemplate">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
-	
-	
+ <!-- rule engine processor -->
+   <bean id="eNvestOppurtunity" class="com.eNvestDetails.RecommendationEngine.InitiateRecommendation">
+      <property name="firstStep">
+         <ref bean="testRule"/>
+      </property>
+      <!--  list all Recommendation hers -->
+      <property name="rules">
+         <list>
+            <value>testRule</value>
+         </list>
+      </property>
+   </bean>	
+	 <!-- Recommendation -->
+   <bean id="testRule" class="com.eNvestDetails.Recommendation.TestOppurtunity">
+		<property name="ruleEnable">
+        <value>true</value></property>
+   </bean>
 
 </beans>

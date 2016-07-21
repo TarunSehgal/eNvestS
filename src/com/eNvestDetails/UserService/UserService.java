@@ -1,6 +1,7 @@
 package com.eNvestDetails.UserService;
 
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.ErrorMessage;
+import com.eNvestDetails.Recommendation.TestOppurtunity;
+import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.UserInfo;
 import com.eNvestDetails.dao.UserInfoDao;
@@ -32,6 +35,11 @@ public class UserService {
 	@Autowired
 	private UserServiceUtil plaidUtil = null;
 	
+	@Autowired
+	private InitiateRecommendation recommendationEngine = null;
+	
+	private static Logger log = Logger.getLogger(UserService.class.getName()); 
+	
 	@RequestMapping(value="/UserService/test",method=RequestMethod.GET,produces="application/json")	
 	public @ResponseBody ErrorMessage test(@RequestParam(value="test",defaultValue="test") String test){
 		ErrorMessage mes  = new ErrorMessage();
@@ -41,6 +49,12 @@ public class UserService {
 		mes.setType("Success");
 		message.getMessage("message.success");
 		config.getResultString("key");
+		try {
+			recommendationEngine.processRequest(null);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			log.error("Error occurred during recomendationsengine" ,e);
+		}
 		return mes;
 	}
 	
