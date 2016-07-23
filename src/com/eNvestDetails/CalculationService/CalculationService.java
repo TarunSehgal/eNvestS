@@ -21,7 +21,7 @@ public class CalculationService {
 	private GoalSeekCalculator goalSeekCalculator = null;
 	
 	@RequestMapping(value="/CalculationService/getInterest",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
-	public Response getInterest(@RequestParam("principle") double principle, @RequestParam("tenor") int tenor, @RequestParam("annualInterestRate") double annualInterestRate,@RequestParam("years") double years){
+	public Response getInterest(@RequestParam("principle") double principle, @RequestParam("tenor") String tenor, @RequestParam("annualInterestRate") double annualInterestRate,@RequestParam("years") double years) throws Exception{
 		return interestCalculator.CalculateInterest(principle, tenor, annualInterestRate, years);		
 	}	
 	
