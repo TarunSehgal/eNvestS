@@ -1,4 +1,4 @@
-package com.eNvestDetails.Products;
+package com.eNvestDetails.util.Product;
 
 public enum ProductType {
 	CertificateOfDeposit,

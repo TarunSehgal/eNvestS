@@ -1,4 +1,4 @@
-package com.eNvestDetails.CalculationService;
+package com.eNvestDetails.util.Calculation;
 
 import org.springframework.stereotype.Component;
 

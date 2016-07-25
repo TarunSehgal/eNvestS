@@ -1,4 +1,4 @@
-package com.eNvestDetails.CalculationService;
+package com.eNvestDetails.util.Calculation;
 
 public class Response {
 	

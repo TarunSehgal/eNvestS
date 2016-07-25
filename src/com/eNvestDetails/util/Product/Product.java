@@ -1,4 +1,4 @@
-package com.eNvestDetails.Products;
+package com.eNvestDetails.util.Product;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

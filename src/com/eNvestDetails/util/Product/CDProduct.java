@@ -1,4 +1,4 @@
-package com.eNvestDetails.Products;
+package com.eNvestDetails.util.Product;
 
 public class CDProduct extends Product{
 	public double minimumAmount;
@@ -8,11 +8,12 @@ public class CDProduct extends Product{
 	public double interestEarned;
 	public double interestRate;
 	public String compoundingTenor;
-public CDProduct(String bankName, double interestRate, int id)
+public CDProduct(String bankName, double interestRate, int id, double maturityYears)
 {
 	productType = ProductType.CertificateOfDeposit;
 	this.productId = id;
 	this.bankName = bankName;
 	this.interestRate = interestRate;
+	this.maturityYears = maturityYears;
 }
 }

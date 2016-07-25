@@ -1,4 +1,4 @@
-package com.eNvestDetails.CalculationService;
+package com.eNvestDetails.util.Calculation;
 
 import java.util.regex.Pattern;
 

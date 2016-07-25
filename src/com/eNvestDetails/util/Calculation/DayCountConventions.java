@@ -1,4 +1,4 @@
-package com.eNvestDetails.CalculationService;
+package com.eNvestDetails.util.Calculation;
 
 public enum DayCountConventions {
 //	30/360 or 365, actual/360 or 365, and actual/actual.
