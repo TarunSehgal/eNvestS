@@ -30,7 +30,7 @@ public class ProductUtil {
 		availableProducts = GetAvailableProducts();
 	}
 	
-	public Product getProduct(int productId, double maturityDate, double principle, String compoundingTenor) throws Exception
+	public Product recalculateProduct(int productId, double maturityDate, double principle, String compoundingTenor) throws Exception
 	{
 		Product prd = getProduct(productId);
 		if(prd != null)

@@ -27,5 +27,4 @@ public abstract class AbstractProductRule extends AbstractRule {
 		}
 		return selectedProduct;
 	}
-
 }
