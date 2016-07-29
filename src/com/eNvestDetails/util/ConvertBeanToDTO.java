@@ -1,16 +1,24 @@
 package com.eNvestDetails.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+
+import com.eNvestDetails.Exception.EnvestException;
+import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.UserInfo;
 import com.eNvestDetails.Response.UserInfo.Address;
 import com.eNvestDetails.Response.UserInfo.Email;
 import com.eNvestDetails.Response.UserInfo.Info;
 import com.eNvestDetails.Response.UserInfo.PhoneNumber;
+import com.eNvestDetails.dao.UserInfoDao;
+import com.eNvestDetails.dto.AccountsDTO;
 import com.eNvestDetails.dto.AddressDTO;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
 import com.eNvestDetails.dto.UserEmailDTO;
@@ -32,10 +40,13 @@ public class ConvertBeanToDTO {
 	
 	public static final String USERACCESSTOKEN = UserAccessTokenDTO.class.getName();
 	
-	public static Map<String,Object> getUserInfoDTO(EnvestResponse response){
+	public static final String ACCOUNTDTO = AccountsDTO.class.getName();
+	
+	public static Map<String,Object> getUserInfoDTO(EnvestResponse response) throws EnvestException{
 		Map<String,Object> returnMap = new HashMap<String,Object>(10);
 		Info info = ((UserInfo)response).getInfo();
-		UserInfoDTO d = new UserInfoDTO();
+		
+		UserInfoDTO d = UserInfoDao.getUserInfoDetail(response.getUserKey());
 		for(String s : info.getNames()){
 			d.setUserName(s);
 		}
@@ -104,6 +115,34 @@ public class ConvertBeanToDTO {
 		
 		returnMap.put(USERACCESSTOKEN, accesToken);	
 		
+		AccountsDTO accDTO = null;
+		List<AccountsDTO> accList = new ArrayList<AccountsDTO>(10);
+		for(AccountDetail accDetail : ((UserInfo)response).getAccounts()){
+			accDTO = new AccountsDTO();
+			accDTO.setAccountId(accDetail.getAccountId());
+			if(null != accDetail.getNumbers()){
+				accDTO.setAccountNumber(accDetail.getNumbers().getAccount());				
+			}
+			if(null != accDetail.getBalance()){
+				accDTO.setAvailableBalance(accDetail.getBalance().getAvailable());
+				accDTO.setCurrentBalance(accDetail.getBalance().getCurrent());
+				accDTO.setBalanceAsOF(new Date());
+			}
+			accDTO.setInstitutiontype(accDetail.getInstitutionType());
+			accDTO.setIsActive(YES);
+			accDTO.setIsdeleted(NO);
+			accDTO.setItemId(accDetail.getItem());
+			if(null != accDetail.getMeta() ){
+				accDTO.setName(accDetail.getMeta().getName());
+			}
+			accDTO.setSubType(accDetail.getSubtype());
+			accDTO.setType(accDetail.getType());
+			//accDTO.setName(name);
+			accList.add(accDTO);
+		}
+		
+		//List<AccountDetail> accDetail = response.get
+		returnMap.put(ACCOUNTDTO, accList);	
 		return returnMap;
 	}
 

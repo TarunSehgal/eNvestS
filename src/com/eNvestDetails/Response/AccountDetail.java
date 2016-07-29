@@ -1,6 +1,8 @@
 package com.eNvestDetails.Response;
 
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -20,8 +22,48 @@ public class AccountDetail extends EnvestResponse {
     private String subtype;
     
     private double yield;
+    
+	private boolean isPrimary = false;
+	private boolean isSalaryAccount = false;
+	
+	private double totalInterestIncurred = 0.0;
+	private double totalFeeIncurred = 0.0;
+	
+	private List<AccountProfile> accProfile = null;
+        
+    public List<AccountProfile> getAccProfile() {
+		return accProfile;
+	}
+	public void setAccProfile(List<AccountProfile> accProfile) {
+		this.accProfile = accProfile;
+	}
+	public boolean isPrimary() {
+		return isPrimary;
+	}
+	public void setPrimary(boolean isPrimary) {
+		this.isPrimary = isPrimary;
+	}
+	public boolean isSalaryAccount() {
+		return isSalaryAccount;
+	}
+	public void setSalaryAccount(boolean isSalaryAccount) {
+		this.isSalaryAccount = isSalaryAccount;
+	}
+	
+	public double getTotalInterestIncurred() {
+		return totalInterestIncurred;
+	}
+	public void setTotalInterestIncurred(double totalInterestIncurred) {
+		this.totalInterestIncurred = totalInterestIncurred;
+	}
+	public double getTotalFeeIncurred() {
+		return totalFeeIncurred;
+	}
+	public void setTotalFeeIncurred(double totalFeeIncurred) {
+		this.totalFeeIncurred = totalFeeIncurred;
+	}
 
-   
+  
     public double getYield() {
 		return yield;
 	}
@@ -160,6 +202,86 @@ public class AccountDetail extends EnvestResponse {
         public void setWireRouting(String wireRouting) {
 			this.wireRouting = wireRouting;
 		}
+    }
+   
+    
+    @JsonIgnoreProperties(ignoreUnknown=true)
+    public final static class AccountProfile {
+    	
+    	private double utilityBills = 0.0;
+    	private double creditBills = 0.0;
+    	private String month = null;
+		private double salary = 0.0;
+    	private double inflow = 0.0;
+    	private double outflow =  0.0;
+    	private double monthlyInterest = 0.0;
+    	private double monthlyFee = 0.0;
+    	private double loanPayment = 0.0;
+    	private String employer = null;
+    	
+    	public String getEmployer() {
+    		return employer;
+    	}
+    	public void setEmployer(String employer) {
+    		this.employer = employer;
+    	}
+    	
+       	public double getLoanPayment() {
+			return loanPayment;
+		}
+		public void setLoanPayment(double loanPayment) {
+			this.loanPayment = loanPayment;
+		}
+		public double getUtilityBills() {
+			return utilityBills;
+		}
+		public void setUtilityBills(double utilityBills) {
+			this.utilityBills = utilityBills;
+		}
+		public double getCreditBills() {
+			return creditBills;
+		}
+		public void setCreditBills(double creditBills) {
+			this.creditBills = creditBills;
+		}
+		public String getMonth() {
+			return month;
+		}
+		public void setMonth(String month) {
+			this.month = month;
+		}
+		public double getSalary() {
+			return salary;
+		}
+		public void setSalary(double salary) {
+			this.salary = salary;
+		}
+		public double getInflow() {
+			return inflow;
+		}
+		public void setInflow(double inflow) {
+			this.inflow = inflow;
+		}
+		public double getOutflow() {
+			return outflow;
+		}
+		public void setOutflow(double outflow) {
+			this.outflow = outflow;
+		}
+		public double getMonthlyInterest() {
+			return monthlyInterest;
+		}
+		public void setMonthlyInterest(double monthlyInterest) {
+			this.monthlyInterest = monthlyInterest;
+		}
+		public double getMonthlyFee() {
+			return monthlyFee;
+		}
+		public void setMonthlyFee(double monthlyFee) {
+			this.monthlyFee = monthlyFee;
+		}
+
+    	
     }
     
 }

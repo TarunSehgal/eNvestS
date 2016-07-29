@@ -10,8 +10,17 @@ import org.hibernate.criterion.Restrictions;
 
 
 
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.eNvestDetails.Config.MessageFactory;
+import com.eNvestDetails.Exception.EnvestException;
+import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.constant.EnvestConstants;
+import com.eNvestDetails.dto.AccountsDTO;
 import com.eNvestDetails.dto.AddressDTO;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
 import com.eNvestDetails.dto.UserEmailDTO;
@@ -24,8 +33,9 @@ public class UserInfoDao {
 	
 	private static Logger log = Logger.getLogger(UserInfoDao.class.getName());
 	
+		
 	
-	public static Long saveUserInfo(EnvestResponse saveRespone){
+	public static Long saveUserInfo(EnvestResponse saveRespone) throws EnvestException{
 		
 		UserInfoDTO userInfoDTO = null;
 		Session session = null;
@@ -33,7 +43,8 @@ public class UserInfoDao {
 			session = HibernateUtils.getSessionFactory().openSession();
 			Map<String, Object> data = ConvertBeanToDTO.getUserInfoDTO(saveRespone);
 			session.beginTransaction();
-			userInfoDTO = (UserInfoDTO)data.get(ConvertBeanToDTO.USERINFODTO);			
+			userInfoDTO = (UserInfoDTO)data.get(ConvertBeanToDTO.USERINFODTO);	
+			//userInfoDTO.setUserkey(saveRespone.getUserKey());
 			List userExists = null;//session.createCriteria(UserInfoDTO.class).add(Restrictions.eq("userID", userInfoDTO.getUserID())).list();
 			if(null == userExists || userExists.size() == 0){
 				session.saveOrUpdate(userInfoDTO);
@@ -62,16 +73,92 @@ public class UserInfoDao {
 				accessToken.setUserKey(userInfoDTO.getUserkey());
 				session.saveOrUpdate(accessToken);
 			}
+			List<AccountsDTO> accList = (List)data.get(ConvertBeanToDTO.ACCOUNTDTO);
+			for(AccountsDTO acc : accList){
+				acc.setUserKey(userInfoDTO.getUserkey());
+				session.saveOrUpdate(acc);
+			}
+			
 						//session.save(arg0)
 			session.getTransaction().commit();
 		} catch (HibernateException e) {
 			log.error("Error occured while saving user info",e);
-			throw e;
+			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,null
+					,"failure")) ;	
 		}finally{
 			session.close();
 		}
 		
 		return userInfoDTO.getUserkey();
+	}
+	
+	public static UserInfoDTO getUserInfoDetail(long key) throws EnvestException{
+		log.info("inside method getUserInfoDetail");
+		UserInfoDTO userInfoDTO = null;
+		Session session = null;
+		try{
+			session = HibernateUtils.getSessionFactory().openSession();
+			session.beginTransaction();
+			List userExists = session.createCriteria(UserInfoDTO.class).add(Restrictions.eq("userkey", key)).list();
+			if(null != userExists && userExists.size() > 0){
+				userInfoDTO = (UserInfoDTO)userExists.get(0);
+			}			
+		}catch (HibernateException e) {
+			log.error("Error occured while getting user info",e);
+			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,null
+					,"failure")) ;	
+					
+		}finally{
+			session.close();
+		}
+		return userInfoDTO;			
+	}
+	
+	public static long createUser(String userID,String password, MessageFactory message) throws EnvestException{
+
+		UserInfoDTO userInfoDTO = null;
+		Session session = null;
+		int returnCode = EnvestConstants.RETURN_CODE_SUCCESS;
+		try{
+			log.info("in method createUser");
+			session = HibernateUtils.getSessionFactory().openSession();
+			session.beginTransaction();
+			List userExists = session.createCriteria(UserInfoDTO.class).add(Restrictions.eq("envestUserID", userID)).list();
+			if(null != userExists && userExists.size() > 0){
+				returnCode = EnvestConstants.RETURN_CODE_USER_ALREADY_EXISTS;
+				log.info("user already exists"+userID);
+				throw new EnvestException(new ErrorMessage(returnCode
+						,message.getMessage("message.userAlreadyExist")
+						,null
+						,message.getMessage("message.failure"))) ;				
+			}else {
+				userInfoDTO = new UserInfoDTO();
+				userInfoDTO.setIsActive("Y");
+				userInfoDTO.setPassword(password);
+				userInfoDTO.setEnvestUserID(userID.toUpperCase());
+				userInfoDTO.setIsDeleted("N");
+			}
+			session.save(userInfoDTO);
+			session.getTransaction().commit();
+			
+		}catch (HibernateException e) {
+			log.error("Error occured while saving user",e);
+			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,null
+					,message.getMessage("message.failure"))) ;	
+					
+		}finally{
+			session.close();
+		}
+		
+		return userInfoDTO.getUserkey() ;
+		
+	
 	}
 	
 	public static int saveUser(Long userKey,String userID,String password) {

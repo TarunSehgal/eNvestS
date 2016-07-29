@@ -1,5 +1,7 @@
 package com.eNvestDetails.RecommendationEngine;
 
+import java.util.Map;
+
 public abstract class AbstractRule extends AbstractComponent {
 
 	private AbstractComponent oppurtunityRule;
@@ -23,12 +25,13 @@ public abstract class AbstractRule extends AbstractComponent {
 		this.ruleEnable = ruleEnable;
 	}
 
-	public void execute(Object arg) throws Exception {
+	public Map<String,Object> execute(Map<String,Object> arg) throws Exception {
 		boolean outcome = makeDecision(arg);
+		Map<String,Object> object = doWork(arg);
 		if (null != nextStep && outcome){
-			nextStep.execute(arg);
+			object = nextStep.execute(arg);
 		}
-			
+		return object;
 	}
 
 	public AbstractComponent getOppurtunityRule() {
@@ -39,8 +42,8 @@ public abstract class AbstractRule extends AbstractComponent {
 		this.oppurtunityRule = oppurtunityRule;
 	}
 
-	protected abstract boolean makeDecision(Object arg) throws Exception;
+	protected abstract boolean makeDecision(Map<String,Object> arg) throws Exception;
 	
-	protected abstract void doWork(Object arg) throws Exception;
+	protected abstract Map<String,Object> doWork(Map<String,Object> arg) throws Exception;
 
 }

@@ -23,6 +23,7 @@ import com.eNvestDetails.dto.UserAccessTokenDTO;
 import com.plaid.client.PlaidUserClient;
 import com.plaid.client.exception.PlaidMfaException;
 import com.plaid.client.exception.PlaidServersideException;
+import com.plaid.client.request.GetOptions;
 import com.plaid.client.response.Account;
 import com.plaid.client.response.MfaResponse;
 import com.plaid.client.response.TransactionsResponse;
@@ -55,12 +56,14 @@ public class UserAccountServiceUtil {
 			List<TransactionDetail> transactionsList = new ArrayList<TransactionDetail>();
 			List<UserInfo.Summary> summary = new ArrayList<UserInfo.Summary>();
 			Map<String,UserInfo.Summary> summaryMap = new HashMap<String,UserInfo.Summary>(20);
-			
+			//list = new ArrayList<UserAccessTokenDTO>(1);
 			for(UserAccessTokenDTO token : list){				
 				try{
 					plaidUserClient.setAccessToken(token.getAccessToken());		
 					//response = new UserDetails();
 					response.setUserKey(userKey);
+					GetOptions option = new GetOptions();
+					option.setGte("04/01/2016");
 					tResponse = plaidUserClient.updateTransactions();
 					List<Account> acc = null;
 					if(null !=tResponse.getAccounts()){

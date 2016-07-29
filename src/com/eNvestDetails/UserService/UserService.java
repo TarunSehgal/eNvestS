@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
+import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.Recommendation.TestOppurtunity;
 import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
@@ -22,7 +23,7 @@ import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.util.UserServiceUtil;
 
 
-@CrossOrigin(origins= "*")
+//@CrossOrigin(origins= "*")
 @RestController
 public class UserService {
 	
@@ -44,7 +45,7 @@ public class UserService {
 	public @ResponseBody ErrorMessage test(@RequestParam(value="test",defaultValue="test") String test){
 		ErrorMessage mes  = new ErrorMessage();
 		mes.setCode(0);
-		mes.setMessage("User added successfully");
+		mes.setMessage("Test message");
 		mes.setStatus(":Test");
 		mes.setType("Success");
 		message.getMessage("message.success");
@@ -65,7 +66,11 @@ public class UserService {
 			,@RequestParam(value="bank") String bank){
 		EnvestResponse response = plaidUtil.getInfo(userId, password, bank);
 		if(response instanceof UserInfo){
-			response.setUserKey(UserInfoDao.saveUserInfo(response));
+			try {
+				response.setUserKey(UserInfoDao.saveUserInfo(response));
+			} catch (EnvestException e) {
+				return e.getErrorMessage();
+			}
 		}		
 		return response;		
 	}
@@ -74,6 +79,12 @@ public class UserService {
 	public @ResponseBody EnvestResponse saveUser(@RequestParam("userKey") Long userKey,@RequestParam("userID") String userID,
 			@RequestParam("password") String password) {
 		return plaidUtil.saveUser(userKey, userID, password);
+	}
+	
+	@RequestMapping(value="/UserService/users/registerUser",method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)	
+	public @ResponseBody EnvestResponse registerUser(@RequestParam("userID") String userID,
+			@RequestParam("password") String password) {
+		return plaidUtil.createUser(userID, password);
 	}
 	
 	@RequestMapping(value="/UserService/users/authenticate",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	

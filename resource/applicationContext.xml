@@ -67,6 +67,7 @@
       <property name="rules">
          <list>
             <value>testRule</value>
+            <value>userProfile</value>
          </list>
       </property>
    </bean>	
@@ -88,6 +89,10 @@
         <value>true</value></property>
    </bean>
    <bean id="goalSeekProductRule" class="com.eNvestDetails.Recommendation.GoalSeekRule">
+		<property name="ruleEnable">
+        <value>true</value></property>
+   </bean>
+   <bean id="userProfile" class="com.eNvestDetails.Recommendation.UserProfile">
 		<property name="ruleEnable">
         <value>true</value></property>
    </bean>

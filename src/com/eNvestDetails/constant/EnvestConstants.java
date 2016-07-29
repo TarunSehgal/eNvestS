@@ -16,5 +16,7 @@ public class EnvestConstants {
 	
 	public static int GET_TRANSACTIONS = 2;
 	public static int GET_ACCOUNT_TRANSACTIONS = 3;
-
+	
+	public static final String ENVEST_RESPONSE = "ENVEST_RESPONSE";
+	public static final String USER_PROFILE = "USER_PROFILE";
 }

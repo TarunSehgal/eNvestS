@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.cfg.Configuration;
 
 import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.dto.AccountsDTO;
@@ -20,7 +20,7 @@ import com.eNvestDetails.dto.UserPhoneDTO;
 
 public class HibernateUtils {
 	
-	static AnnotationConfiguration configuration = new AnnotationConfiguration();
+	static Configuration configuration = new Configuration();
 	
 	
 	static SessionFactory sessionFactory = null;
@@ -32,17 +32,24 @@ public class HibernateUtils {
 	public static SessionFactory getSessionFactory(){
 		try{
 			if(sessionFactory == null){
-				URI dbUri = new URI(System.getenv(config.getResultString("dbProperty")));
-
-		        String username = dbUri.getUserInfo().split(":")[0];
-		        String password = dbUri.getUserInfo().split(":")[1];
-		        String dbUrl = "jdbc:mysql://" + dbUri.getHost() + dbUri.getPath();
-				configuration.setProperty("hibernate.connection.driver_class", config.getResultString("jdbc.driverClassName"));
-                configuration.setProperty("hibernate.connection.url", dbUrl);
-                configuration.setProperty("hibernate.connection.username",username);
-                configuration.setProperty("hibernate.connection.password", password);
+				
+				if("Y".equals(config.getResultString("localrun"))){
+					configuration.setProperty("hibernate.connection.driver_class", config.getResultString("jdbc.driverClassName"));
+	                configuration.setProperty("hibernate.connection.url", config.getResultString("jdbc.url"));
+	                configuration.setProperty("hibernate.connection.username",config.getResultString("jdbc.username"));
+	                configuration.setProperty("hibernate.connection.password", config.getResultString("jdbc.password"));
+				}else{
+					URI dbUri = new URI(System.getenv(config.getResultString("dbProperty")));
+			        String username = dbUri.getUserInfo().split(":")[0];
+			        String password = dbUri.getUserInfo().split(":")[1];
+			        String dbUrl = "jdbc:mysql://" + dbUri.getHost() + dbUri.getPath();
+					configuration.setProperty("hibernate.connection.driver_class", config.getResultString("jdbc.driverClassName"));
+	                configuration.setProperty("hibernate.connection.url", dbUrl);
+	                configuration.setProperty("hibernate.connection.username",username);
+	                configuration.setProperty("hibernate.connection.password", password);
+				}							
                 configuration.setProperty("show_sql", config.getResultString("hibernate.show_sql"));
- 
+                configuration.setProperty("dateTime", "org.joda.time.contrib.hibernate.PersistentDateTime");
                 //configuration.addPackage("com.eNvestDetails.dto");
                 configuration.addAnnotatedClass(UserInfoDTO.class);
                 configuration.addAnnotatedClass(AddressDTO.class);

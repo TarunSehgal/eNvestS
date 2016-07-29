@@ -1,15 +1,20 @@
 package com.eNvestDetails.RecommendationEngine;
 
+import java.util.Map;
+
 public abstract class AbstractAction extends AbstractComponent {
 	private AbstractComponent nextStep;
 
-	public void execute(Object arg) throws Exception {
-		this.doExecute(arg);
-		if (nextStep != null)
-			nextStep.execute(arg);
+	public Map<String,Object> execute(Map<String,Object> arg) throws Exception {
+		
+		Map<String,Object> object = this.doExecute(arg);
+		if (nextStep != null){
+			object = nextStep.execute(arg);
+		}
+		return object;
 	}
 
-	protected abstract void doExecute(Object arg) throws Exception;
+	protected abstract Map<String,Object> doExecute(Map<String,Object> arg) throws Exception;
 
 	public void setNextStep(AbstractComponent nextStep) {
 		this.nextStep = nextStep;

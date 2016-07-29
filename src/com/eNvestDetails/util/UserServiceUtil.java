@@ -1,25 +1,36 @@
 package com.eNvestDetails.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
+import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
+import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
+import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.MfaResponseDetail;
+import com.eNvestDetails.Response.PlaidCategory;
 import com.eNvestDetails.Response.UserInfo;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
 import com.eNvestDetails.dto.UserInfoDTO;
+import com.plaid.client.PlaidPublicClient;
 import com.plaid.client.PlaidUserClient;
 import com.plaid.client.exception.PlaidMfaException;
 import com.plaid.client.exception.PlaidServersideException;
+import com.plaid.client.http.ApacheHttpClientHttpDelegate;
+import com.plaid.client.http.HttpResponseWrapper;
+import com.plaid.client.http.PlaidHttpRequest;
 import com.plaid.client.request.Credentials;
 import com.plaid.client.response.InfoResponse;
 import com.plaid.client.response.InfoResponse.Address;
@@ -41,6 +52,33 @@ public class UserServiceUtil {
 	
 	private Logger logger = Logger.getLogger(UserServiceUtil.class.getName());
 	
+	@Autowired
+	private InitiateRecommendation recommendationEngine = null;
+	
+	public Map<String,String> getCategories(){
+		logger.info("getting categories");
+		PlaidPublicClient plaidPublicClient = null;
+		Map<String,String> cmap = new HashMap<String,String>(1000);
+		try{
+			/*plaidPublicClient = plaidClient.getPlaidPublicClient();
+			res = plaidPublicClient.getAllCategories();*/
+			 PlaidHttpRequest request = new PlaidHttpRequest("/categories");
+			 ApacheHttpClientHttpDelegate httpDelegate =  new ApacheHttpClientHttpDelegate
+					 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());
+		    HttpResponseWrapper<PlaidCategory[]> response = httpDelegate.doGet(request, PlaidCategory[].class);
+			for(PlaidCategory category : response.getResponseBody()){
+				String path = "";
+				for(String hierarchy: category.getHierarchy()){
+					path = path +hierarchy +",";
+				}
+				cmap.put(category.getId(), path);	
+			}
+		}catch (Exception e){
+			logger.error("error occured while getting categories",e);
+		}
+		return cmap;
+	}
+	
 	public EnvestResponse getInfo(String userId, String password, String bank){
 		logger.info("Starting to get user info");
 		PlaidUserClient plaidUserClient = null;
@@ -48,7 +86,7 @@ public class UserServiceUtil {
 		InfoResponse r = null;
 		try{
 		plaidUserClient = plaidClient.getPlaidClient();
-		
+		//plaidUserClient.setAccessToken("test_wells");
 		testCredentials = new Credentials(userId, password);
 		r = plaidUserClient.info(testCredentials, bank,
 					null);
@@ -121,6 +159,23 @@ public class UserServiceUtil {
 		logger.info("Exiting user info method");
 		return userInfo;
 	}
+	
+	public EnvestResponse createUser(String userID,String password){
+		ErrorMessage mes;
+		long userKey = 0;
+		try{
+			getCategories();
+			userKey = UserInfoDao.createUser(userID, password,message);
+			mes = new ErrorMessage(EnvestConstants.RETURN_CODE_SUCCESS
+					,message.getMessage("message.useraddedsuccess")
+					,null
+					,message.getMessage("message.success"));
+			mes.setUserKey(userKey);
+		}catch(EnvestException e){
+			mes = e.getErrorMessage();
+		}
+		return mes;
+	}
 		
 	public EnvestResponse saveUser(Long userKey, String userID,String password){
 		int code = 0;
@@ -128,6 +183,7 @@ public class UserServiceUtil {
 		
 		try{
 			code = UserInfoDao.saveUser(userKey,userID, password);
+			
 		}catch (Exception e){
 			logger.error("Error occured while saving user", e);
 			mes = new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
@@ -208,7 +264,33 @@ public class UserServiceUtil {
 			}		
 			token.setUserBank(d.getResponseFor());
 			token.setUserKey(userKey);
-			UserInfoDao.saveAccessToken(token);
+			if(d instanceof UserInfo){
+				try {
+					UserInfoDao.saveUserInfo(d);
+				} catch (EnvestException e) {
+					d = e.getErrorMessage();
+				}
+			}
+			//UserInfoDao.saveAccessToken(token);
+			try {
+				Map<String,Object> input = new HashMap<String,Object>(10);
+				input.put(EnvestConstants.ENVEST_RESPONSE, d);
+				Map<String,Object> output = recommendationEngine.processRequest(input);
+				List<AccountDetail> accountsDetailList = ((UserInfo)d).getAccounts();
+				Map<String,AccountDetail.AccountProfile> profileData = (Map)output.get(EnvestConstants.USER_PROFILE);
+				if(null != profileData){
+					for(AccountDetail acc :accountsDetailList){
+						List<AccountDetail.AccountProfile> list = new ArrayList<AccountDetail.AccountProfile>();
+						list.add(profileData.get(acc.getAccountId()));
+						acc.setAccProfile(list);
+					}
+				}
+				
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				logger.error("Error occurred during recomendationsengine" ,e);
+			}
 		}
 		return d;
 	}

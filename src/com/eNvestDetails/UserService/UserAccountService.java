@@ -14,7 +14,7 @@ import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.util.UserAccountServiceUtil;
 
-@CrossOrigin(origins= "*")
+//@CrossOrigin(origins= "*")
 @RestController
 public class UserAccountService {
 	
