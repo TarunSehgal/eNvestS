@@ -1,5 +1,8 @@
 package com.eNvestDetails.dto;
 
+
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +15,7 @@ public class AccountsDTO {
 
 	@Id @GeneratedValue
 	@Column
-	private Long accountid;
+	private Long accountKey;
 	
 	@Column
 	private String institutiontype;
@@ -45,6 +48,62 @@ public class AccountsDTO {
 	@Column (columnDefinition="VARCHAR(1) default 'N'" )
 	private String isActive;
 	
+	@Column
+	private Date balanceAsOF;
+	
+	@Column
+	private boolean isPrimary;
+	
+	@Column
+	private String accountId;
+	
+	@Column
+	private String itemId;
+	
+	/*@Column
+	private Date balanceAsOfDate;
+	
+	
+	public Date getBalanceAsOfDate() {
+		return balanceAsOfDate;
+	}
+
+	public void setBalanceAsOfDate(Date balanceAsOfDate) {
+		this.balanceAsOfDate = balanceAsOfDate;
+	}*/
+
+	public String getAccountId() {
+		return accountId;
+	}
+
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
+	}
+
+	public String getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
+	}
+
+	public boolean isPrimary() {
+		return isPrimary;
+	}
+
+	public void setPrimary(boolean isPrimary) {
+		this.isPrimary = isPrimary;
+	}
+
+	public Date  getBalanceAsOF() {
+		return balanceAsOF;
+	}
+
+	public void setBalanceAsOF(Date  balanceAsOF) {
+		this.balanceAsOF = balanceAsOF;
+	}
+
 	public Long getUserKey() {
 		return userKey;
 	}
@@ -62,20 +121,19 @@ public class AccountsDTO {
 		this.isActive = isActive;
 	}
 
-	public Long getAccountid() {
-		return accountid;
-	}
-
-	public void setAccountid(Long accountid) {
-		this.accountid = accountid;
-	}
-
 	public String getInstitutiontype() {
 		return institutiontype;
 	}
 
 	public void setInstitutiontype(String institutiontype) {
 		this.institutiontype = institutiontype;
+	}
+	public Long getAccountKey() {
+		return accountKey;
+	}
+
+	public void setAccountKey(Long accountKey) {
+		this.accountKey = accountKey;
 	}
 
 	public Double getAvailableBalance() {

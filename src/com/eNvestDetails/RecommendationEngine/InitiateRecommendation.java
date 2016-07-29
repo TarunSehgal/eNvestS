@@ -1,6 +1,7 @@
 package com.eNvestDetails.RecommendationEngine;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -26,13 +27,15 @@ public class InitiateRecommendation {
 	      this.firstStep = firstStep;
 	   }
 	   
-	   public void processRequest(Object arg) throws Exception {
+	   public Map<String,Object> processRequest(Map<String,Object> arg) throws Exception {
 		   AbstractComponent  executeRule= null;
+		  // Map<String,Object> returnObject 
 		   for(String rule :rules){
 			   executeRule = (AbstractComponent) context.getBean(rule);
-			   executeRule.execute(arg);
+			   arg = executeRule.execute(arg);
 		   }
 	      //firstStep.execute(arg);
+		   return arg;
 	   }
 	   
 }
