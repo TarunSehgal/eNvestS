@@ -10,10 +10,7 @@ public class CDProduct extends Product{
 	public String compoundingTenor;
 public CDProduct(String bankName, double interestRate, int id, double maturityYears)
 {
-	productType = ProductType.CertificateOfDeposit;
-	this.productId = id;
-	this.bankName = bankName;
-	this.interestRate = interestRate;
+	super(bankName, interestRate, id, ProductType.CertificateOfDeposit);
 	this.maturityYears = maturityYears;
 }
 }

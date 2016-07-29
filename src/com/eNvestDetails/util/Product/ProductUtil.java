@@ -125,6 +125,20 @@ public class ProductUtil {
 		products.add(new GoalSeekProduct("bankB", 1.69, 4002));
 		return products;
 	}
+	
+	public List<Product> GetAvailableProducts(ProductType productType)
+	{
+		List<Product> products = new ArrayList<Product>();
+		for(Product prd:availableProducts)
+		{
+			if(prd.productType.equals(productType))
+			{
+				products.add(prd);
+			}
+		}
+		
+		return products;
+	}
 	private Product getProduct(int productId)
 	{
 		for(int i=0; i< availableProducts.size(); i++)
