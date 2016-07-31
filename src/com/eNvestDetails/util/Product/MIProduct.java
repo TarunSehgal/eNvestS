@@ -13,9 +13,6 @@ public double valueAtMaturity;
 public double interestEarned;
 public MIProduct(String bankName, double interestRate, int id)
 {
-	productType = ProductType.MonthlyInvestmentPlan;
-	productId = id;
-	this.bankName = bankName;
-	this.interestRate = interestRate;
+	super(bankName, interestRate, id, ProductType.MonthlyInvestmentPlan);
 }
 }

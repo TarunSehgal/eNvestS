@@ -10,9 +10,6 @@ public class HighYieldProduct extends Product {
 	public List<TenorMaturityResponse> maturityLadder = new ArrayList<TenorMaturityResponse>();
 public HighYieldProduct(String bankName, double interestRate, int id)
 {
-	productType = ProductType.HighYieldAccount;
-	productId = id;
-	this.bankName = bankName;
-	this.interestRate = interestRate;
+	super(bankName, interestRate, id, ProductType.GoalSeek);
 }
 }

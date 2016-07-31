@@ -30,7 +30,7 @@ public class ProductUtil {
 		availableProducts = GetAvailableProducts();
 	}
 	
-	public Product getProduct(int productId, double maturityDate, double principle, String compoundingTenor) throws Exception
+	public Product recalculateProduct(int productId, double maturityDate, double principle, String compoundingTenor) throws Exception
 	{
 		Product prd = getProduct(productId);
 		if(prd != null)
@@ -123,6 +123,20 @@ public class ProductUtil {
 		products.add(new MIProduct("bankB", 1.63, 3002));
 		products.add(new GoalSeekProduct("bankA", 1.85, 4001));
 		products.add(new GoalSeekProduct("bankB", 1.69, 4002));
+		return products;
+	}
+	
+	public List<Product> GetAvailableProducts(ProductType productType)
+	{
+		List<Product> products = new ArrayList<Product>();
+		for(Product prd:availableProducts)
+		{
+			if(prd.productType.equals(productType))
+			{
+				products.add(prd);
+			}
+		}
+		
 		return products;
 	}
 	private Product getProduct(int productId)

@@ -8,9 +8,6 @@ public class GoalSeekProduct extends Product {
 	public String compoundingTenor;
 	public GoalSeekProduct(String bankName, double interestRate, int id)
 	{
-		productType = ProductType.GoalSeek;
-		productId = id;
-		this.bankName = bankName;
-		this.interestRate = interestRate;
+		super(bankName, interestRate, id, ProductType.GoalSeek);
 	}
 }
