@@ -109,9 +109,10 @@ public class CommonUtil {
 		return bd.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 	
-	public static  List<TransactionDetail> parseTransaction(List<Transaction> transactions,Map<String,UserInfo.Summary> summaryMap){
+	public static  List<TransactionDetail> parseTransaction(List<Transaction> transactions,Map<String,UserInfo.Summary> summaryMap,Map<String, String> categories){
 		TransactionDetail transactionBean = null;		
 		List<TransactionDetail> transactionsList = new ArrayList<TransactionDetail>();
+		//Map<String, String> categories = userServiceUtil.getCategories();
 		for(Transaction t : transactions){
 			
 			transactionBean = new TransactionDetail();
@@ -156,7 +157,14 @@ public class CommonUtil {
 					summary.setInflow(summary.getInflow() + (t.getAmount() * (-1.0)));
 				}else{
 					summary.setOutflow(summary.getOutflow() + (t.getAmount()* (-1.0)));	
-				}							
+				}			
+				String categoryHierarchy = categories.get(t.getCategoryId());
+				if(null != categoryHierarchy && categoryHierarchy.contains("Bank Fees")){
+					summary.setTotalBankFee(summary.getTotalBankFee() + t.getAmount());								
+				}
+				if(null != categoryHierarchy && categoryHierarchy.contains("Interest")){
+					summary.setTotalInterest(summary.getTotalInterest() + t.getAmount());			
+				}
 			}else{
 				UserInfo.Summary summary =  new UserInfo.Summary();
 				
@@ -166,6 +174,13 @@ public class CommonUtil {
 				}else{
 					summary.setOutflow((null != summary.getOutflow()?summary.getOutflow():0.0) + (t.getAmount()* (-1.0)));
 					summary.setInflow(0.0);
+				}
+				String categoryHierarchy = categories.get(t.getCategoryId());
+				if(null != categoryHierarchy && categoryHierarchy.contains("Bank Fees")){
+					summary.setTotalBankFee(t.getAmount());								
+				}
+				if(null != categoryHierarchy && categoryHierarchy.contains("Interest")){
+					summary.setTotalInterest( t.getAmount());			
 				}
 							
 				summary.setAccountNumber(t.getAccountId());

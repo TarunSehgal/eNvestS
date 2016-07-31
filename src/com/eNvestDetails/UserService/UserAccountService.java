@@ -14,7 +14,7 @@ import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.util.UserAccountServiceUtil;
 
-//@CrossOrigin(origins= "*")
+@CrossOrigin(origins= "*")
 @RestController
 public class UserAccountService {
 	
@@ -40,5 +40,10 @@ public class UserAccountService {
 	@RequestMapping(value="/UserAccountService/users/accountsTransactions",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
 	public EnvestResponse getAccountsTransactions(@RequestParam("userKey") Long userKey){
 		return accountServiceUtil.getAccountAndTransaction(userKey, EnvestConstants.GET_ACCOUNT_TRANSACTIONS);		
+	}
+	
+	@RequestMapping(value="/UserAccountService/users/getDashBoard",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
+	public EnvestResponse getDashBoard(@RequestParam("userKey") Long userKey){
+		return accountServiceUtil.getDashboardData(userKey, EnvestConstants.GET_ACCOUNT_TRANSACTIONS);		
 	}
 }

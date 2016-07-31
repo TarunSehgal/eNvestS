@@ -60,17 +60,16 @@ public class AccountsDTO {
 	@Column
 	private String itemId;
 	
-	/*@Column
-	private Date balanceAsOfDate;
+	@Column(columnDefinition="VARCHAR(1)" )
+	private String envestAccount;
 	
-	
-	public Date getBalanceAsOfDate() {
-		return balanceAsOfDate;
+	public String getEnvestAccount() {
+		return envestAccount;
 	}
 
-	public void setBalanceAsOfDate(Date balanceAsOfDate) {
-		this.balanceAsOfDate = balanceAsOfDate;
-	}*/
+	public void setEnvestAccount(String envestAccount) {
+		this.envestAccount = envestAccount;
+	}
 
 	public String getAccountId() {
 		return accountId;

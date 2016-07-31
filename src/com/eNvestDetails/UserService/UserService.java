@@ -23,7 +23,7 @@ import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.util.UserServiceUtil;
 
 
-//@CrossOrigin(origins= "*")
+@CrossOrigin(origins= "*")
 @RestController
 public class UserService {
 	
@@ -83,7 +83,8 @@ public class UserService {
 	
 	@RequestMapping(value="/UserService/users/registerUser",method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)	
 	public @ResponseBody EnvestResponse registerUser(@RequestParam("userID") String userID,
-			@RequestParam("password") String password) {
+			@RequestParam("password") String password
+			,@RequestParam("firstName") String firstName,@RequestParam("lastName") String lastName) {
 		return plaidUtil.createUser(userID, password);
 	}
 	

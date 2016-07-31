@@ -9,22 +9,33 @@ public class UserInfo extends EnvestResponse {
 	private List<AccountDetail> accounts;
 	private Info info;
 	
-	 private List<Summary> summary; 
+	private List<Summary> summary; 
+	 
+	private List<TransactionDetail> transaction = null;
+	
+	private DashBoardSummary dashBoardSummary;
 	    
-	    public List<Summary> getSummary() {
-			return summary;
-		}
+	public DashBoardSummary getDashBoardSummary() {
+		return dashBoardSummary;
+	}
 
+	public void setDashBoardSummary(DashBoardSummary dashBoardSummary) {
+		this.dashBoardSummary = dashBoardSummary;
+	}
 
-		public void setSummary(List<Summary> summary) {
-			this.summary = summary;
-		}
+	public List<Summary> getSummary() {
+		return summary;
+	}
+
+	public void setSummary(List<Summary> summary) {
+		this.summary = summary;
+	}
 	
 	public List<AccountDetail> getAccounts() {
 		return accounts;
 	}
 	
-	private List<TransactionDetail> transaction = null;
+	
 
 	public List<TransactionDetail> getTransaction() {
 		return transaction;
@@ -220,6 +231,21 @@ public class UserInfo extends EnvestResponse {
     	private Double inflow;
     	private Double outflow;
     	private String accountNumber; 
+    	private double totalInterest;
+    	private double totalBankFee;
+    	public double getTotalInterest() {
+			return totalInterest;
+		}
+		public void setTotalInterest(double totalInterest) {
+			this.totalInterest = totalInterest;
+		}
+		public double getTotalBankFee() {
+			return totalBankFee;
+		}
+		public void setTotalBankFee(double totalBankFee) {
+			this.totalBankFee = totalBankFee;
+		}
+		
 		public String getAccountNumber() {
 			return accountNumber;
 		}
@@ -239,6 +265,71 @@ public class UserInfo extends EnvestResponse {
 			this.outflow = outflow;
 		}
     	
+    }
+    
+    @JsonIgnoreProperties(ignoreUnknown=true)
+    public final static class DashBoardSummary {
+    	private double totalInflow;
+    	private double totalOutflow;
+    	private double totalInterest;
+    	private double totalBankFee;
+    	private List<BankBalance> bankBalances;
+    	
+    	public List<BankBalance> getBankBalances() {
+			return bankBalances;
+		}
+		public void setBankBalances(List<BankBalance> bankBalances) {
+			this.bankBalances = bankBalances;
+		}
+		public double getTotalInflow() {
+			return totalInflow;
+		}
+		public void setTotalInflow(double totalInflow) {
+			this.totalInflow = totalInflow;
+		}
+		public double getTotalOutflow() {
+			return totalOutflow;
+		}
+		public void setTotalOutflow(double totalOutflow) {
+			this.totalOutflow = totalOutflow;
+		}
+		public double getTotalInterest() {
+			return totalInterest;
+		}
+		public void setTotalInterest(double totalInterest) {
+			this.totalInterest = totalInterest;
+		}
+		public double getTotalBankFee() {
+			return totalBankFee;
+		}
+		public void setTotalBankFee(double totalBankFee) {
+			this.totalBankFee = totalBankFee;
+		}	
+    	
+    }
+    
+    public final static class BankBalance{
+      	private String bankName;
+    	private double currentBalance;
+    	private double availableBalance;
+		public String getBankName() {
+			return bankName;
+		}
+		public void setBankName(String bankName) {
+			this.bankName = bankName;
+		}
+		public double getCurrentBalance() {
+			return currentBalance;
+		}
+		public void setCurrentBalance(double currentBalance) {
+			this.currentBalance = currentBalance;
+		}
+		public double getAvailableBalance() {
+			return availableBalance;
+		}
+		public void setAvailableBalance(double availableBalance) {
+			this.availableBalance = availableBalance;
+		}
     }
 	
 }
