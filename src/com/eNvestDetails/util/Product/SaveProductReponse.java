@@ -5,13 +5,13 @@ public class SaveProductReponse {
 	public String ErrorMsg = null;
 	public StatusCode statusCode;
 	public ErrorCodes errorCodes;
-	public int productId;
-	public String userId;
+	public int userProductId;
+	public Long userKey;
 	
-	public SaveProductReponse(String userId, int productId, StatusCode status)
+	public SaveProductReponse(Long userKey, int productId, StatusCode status)
 	{
-		this.userId = userId;
-		this.productId = productId;
+		this.userKey = userKey;
+		this.userProductId = productId;
 		this.statusCode = status;		
 	}
 }

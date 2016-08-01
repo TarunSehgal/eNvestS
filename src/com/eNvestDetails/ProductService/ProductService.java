@@ -32,15 +32,15 @@ public class ProductService {
 	}
 	
 	@RequestMapping(value="/ProductService/getRecommendedProducts",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
-	public List<Product> getRecommendedProducts(@RequestParam("userId") String userId) throws Exception
+	public List<Product> getRecommendedProducts(@RequestParam("userKey") Long userKey) throws Exception
 	{
 		return productUtil.GetRecommendedProducts();
 	}
 	
 	@RequestMapping(value="/ProductService/getAvailableUserProducts",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
-	public List<Product> getAvailableUserProducts(@RequestParam("userId") String userId) throws EnvestException
+	public List<Product> getAvailableUserProducts(@RequestParam("userKey") Long userKey) throws EnvestException
 	{
-		return productUtil.GetUserProduct(userId);
+		return productUtil.GetUserProduct(userKey);
 	}
 	
 	@RequestMapping(value="/ProductService/getSelectedProducts",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
@@ -56,9 +56,9 @@ public class ProductService {
 	}
 	
 	@RequestMapping(value="/ProductService/saveUserProduct",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
-	public SaveProductReponse saveUserProduct(@RequestParam("userId") String userId, @RequestParam("productId") int productId, @RequestParam("interestRate") double interestRate, @RequestParam("principle") double principle, @RequestParam("valueAtMaturity") double valueAtMaturity) throws Exception
+	public SaveProductReponse saveUserProduct(@RequestParam("userKey") Long userKey, @RequestParam("productId") int productId, @RequestParam("interestRate") double interestRate, @RequestParam("principle") double principle, @RequestParam("valueAtMaturity") double valueAtMaturity) throws Exception
 	{
-		int id = productUtil.SaveUserProduct(productId, principle,valueAtMaturity,interestRate, userId);
-		return new SaveProductReponse(userId, id, StatusCode.Success );
+		int id = productUtil.SaveUserProduct(productId, principle,valueAtMaturity,interestRate, userKey);
+		return new SaveProductReponse(userKey, id, StatusCode.Success );
 	}
 }

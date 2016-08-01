@@ -8,11 +8,11 @@ import com.eNvestDetails.dto.UserProductDTO;
 
 public class ProductToDTOConverter {
 
-	public static UserProductDTO convertProductToDTO(int productId, double principle,double interestRate,double valueAtMaturity, String userId)
+	public static UserProductDTO convertProductToDTO(int productId, double principle,double interestRate,double valueAtMaturity, Long userKey)
 	{
 		UserProductDTO productDTO = new UserProductDTO();
 		
-		productDTO.setUserId(userId);
+		productDTO.setUserId(userKey);
 		productDTO.setProductId(productId);
 		productDTO.setInterest(interestRate);
 		productDTO.setPrinciple(principle);

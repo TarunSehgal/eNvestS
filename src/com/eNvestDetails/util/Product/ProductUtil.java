@@ -125,16 +125,16 @@ public class ProductUtil {
 		return product;
 	}
 	
-	public int SaveUserProduct(int productId, double principle,double valueAtMaturity,double interestRate, String userId) throws EnvestException
+	public int SaveUserProduct(int productId, double principle,double valueAtMaturity,double interestRate, Long userKey) throws EnvestException
 	{
-		UserProductDTO userProductDTO = ProductToDTOConverter.convertProductToDTO(productId,principle,interestRate,valueAtMaturity  , userId);
+		UserProductDTO userProductDTO = ProductToDTOConverter.convertProductToDTO(productId,principle,interestRate,valueAtMaturity  , userKey);
 		return UserProductDao.addNewProduct(userProductDTO, message);
 	}
 	
-	public List<Product> GetUserProduct(String userId) throws EnvestException
+	public List<Product> GetUserProduct(Long userKey) throws EnvestException
 	{
 		List<Product> availableUserProducts = new ArrayList<Product>();
-		List<UserProductDTO> userProductDTO =UserProductDao.getAllProduct(userId); 
+		List<UserProductDTO> userProductDTO =UserProductDao.getAllProduct(userKey); 
 		if(userProductDTO != null && userProductDTO.size()>0)
 		{
 			for(UserProductDTO dto:userProductDTO)

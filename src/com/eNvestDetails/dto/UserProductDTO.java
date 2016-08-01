@@ -31,7 +31,7 @@ public class UserProductDTO {
 	private Date PURCHASE_DATE;
 	
 	@Column
-	private String USER_ID;
+	private Long USER_KEY;
 	
 	public int getUserProductId() {
 		return USER_PRODUCT_ID;
@@ -85,11 +85,11 @@ public class UserProductDTO {
 		this.PURCHASE_DATE = purchaseDate;
 	}
 
-	public String getUserId() {
-		return USER_ID;
+	public Long getUserId() {
+		return USER_KEY;
 	}
 
-	public void setUserId(String userId) {
-		this.USER_ID = userId;
+	public void setUserId(Long userKey) {
+		this.USER_KEY = userKey;
 	}
 }

@@ -41,14 +41,14 @@ public class UserProductDao {
 	private static Logger log = Logger.getLogger(UserProductDao.class.getName());
 	
 		
-	public static List<UserProductDTO> getAllProduct(String userId) throws EnvestException{
+	public static List<UserProductDTO> getAllProduct(Long userKey) throws EnvestException{
 		log.info("inside method getAllProducts");
 		List<UserProductDTO> productsList = new ArrayList<UserProductDTO>();
 		Session session = null;
 		try{
 			session = HibernateUtils.getSessionFactory().openSession();
 			session.beginTransaction();
-			List products = session.createCriteria(UserProductDTO.class).add(Restrictions.eq("USER_ID", userId)).list();	
+			List products = session.createCriteria(UserProductDTO.class).add(Restrictions.eq("USER_KEY", userKey)).list();	
 			if(products != null && products.size()>0)
 			{
 				for(int i=0; i<products.size(); i++)
