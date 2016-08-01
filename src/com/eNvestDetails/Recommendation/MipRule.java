@@ -26,7 +26,7 @@ public class MipRule extends AbstractProductRule {
 		{
 			arg = new HashMap<String, Object>();
 		}
-		
+		highestRateProduct.monthlyCashFlow = 500;
 		arg.put(getProductType().toString(), highestRateProduct);
 		return arg;
 	}

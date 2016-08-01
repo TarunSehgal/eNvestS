@@ -26,7 +26,7 @@ public class HYARule extends AbstractProductRule {
 		{
 			arg = new HashMap<String, Object>();
 		}
-		
+		highestRateProduct.principle = 10000;
 		arg.put(getProductType().toString(), highestRateProduct);
 		return arg;
 	}

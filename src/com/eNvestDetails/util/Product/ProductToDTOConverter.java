@@ -8,15 +8,17 @@ import com.eNvestDetails.dto.UserProductDTO;
 
 public class ProductToDTOConverter {
 
-	public static UserProductDTO convertProductToDTO(Product product, String userId)
+	public static UserProductDTO convertProductToDTO(int productId, double principle,double interestRate,double valueAtMaturity, String userId)
 	{
 		UserProductDTO productDTO = new UserProductDTO();
 		
 		productDTO.setUserId(userId);
-		productDTO.setProductId(product.productId);
-		productDTO.setInterest(product.interestRate);
-
-		switch(product.productType)
+		productDTO.setProductId(productId);
+		productDTO.setInterest(interestRate);
+		productDTO.setPrinciple(principle);
+		productDTO.setTenor("1Y");
+		productDTO.setMaturityValue(valueAtMaturity);
+		/*switch(product.productType)
 		{
 		case CertificateOfDeposit:
 			setCDDetails(productDTO, (CDProduct) product);
@@ -32,7 +34,7 @@ public class ProductToDTOConverter {
 				break;
 		default:
 			break;
-		}
+		}*/
 		
 		return productDTO;		
 	}

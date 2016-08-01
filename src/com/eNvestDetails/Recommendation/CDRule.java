@@ -22,7 +22,7 @@ public class CDRule extends AbstractProductRule {
 		{
 			arg = new HashMap<String, Object>();
 		}
-		
+		highestRatecd.principle = 10000;
 		arg.put(getProductType().toString(), highestRatecd);
 		return arg;
 	}

@@ -41,14 +41,14 @@ public class UserProductDao {
 	private static Logger log = Logger.getLogger(UserProductDao.class.getName());
 	
 		
-	public static List<UserProductDTO> getAllProduct() throws EnvestException{
+	public static List<UserProductDTO> getAllProduct(String userId) throws EnvestException{
 		log.info("inside method getAllProducts");
 		List<UserProductDTO> productsList = new ArrayList<UserProductDTO>();
 		Session session = null;
 		try{
 			session = HibernateUtils.getSessionFactory().openSession();
 			session.beginTransaction();
-			List products = session.createCriteria(UserProductDTO.class).list();	
+			List products = session.createCriteria(UserProductDTO.class).add(Restrictions.eq("USER_ID", userId)).list();	
 			if(products != null && products.size()>0)
 			{
 				for(int i=0; i<products.size(); i++)
@@ -68,14 +68,14 @@ public class UserProductDao {
 		}
 		return productsList;	
 	}
-	public static UserProductDTO getProduct(int productbankId) throws EnvestException{
+	public static UserProductDTO getProduct(String userId) throws EnvestException{
 		log.info("inside method getproduct");
 		UserProductDTO productDTO = null;
 		Session session = null;
 		try{
 			session = HibernateUtils.getSessionFactory().openSession();
 			session.beginTransaction();
-			List productList = session.createCriteria(UserProductDTO.class).add(Restrictions.eq("USER_PRODUCT_ID", productbankId)).list();
+			List productList = session.createCriteria(UserProductDTO.class).add(Restrictions.eq("USER_ID", userId)).list();
 			if(null != productList && productList.size() > 0){
 				productDTO = (UserProductDTO)productList.get(0);
 			}			

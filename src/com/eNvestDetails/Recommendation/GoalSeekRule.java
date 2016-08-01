@@ -28,13 +28,13 @@ public class GoalSeekRule extends AbstractProductRule {
 	@Override
 	protected Map<String, Object> doWork(Map<String, Object> arg) throws Exception {
 		
-		GoalSeekProduct HighYieldProduct = (GoalSeekProduct) getHighestRateProduct();
+		GoalSeekProduct goalSeekProduct = (GoalSeekProduct) getHighestRateProduct();
 		if(arg == null)
 		{
 			arg = new HashMap<String, Object>();
 		}
-		
-		arg.put(getProductType().toString(), HighYieldProduct);
+		goalSeekProduct.principle = 25000;
+		arg.put(getProductType().toString(), goalSeekProduct);
 		return arg;
 	}
 

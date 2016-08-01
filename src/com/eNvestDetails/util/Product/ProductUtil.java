@@ -1,13 +1,16 @@
 package com.eNvestDetails.util.Product;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
+import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
 import com.eNvestDetails.dao.BankDao;
 import com.eNvestDetails.dao.ProductDao;
 import com.eNvestDetails.dao.UserProductDao;
@@ -26,6 +29,10 @@ public class ProductUtil {
 	private List<Product> availableProducts = null;
 	private UserProductDao userProductDAO = new UserProductDao();
 	private BankDao bankDAO = new BankDao();
+	
+	@Autowired
+	private InitiateRecommendation recommendationEngine = null;
+	
 	@Autowired
 	private InterestCalculator interestCalculator = null;
 	
@@ -65,11 +72,6 @@ public class ProductUtil {
 		return null;
 	}
 	
-	public SaveProductReponse SaveProduct(String userId, int productId, double noOfYears, double principle, String compoundingTenor)
-	{
-		SaveProductReponse response = new SaveProductReponse(userId, productId, StatusCode.Success);
-		return response;
-	}
 	private Product getCD(CDProduct product, double maturityDate, double notional, String compoundingTenor) throws Exception
 	{
 		Response response = interestCalculator.CalculateInterest(notional, compoundingTenor, product.interestRate, maturityDate);
@@ -123,18 +125,27 @@ public class ProductUtil {
 		return product;
 	}
 	
-	public int SaveUserProduct(Product product, String userId) throws EnvestException
+	public int SaveUserProduct(int productId, double principle,double valueAtMaturity,double interestRate, String userId) throws EnvestException
 	{
-		UserProductDTO userProductDTO = ProductToDTOConverter.convertProductToDTO(product, userId);
+		UserProductDTO userProductDTO = ProductToDTOConverter.convertProductToDTO(productId,principle,interestRate,valueAtMaturity  , userId);
 		return UserProductDao.addNewProduct(userProductDTO, message);
 	}
 	
-	public Product GetUserProduct(int productId) throws EnvestException
+	public List<Product> GetUserProduct(String userId) throws EnvestException
 	{
-		UserProductDTO userProductDTO =UserProductDao.getProduct(productId); 
-		ProductDTO productDTO = ProductDao.getProducts(userProductDTO.getProductId());
-		BankDTO bankDTO = bankDAO.getBankInfo(productDTO.getBankId());
-		return UserProductDTOtoProductConverter.getProductFromDTO(userProductDTO, bankDTO, productDTO);
+		List<Product> availableUserProducts = new ArrayList<Product>();
+		List<UserProductDTO> userProductDTO =UserProductDao.getAllProduct(userId); 
+		if(userProductDTO != null && userProductDTO.size()>0)
+		{
+			for(UserProductDTO dto:userProductDTO)
+			{
+				ProductDTO productDTO = ProductDao.getProducts(dto.getProductId());
+				BankDTO bankDTO = bankDAO.getBankInfo(productDTO.getBankId());
+				availableUserProducts.add(UserProductDTOtoProductConverter.getProductFromDTO(dto, bankDTO, productDTO));
+			}
+		}
+
+		return availableUserProducts;
 	}
 	
 	public List<Product> GetAvailableProducts() throws EnvestException
@@ -149,6 +160,27 @@ public class ProductUtil {
 		}
 		
 		return products;
+	}
+	
+	public List<Product> GetRecommendedProducts() throws Exception
+	{
+		
+		//InitiateRecommendation recommendationEngine = new InitiateRecommendation();
+		Map<String, Object> arg = new HashMap<String, Object>();
+		
+		Map<String, Object> resultArg = recommendationEngine.processRequest(arg);
+		List<Product> recommendedProducts = new ArrayList<Product>();
+		if(resultArg != null && resultArg.size()>0)
+		{
+			for(ProductType val:ProductType.values())
+			{
+				if(resultArg.containsKey(val.toString()))
+				{
+					recommendedProducts.add((Product) resultArg.get(val.toString()));
+				}
+			}
+		}
+		return recommendedProducts;
 	}
 	
 	public List<Product> GetAvailableProducts(ProductType productType)
