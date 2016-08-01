@@ -6,6 +6,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.eNvestDetails.Config.MessageFactory;
+import com.eNvestDetails.Exception.EnvestException;
+import com.eNvestDetails.dao.BankDao;
+import com.eNvestDetails.dao.ProductDao;
+import com.eNvestDetails.dao.UserProductDao;
+import com.eNvestDetails.dto.BankDTO;
+import com.eNvestDetails.dto.ProductDTO;
+import com.eNvestDetails.dto.UserProductDTO;
 import com.eNvestDetails.util.Calculation.AnnuityCalculator;
 import com.eNvestDetails.util.Calculation.GoalSeekCalculator;
 import com.eNvestDetails.util.Calculation.InterestCalculator;
@@ -16,6 +24,8 @@ import com.eNvestDetails.util.Calculation.Response;
 public class ProductUtil {
 
 	private List<Product> availableProducts = null;
+	private UserProductDao userProductDAO = new UserProductDao();
+	private BankDao bankDAO = new BankDao();
 	@Autowired
 	private InterestCalculator interestCalculator = null;
 	
@@ -25,7 +35,10 @@ public class ProductUtil {
 	@Autowired
 	private GoalSeekCalculator goalSeekCalculator = null;
 	
-	public ProductUtil()
+	@Autowired
+	private MessageFactory message = null;
+	
+	public ProductUtil() throws EnvestException
 	{
 		availableProducts = GetAvailableProducts();
 	}
@@ -110,19 +123,31 @@ public class ProductUtil {
 		return product;
 	}
 	
-	public List<Product> GetAvailableProducts()
+	public int SaveUserProduct(Product product, String userId) throws EnvestException
 	{
+		UserProductDTO userProductDTO = ProductToDTOConverter.convertProductToDTO(product, userId);
+		return UserProductDao.addNewProduct(userProductDTO, message);
+	}
+	
+	public Product GetUserProduct(int productId) throws EnvestException
+	{
+		UserProductDTO userProductDTO =UserProductDao.getProduct(productId); 
+		ProductDTO productDTO = ProductDao.getProducts(userProductDTO.getProductId());
+		BankDTO bankDTO = bankDAO.getBankInfo(productDTO.getBankId());
+		return UserProductDTOtoProductConverter.getProductFromDTO(userProductDTO, bankDTO, productDTO);
+	}
+	
+	public List<Product> GetAvailableProducts() throws EnvestException
+	{
+		List<ProductDTO> productDTO = ProductDao.getAllProducts();
+		
 		List<Product> products = new ArrayList<Product>();
-		products.add(new CDProduct("bankA", 1.5, 1001,5));
-		products.add(new CDProduct("bankB", 1.3, 1002,6));
+		for(ProductDTO prdDto:productDTO)
+		{
+			BankDTO bankDTO = bankDAO.getBankInfo(prdDto.getBankId());
+			products.add(ProductDTOtoProductConverter.getProductFromDTO(prdDto, bankDTO));
+		}
 		
-		products.add(new HighYieldProduct("bankA", 1.8, 2001));
-		products.add(new HighYieldProduct("bankB", 1.6, 2002));
-		
-		products.add(new MIProduct("bankA", 1.88, 3001));
-		products.add(new MIProduct("bankB", 1.63, 3002));
-		products.add(new GoalSeekProduct("bankA", 1.85, 4001));
-		products.add(new GoalSeekProduct("bankB", 1.69, 4002));
 		return products;
 	}
 	

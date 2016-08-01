@@ -11,8 +11,8 @@ public double preMatureClosureCharges;
 public double emiDefaultCharges;
 public double valueAtMaturity;
 public double interestEarned;
-public MIProduct(String bankName, double interestRate, int id)
+public MIProduct(String bankName, double interestRate, int userProductId,int id)
 {
-	super(bankName, interestRate, id, ProductType.MonthlyInvestmentPlan);
+	super(bankName, interestRate,userProductId, id, ProductType.MonthlyInvestmentPlan);
 }
 }

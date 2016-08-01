@@ -8,8 +8,8 @@ public class HighYieldProduct extends Product {
 	public double interestRate;
 	public String compoundingTenor;
 	public List<TenorMaturityResponse> maturityLadder = new ArrayList<TenorMaturityResponse>();
-public HighYieldProduct(String bankName, double interestRate, int id)
+public HighYieldProduct(String bankName, double interestRate,int userProductId, int id)
 {
-	super(bankName, interestRate, id, ProductType.GoalSeek);
+	super(bankName, interestRate,userProductId, id, ProductType.HighYieldAccount);
 }
 }

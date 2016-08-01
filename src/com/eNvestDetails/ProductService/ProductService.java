@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.util.Calculation.Response;
 import com.eNvestDetails.util.Product.Product;
 import com.eNvestDetails.util.Product.ProductType;
@@ -24,7 +25,7 @@ public class ProductService {
 	private ProductUtil productUtil = null;
 	
 	@RequestMapping(value="/ProductService/getAvailableProducts",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
-	public List<Product> getAvailableProducts()
+	public List<Product> getAvailableProducts() throws EnvestException
 	{
 		return productUtil.GetAvailableProducts();
 	}

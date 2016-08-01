@@ -11,10 +11,13 @@ import org.hibernate.cfg.Configuration;
 import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.dto.AccountsDTO;
 import com.eNvestDetails.dto.AddressDTO;
+import com.eNvestDetails.dto.BankDTO;
+import com.eNvestDetails.dto.ProductDTO;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
 import com.eNvestDetails.dto.UserEmailDTO;
 import com.eNvestDetails.dto.UserInfoDTO;
 import com.eNvestDetails.dto.UserPhoneDTO;
+import com.eNvestDetails.dto.UserProductDTO;
 
 
 
@@ -57,6 +60,9 @@ public class HibernateUtils {
                 configuration.addAnnotatedClass(UserEmailDTO.class);
                 configuration.addAnnotatedClass(UserPhoneDTO.class);
                 configuration.addAnnotatedClass(UserAccessTokenDTO.class);
+                configuration.addAnnotatedClass(ProductDTO.class);
+                configuration.addAnnotatedClass(UserProductDTO.class);
+                configuration.addAnnotatedClass(BankDTO.class);
                 sessionFactory = configuration.configure().buildSessionFactory();
                 log.info("successfully build the session");
 			}else{

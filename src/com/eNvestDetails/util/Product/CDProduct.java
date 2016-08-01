@@ -8,9 +8,9 @@ public class CDProduct extends Product{
 	public double interestEarned;
 	public double interestRate;
 	public String compoundingTenor;
-public CDProduct(String bankName, double interestRate, int id, double maturityYears)
+public CDProduct(String bankName, double interestRate,int userProductId, int id, double maturityYears)
 {
-	super(bankName, interestRate, id, ProductType.CertificateOfDeposit);
+	super(bankName, interestRate,userProductId, id, ProductType.CertificateOfDeposit);
 	this.maturityYears = maturityYears;
 }
 }
