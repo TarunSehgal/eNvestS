@@ -60,6 +60,7 @@ public class UserAccountServiceUtil {
 			List<UserInfo.Summary> summary = new ArrayList<UserInfo.Summary>();
 			Map<String,UserInfo.Summary> summaryMap = new HashMap<String,UserInfo.Summary>(20);
 			UserInfo.DashBoardSummary dashBoardSummaryObject = new UserInfo.DashBoardSummary();
+			List<UserInfo.BankBalance> balance = new ArrayList<UserInfo.BankBalance>(10);
 			//list = new ArrayList<UserAccessTokenDTO>(1);
 			for(UserAccessTokenDTO token : list){				
 				try{
@@ -77,6 +78,17 @@ public class UserAccountServiceUtil {
 					if (type == EnvestConstants.GET_ACCOUNTS|| type == EnvestConstants.GET_ACCOUNT_TRANSACTIONS){						
 						accDetails.addAll(CommonUtil.parseAccounts(acc, token.getUserBank()));
 					}
+					
+					
+					UserInfo.BankBalance bankBalance = new UserInfo.BankBalance();
+					for(Account account :acc){
+						bankBalance.setBankName(token.getUserBank());
+						if(null != account.getBalance()){
+							bankBalance.setAvailableBalance(bankBalance.getAvailableBalance() + account.getBalance().getAvailable());
+							bankBalance.setCurrentBalance(bankBalance.getCurrentBalance() + account.getBalance().getCurrent());
+						}						
+					}
+					balance.add(bankBalance);
 				
 					
 					if (type == EnvestConstants.GET_TRANSACTIONS || type == EnvestConstants.GET_ACCOUNT_TRANSACTIONS){						
@@ -103,16 +115,7 @@ public class UserAccountServiceUtil {
 				dashBoardSummaryObject.setTotalOutflow(dashBoardSummaryObject.getTotalOutflow() + sum.getOutflow());
 				summary.add(sum);
 			}
-			List<UserInfo.BankBalance> balance = new ArrayList<UserInfo.BankBalance>(10);
-			for(AccountDetail acc :accDetails){
-				UserInfo.BankBalance bankBalance = new UserInfo.BankBalance();
-				bankBalance.setBankName(acc.getResponseFor());
-				if(null != acc.getBalance()){
-					bankBalance.setAvailableBalance(acc.getBalance().getAvailable());
-					bankBalance.setCurrentBalance(acc.getBalance().getCurrent());
-				}
-				balance.add(bankBalance);
-			}
+			
 			dashBoardSummaryObject.setBankBalances(balance);
 			response.setSummary(summary);
 			response.setDashBoardSummary(dashBoardSummaryObject);

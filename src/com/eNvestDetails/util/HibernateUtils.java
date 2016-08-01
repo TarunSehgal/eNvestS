@@ -32,7 +32,7 @@ public class HibernateUtils {
 	public static SessionFactory getSessionFactory(){
 		try{
 			if(sessionFactory == null){
-				
+				log.info("starting to buiod session factory");
 				if("Y".equals(config.getResultString("localrun"))){
 					configuration.setProperty("hibernate.connection.driver_class", config.getResultString("jdbc.driverClassName"));
 	                configuration.setProperty("hibernate.connection.url", config.getResultString("jdbc.url"));
@@ -58,7 +58,9 @@ public class HibernateUtils {
                 configuration.addAnnotatedClass(UserPhoneDTO.class);
                 configuration.addAnnotatedClass(UserAccessTokenDTO.class);
                 sessionFactory = configuration.configure().buildSessionFactory();
+                log.info("successfully build the session");
 			}else{
+				log.info("session not null returning exsiting session object");
 				return sessionFactory;
 			}
 		}catch(Exception e){

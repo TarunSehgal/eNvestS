@@ -152,7 +152,15 @@ public class UserInfoDao {
 					,null
 					,message.getMessage("message.failure"))) ;	
 					
-		}finally{
+		}catch(Exception e){
+			log.error("Error occured while saving user",e);
+			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,null
+					,message.getMessage("message.failure"))) ;	
+		}
+		finally{
+			log.info("Starting to close session");
 			session.close();
 		}
 		

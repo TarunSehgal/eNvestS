@@ -15,11 +15,12 @@ import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
-import com.eNvestDetails.Recommendation.TestOppurtunity;
 import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.UserInfo;
+import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
+import com.eNvestDetails.util.UserAccountServiceUtil;
 import com.eNvestDetails.util.UserServiceUtil;
 
 
@@ -40,6 +41,9 @@ public class UserService {
 	private InitiateRecommendation recommendationEngine = null;
 	
 	private static Logger log = Logger.getLogger(UserService.class.getName()); 
+	
+	@Autowired
+	private UserAccountServiceUtil accountServiceUtil;
 	
 	@RequestMapping(value="/UserService/test",method=RequestMethod.GET,produces="application/json")	
 	public @ResponseBody ErrorMessage test(@RequestParam(value="test",defaultValue="test") String test){
@@ -97,6 +101,11 @@ public class UserService {
 			@RequestParam("password") String password,@RequestParam("bank") String bank) {
 		return plaidUtil.linkAccounts(userKey, userID, password, bank);
 		
+	}
+	
+	@RequestMapping(value="/UserService/users/getDashBoard",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
+	public EnvestResponse getDashBoard(@RequestParam("userKey") Long userKey){
+		return accountServiceUtil.getDashboardData(userKey, EnvestConstants.GET_ACCOUNT_TRANSACTIONS);		
 	}
 	
 }

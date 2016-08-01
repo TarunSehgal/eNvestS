@@ -42,6 +42,7 @@ public class UserAccountService {
 		return accountServiceUtil.getAccountAndTransaction(userKey, EnvestConstants.GET_ACCOUNT_TRANSACTIONS);		
 	}
 	
+	@CrossOrigin(origins = "*")
 	@RequestMapping(value="/UserAccountService/users/getDashBoard",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
 	public EnvestResponse getDashBoard(@RequestParam("userKey") Long userKey){
 		return accountServiceUtil.getDashboardData(userKey, EnvestConstants.GET_ACCOUNT_TRANSACTIONS);		
