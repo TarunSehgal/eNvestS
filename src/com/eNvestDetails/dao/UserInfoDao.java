@@ -26,6 +26,7 @@ import com.eNvestDetails.dto.UserAccessTokenDTO;
 import com.eNvestDetails.dto.UserEmailDTO;
 import com.eNvestDetails.dto.UserInfoDTO;
 import com.eNvestDetails.dto.UserPhoneDTO;
+import com.eNvestDetails.dto.UserProfileDTO;
 import com.eNvestDetails.util.ConvertBeanToDTO;
 import com.eNvestDetails.util.HibernateUtils;
 
@@ -44,29 +45,35 @@ public class UserInfoDao {
 			Map<String, Object> data = ConvertBeanToDTO.getUserInfoDTO(saveRespone);
 			session.beginTransaction();
 			userInfoDTO = (UserInfoDTO)data.get(ConvertBeanToDTO.USERINFODTO);	
-			//userInfoDTO.setUserkey(saveRespone.getUserKey());
-			List userExists = null;//session.createCriteria(UserInfoDTO.class).add(Restrictions.eq("userID", userInfoDTO.getUserID())).list();
-			if(null == userExists || userExists.size() == 0){
+			List<UserAccessTokenDTO> accessTokenList = getAccesTokens(userInfoDTO.getUserkey());
+			boolean userAlreadyLinked = false;
+			if(null != accessTokenList && accessTokenList.size() > 0){
+				userAlreadyLinked = true;
+			}
+			
+			if(!userAlreadyLinked){
 				session.saveOrUpdate(userInfoDTO);
-			}
-			//session.save(userInfoDTO);
-			List<AddressDTO> addressList = (List)data.get(ConvertBeanToDTO.ADDRESSDTO);
-			for(AddressDTO adto : addressList){
-				adto.setUserKey(userInfoDTO.getUserkey());
-				session.saveOrUpdate(adto);
+				
+				//session.save(userInfoDTO);
+				List<AddressDTO> addressList = (List)data.get(ConvertBeanToDTO.ADDRESSDTO);
+				for(AddressDTO adto : addressList){
+					adto.setUserKey(userInfoDTO.getUserkey());
+					session.saveOrUpdate(adto);
+				}
+				
+				List<UserEmailDTO> emaillist = (List)data.get(ConvertBeanToDTO.USEREMAILDTO);			
+				for(UserEmailDTO email : emaillist){
+					email.setUserKey(userInfoDTO.getUserkey());
+					session.saveOrUpdate(email);
+				}
+				
+				List<UserPhoneDTO> phonelist = (List)data.get(ConvertBeanToDTO.USERPHONEDTO);			
+				for(UserPhoneDTO phone : phonelist){
+					phone.setUserKey(userInfoDTO.getUserkey());
+					session.saveOrUpdate(phone);
+				}
 			}
 			
-			List<UserEmailDTO> emaillist = (List)data.get(ConvertBeanToDTO.USEREMAILDTO);			
-			for(UserEmailDTO email : emaillist){
-				email.setUserKey(userInfoDTO.getUserkey());
-				session.saveOrUpdate(email);
-			}
-			
-			List<UserPhoneDTO> phonelist = (List)data.get(ConvertBeanToDTO.USERPHONEDTO);			
-			for(UserPhoneDTO phone : phonelist){
-				phone.setUserKey(userInfoDTO.getUserkey());
-				session.saveOrUpdate(phone);
-			}
 			
 			UserAccessTokenDTO accessToken = (UserAccessTokenDTO)data.get(ConvertBeanToDTO.USERACCESSTOKEN);
 			if(null != accessToken){
@@ -211,6 +218,7 @@ public class UserInfoDao {
 					add(Restrictions.eq("isActive", "Y")).list();
 			if(null == userExists || userExists.size() > 0){
 				userInfoDTO = (UserInfoDTO)userExists.get(0);
+				log.info("user retrived from authentication:Passord"+userInfoDTO.getPassword()+" userkey:"+ userInfoDTO.getUserkey());
 			}
 		}catch (HibernateException e) {
 			log.error("Error occured while authenticating the user",e);
@@ -250,7 +258,64 @@ public class UserInfoDao {
 		}finally{
 			session.close();
 		}
-		return list;
-		
+		return list;		
+	}
+	
+	public static void saveUserProfile(List<UserProfileDTO> userProfile)throws EnvestException{
+		log.info("inside method saveUserProfile");
+		UserInfoDTO userInfoDTO = null;
+		Session session = null;
+		try{
+			session = HibernateUtils.getSessionFactory().openSession();
+			session.beginTransaction();
+			for(UserProfileDTO adto : userProfile){
+				session.saveOrUpdate(adto);
+			}
+			session.getTransaction().commit();
+		}catch (HibernateException e) {
+			log.error("Error occured while getting user info",e);
+			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,null
+					,"failure")) ;	
+					
+		}finally{
+			session.close();
+		}			
+	}
+	
+	public static List<UserProfileDTO> getUserProfile(Long userKey) throws EnvestException{
+		Session session = null;
+		List<UserProfileDTO> list = null;
+		try{
+			session = HibernateUtils.getSessionFactory().openSession();
+			//need to add active flag condition
+			list = session.createCriteria(UserProfileDTO.class).add(Restrictions.eq("userKey", userKey)).list();
+		}catch (HibernateException e) {
+			log.error("Error occured while getting access token",e);
+			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,null
+					,"failure")) ;			
+		}finally{
+			session.close();
+		}
+		return list;	
+	}
+	
+	public static boolean testConnection() {
+		Session session = null;
+		List list = null;
+		try{
+			session = HibernateUtils.getSessionFactory().openSession();
+			//need to add active flag condition
+			list = session.createCriteria(UserAccessTokenDTO.class).add(Restrictions.eq("userKey", -1L)).list();
+		}catch (HibernateException e) {
+			log.error("Error occured while getting access token",e);
+			return false;		
+		}finally{
+			session.close();
+		}
+		return true;
 	}
 }

@@ -12,14 +12,17 @@ import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
+import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.TransactionDetail;
 import com.eNvestDetails.Response.UserInfo;
+import com.eNvestDetails.Response.UserProfileResponse;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
+import com.eNvestDetails.dto.UserProfileDTO;
 import com.plaid.client.PlaidUserClient;
 import com.plaid.client.exception.PlaidMfaException;
 import com.plaid.client.exception.PlaidServersideException;
@@ -188,6 +191,51 @@ public class UserAccountServiceUtil {
 			logger.error("Error occured while getting transactions", e);
 		}		
 		return response;
+	}
+	
+	public UserProfileResponse getUserProfile(Long userKey){
+		List<UserProfileResponse> list = new ArrayList<UserProfileResponse>(10);
+		UserProfileResponse summary = null;
+		try{
+			
+			List<UserProfileDTO> dto = UserInfoDao.getUserProfile(userKey);
+			UserProfileResponse response = null;
+			summary = new UserProfileResponse();
+			for(UserProfileDTO r :dto){
+				response = new UserProfileResponse();
+				response.setAccountId(r.getAccountId());
+				response.setCreditBills(r.getCreditBills());
+				summary.setCreditBills(summary.getCreditBills() + r.getCreditBills());
+				response.setEmployer(r.getEmployer());
+				response.setInflow(r.getInflow());
+				summary.setInflow(summary.getInflow() + r.getInflow());
+				response.setLoanPayment(r.getLoanPayment());
+				summary.setLoanPayment(summary.getLoanPayment() + r.getLoanPayment());
+				response.setMonth(r.getMonth());
+				response.setMonthlyFee(r.getMonthlyFee());
+				summary.setMonthlyFee(summary.getMonthlyFee() + r.getMonthlyFee());
+				response.setMonthlyInterest(r.getMonthlyInterest());
+				summary.setMonthlyInterest(summary.getMonthlyInterest() + r.getMonthlyInterest());
+				response.setOutflow(r.getOutflow());
+				summary.setOutflow(summary.getOutflow() + r.getOutflow());
+				response.setSalary(r.getSalary());
+				summary.setSalary(summary.getSalary() + r.getSalary());
+				response.setUtilityBills(r.getUtilityBills());
+				summary.setUtilityBills(summary.getUtilityBills() + r.getUtilityBills());
+				
+				response.setOtherInflow(r.getOtherInflow());
+				summary.setOtherInflow(summary.getOtherInflow() + r.getOtherInflow());
+				
+				response.setOtherOutflow(r.getOtherOutflow());
+				summary.setOtherOutflow(summary.getOtherOutflow() + r.getOtherOutflow());;
+				
+				list.add(response);
+			}
+			summary.setProfileData(list);
+		}catch(EnvestException e){
+			logger.error("error occured while getting user profile",e);
+		}
+		return summary;
 	}
 
 }

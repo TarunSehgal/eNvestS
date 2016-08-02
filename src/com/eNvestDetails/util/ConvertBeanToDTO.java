@@ -53,7 +53,7 @@ public class ConvertBeanToDTO {
 		d.setUserID(info.getUserId());
 		d.setUserID(response.getUserId());
 		d.setIsDeleted(NO);
-		d.setIsActive(NO);
+		d.setIsActive(YES);
 		d.setAccessToken(response.getAccessToken());
 		//d.setPassword("test");
 		//d.setUser_id(1L);

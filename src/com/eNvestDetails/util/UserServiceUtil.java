@@ -20,6 +20,7 @@ import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.MfaResponseDetail;
 import com.eNvestDetails.Response.PlaidCategory;
 import com.eNvestDetails.Response.UserInfo;
+import com.eNvestDetails.Response.UserProfileResponse;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
@@ -164,7 +165,7 @@ public class UserServiceUtil {
 		ErrorMessage mes;
 		long userKey = 0;
 		try{
-			getCategories();
+			//getCategories();
 			userKey = UserInfoDao.createUser(userID, password,message);
 			mes = new ErrorMessage(EnvestConstants.RETURN_CODE_SUCCESS
 					,message.getMessage("message.useraddedsuccess")
@@ -227,7 +228,8 @@ public class UserServiceUtil {
 		try{
 			
 			userInfo = UserInfoDao.authenticateUser(userID, password);
-			if(null != userInfo && userInfo.getPassword().equals(password)){
+			logger.info("Password retrieved from DB:" +userInfo.getPassword());
+			if(null != userInfo && password.equals(userInfo.getPassword())){
 				code =EnvestConstants.RETURN_CODE_SUCCESS;
 			}
 		}catch (Exception e){
@@ -277,12 +279,13 @@ public class UserServiceUtil {
 				input.put(EnvestConstants.ENVEST_RESPONSE, d);
 				Map<String,Object> output = recommendationEngine.processRequest(input);
 				List<AccountDetail> accountsDetailList = ((UserInfo)d).getAccounts();
-				Map<String,AccountDetail.AccountProfile> profileData = (Map)output.get(EnvestConstants.USER_PROFILE);
+				Map<String,List<UserProfileResponse>> profileData = (Map)output.get(EnvestConstants.USER_PROFILE);
 				if(null != profileData){
 					for(AccountDetail acc :accountsDetailList){
-						List<AccountDetail.AccountProfile> list = new ArrayList<AccountDetail.AccountProfile>();
+						/*List<AccountDetail.AccountProfile> list = new ArrayList<AccountDetail.AccountProfile>();
 						list.add(profileData.get(acc.getAccountId()));
-						acc.setAccProfile(list);
+						acc.setAccProfile(list);*/
+						acc.setAccProfile(profileData.get(acc.getAccountId()));
 					}
 				}
 				

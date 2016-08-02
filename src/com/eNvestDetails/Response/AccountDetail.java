@@ -29,12 +29,12 @@ public class AccountDetail extends EnvestResponse {
 	private double totalInterestIncurred = 0.0;
 	private double totalFeeIncurred = 0.0;
 	
-	private List<AccountProfile> accProfile = null;
+	private List<UserProfileResponse> accProfile = null;
         
-    public List<AccountProfile> getAccProfile() {
+    public List<UserProfileResponse> getAccProfile() {
 		return accProfile;
 	}
-	public void setAccProfile(List<AccountProfile> accProfile) {
+	public void setAccProfile(List<UserProfileResponse> accProfile) {
 		this.accProfile = accProfile;
 	}
 	public boolean isPrimary() {
