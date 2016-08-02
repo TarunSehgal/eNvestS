@@ -6,7 +6,6 @@ public class CDProduct extends Product{
 	public double valueAtMaturity;
 	public double maturityYears;
 	public double interestEarned;
-	public double interestRate;
 	public String compoundingTenor;
 public CDProduct(String bankName, double interestRate,int userProductId, int id, double maturityYears)
 {

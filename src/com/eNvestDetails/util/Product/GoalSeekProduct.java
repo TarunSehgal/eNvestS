@@ -4,7 +4,6 @@ public class GoalSeekProduct extends Product {
 	public double principle;
 	public double noOfYears;
 	public double cashFlow;
-	public double interestRate;
 	public String compoundingTenor;
 	public GoalSeekProduct(String bankName, double interestRate,int userProductId, int id)
 	{

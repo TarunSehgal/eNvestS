@@ -57,6 +57,7 @@ public class ProductDTOtoProductConverter {
 	private static GoalSeekProduct getGoalSeek(ProductDTO productDTO, BankDTO bankDTO)
 	{
 		GoalSeekProduct goalSeekProduct = new GoalSeekProduct(bankDTO.getBankName(), productDTO.getProductInterest(),0, productDTO.getProductId());
+		goalSeekProduct.noOfYears = productDTO.getMaturityYears();
 		return goalSeekProduct;		
 	}
 
