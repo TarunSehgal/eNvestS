@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
@@ -34,9 +35,11 @@ public class UserInfoDao {
 	
 	private static Logger log = Logger.getLogger(UserInfoDao.class.getName());
 	
-		
-	
 	public static Long saveUserInfo(EnvestResponse saveRespone) throws EnvestException{
+		return saveUserInfo(saveRespone, true);
+	}
+	
+	public static Long saveUserInfo(EnvestResponse saveRespone, boolean saveAccesToken) throws EnvestException{
 		
 		UserInfoDTO userInfoDTO = null;
 		Session session = null;
@@ -76,7 +79,7 @@ public class UserInfoDao {
 			
 			
 			UserAccessTokenDTO accessToken = (UserAccessTokenDTO)data.get(ConvertBeanToDTO.USERACCESSTOKEN);
-			if(null != accessToken){
+			if(null != accessToken && saveAccesToken){
 				accessToken.setUserKey(userInfoDTO.getUserkey());
 				session.saveOrUpdate(accessToken);
 			}
@@ -246,12 +249,22 @@ public class UserInfoDao {
 	}
 	
 	public static List<UserAccessTokenDTO> getAccesTokens(Long id){
+		return getAccesTokens(id,null);		
+	}
+	
+	public static List<UserAccessTokenDTO> getAccesTokens(Long id,String bank){
 		Session session = null;
 		List<UserAccessTokenDTO> list = null;
 		try{
 			session = HibernateUtils.getSessionFactory().openSession();
 			//need to add active flag condition
-			list = session.createCriteria(UserAccessTokenDTO.class).add(Restrictions.eq("userKey", id)).list();
+			Criteria criteria = session.createCriteria(UserAccessTokenDTO.class);
+			criteria.add(Restrictions.eq("userKey", id));
+			if(null != bank){
+				criteria.add(Restrictions.eq("userBank", bank));
+			}
+			
+			list = criteria.list();
 		}catch (HibernateException e) {
 			log.error("Error occured while getting access token",e);
 			throw e;		

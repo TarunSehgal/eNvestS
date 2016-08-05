@@ -16,7 +16,9 @@ public class PlaidClient {
 	@Autowired
 	private ConfigFactory config = null;
 	
-	 public static final String BASE_URI_PRODUCTION = "https://api.plaid.com";
+	 public static final String BASE_URI_PRODUCTION = PlaidClients.BASE_URI_PRODUCTION;
+	 
+	 public static final String BASE_TEST = PlaidClients.BASE_URI_TEST;
 	
 	public PlaidUserClient getPlaidClient(){
 		String clientid = config.getResultString("clientid");

@@ -206,6 +206,9 @@ public class UserAccountServiceUtil {
 				response.setAccountId(r.getAccountId());
 				response.setCreditBills(r.getCreditBills());
 				summary.setCreditBills(summary.getCreditBills() + r.getCreditBills());
+				if(null != r.getEmployer()){
+					summary.setEmployer(r.getEmployer());
+				}
 				response.setEmployer(r.getEmployer());
 				response.setInflow(r.getInflow());
 				summary.setInflow(summary.getInflow() + r.getInflow());
@@ -231,6 +234,15 @@ public class UserAccountServiceUtil {
 				
 				list.add(response);
 			}
+			int size = dto.size();
+			summary.setCreditBills(summary.getCreditBills()/size);
+			summary.setInflow(summary.getInflow()/size);
+			summary.setOutflow(summary.getOutflow()/size);
+			summary.setLoanPayment(summary.getLoanPayment()/size);
+			summary.setSalary(summary.getSalary()/size);
+			summary.setUtilityBills(summary.getUtilityBills()/size);
+			summary.setOtherInflow(summary.getOtherInflow()/size);
+			summary.setOtherOutflow(summary.getOtherOutflow()/size);
 			summary.setProfileData(list);
 		}catch(EnvestException e){
 			logger.error("error occured while getting user profile",e);

@@ -98,65 +98,12 @@ public class UserServiceUtil {
 					
 		}catch(PlaidServersideException e){
 			logger.error("Error occured while retriving user info", e);
-			ErrorMessage em = new ErrorMessage();
-			em = new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
-					,e.getErrorResponse().getResolve()
-					,null
-					,message.getMessage("message.failure"));			
-			return em;
+			return ErrorMessage.getServerErrorMessage(e.getErrorResponse().getResolve()
+					,message.getMessage("message.failure"));
 		}
 		
-		UserInfo userInfo = new UserInfo();
-		Info f = r.getInfo();
-		
-		//userInfo.setId("1"); //this will be DB generated key
-		userInfo.setAccessToken(r.getAccessToken());
-		userInfo.setResponseFor(bank);
-		userInfo.setUserId(userId);
-		UserInfo.Info info = new UserInfo.Info();
-		info.setNames(f.getNames());
-		
-		UserInfo.Address address = null;
-		List<UserInfo.Address> addList = new ArrayList<UserInfo.Address>(10);
-		
-		for (Address ad : f.getAddresses()) {
-			address = new UserInfo.Address();	
-			address.setPrimary(ad.getPrimary());
-			if (null != ad.getAddressDetails()){
-				address.setCity(ad.getAddressDetails().getCity());
-				address.setState(ad.getAddressDetails().getState());
-				address.setStreet(ad.getAddressDetails().getStreet());
-				address.setZip(ad.getAddressDetails().getZip());				
-			}		
-			addList.add(address);
-		}
-		info.setAddresses(addList);
-		
-		UserInfo.PhoneNumber userPhone = null;
-		List<UserInfo.PhoneNumber> userPhoneList = new ArrayList<UserInfo.PhoneNumber>(10);
-		for(PhoneNumber pn : f.getPhoneNumbers()){
-			userPhone = new UserInfo.PhoneNumber();
-			userPhone.setNumber(pn.getData());
-			userPhone.setType(pn.getType());
-			userPhone.setPrimary(pn.isPrimary());
-			userPhoneList.add(userPhone);
-		}
-		info.setPhoneNumbers(userPhoneList);
-		
-		UserInfo.Email userEmails = null;
-		List<UserInfo.Email> userEmailList = new ArrayList<UserInfo.Email>(10);
-		for(Email em : f.getEmails()){
-			userEmails = new UserInfo.Email();
-			userEmails.setEmail(em.getData());
-			userEmails.setType(em.getType());
-			//userEmails.setPrimary(em.);
-			userEmailList.add(userEmails);
-		}
-		info.setEmails(userEmailList);
-		userInfo.setInfo(info);
-		userInfo.setAccounts(CommonUtil.parseAccounts(r.getAccounts(), bank));
-		//userInfo.setUserKey(UserInfoDao.saveUserInfo(userInfo));
-		
+		UserInfo userInfo = CommonUtil.parseInfoResponse(r, bank, userId);
+
 		logger.info("Exiting user info method");
 		return userInfo;
 	}
@@ -167,10 +114,9 @@ public class UserServiceUtil {
 		try{
 			//getCategories();
 			userKey = UserInfoDao.createUser(userID, password,message);
-			mes = new ErrorMessage(EnvestConstants.RETURN_CODE_SUCCESS
-					,message.getMessage("message.useraddedsuccess")
-					,null
-					,message.getMessage("message.success"));
+			mes = ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SUCCESS
+					, message.getMessage("message.useraddedsuccess"),
+					message.getMessage("message.success"));
 			mes.setUserKey(userKey);
 		}catch(EnvestException e){
 			mes = e.getErrorMessage();
@@ -187,35 +133,19 @@ public class UserServiceUtil {
 			
 		}catch (Exception e){
 			logger.error("Error occured while saving user", e);
-			mes = new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
-					,message.getMessage("message.serverError")
-					,null
+			return ErrorMessage.getServerErrorMessage(message.getMessage("message.serverError")
 					,message.getMessage("message.failure"));
-			/*mes.setCode(EnvestConstants.RETURN_CODE_SERVER_ERROR);
-			mes.setMessage(message.getMessage("message.serverError"));
-			mes.setStatus(EnvestConstants.RETURN_STATUS_FAILURE);*/
-			//mes.setType("Error");
-			return mes;
 		}
 		
 		if(code != EnvestConstants.RETURN_CODE_SUCCESS ){
-			mes = new ErrorMessage(code
-					,message.getMessage("message.userAddFailure")
-					,null
-					,message.getMessage("message.failure"));
-		/*	mes.setCode(code);
-			mes.setMessage(message.getMessage("message.userAddFailure"));
-			mes.setStatus(EnvestConstants.RETURN_STATUS_FAILURE);
-			//mes.setType(message.getMessage("message.failure"));
-*/		}else{
-			mes = new ErrorMessage(code
-					,message.getMessage("message.useraddedsuccess")
-					,null
-					,message.getMessage("message.success"));
-			/*mes.setCode(code);
-			mes.setMessage(message.getMessage("message.useraddedsuccess"));
-			mes.setStatus(EnvestConstants.RETURN_STATUS_SUCCESS);*/
-			//mes.setType(message.getMessage("message.success"));
+			mes = ErrorMessage.getMessage(code
+					, message.getMessage("message.userAddFailure"),
+					message.getMessage("message.failure"));
+		}else{
+			mes =  ErrorMessage.getMessage(code
+					,message.getMessage("message.useraddedsuccess"),
+					message.getMessage("message.success"));
+
 			mes.setUserKey(userKey);
 		}
 		return mes;
@@ -228,7 +158,6 @@ public class UserServiceUtil {
 		try{
 			
 			userInfo = UserInfoDao.authenticateUser(userID, password);
-			logger.info("Password retrieved from DB:" +userInfo.getPassword());
 			if(null != userInfo && password.equals(userInfo.getPassword())){
 				code =EnvestConstants.RETURN_CODE_SUCCESS;
 			}
@@ -237,15 +166,14 @@ public class UserServiceUtil {
 			logger.error("Error ouccured while authenticate user",e);
 		}
 		if(code != EnvestConstants.RETURN_CODE_SUCCESS ){
-			mes =  new ErrorMessage(code
-					,message.getMessage("message.loginFailure")
-					,null
-					,message.getMessage("message.failure"));
-		}else{
-			mes = new ErrorMessage(code
-					,message.getMessage("message.userAuthenticated")
-					,null
-					,message.getMessage("message.success"));
+			mes =  ErrorMessage.getMessage(code
+					,message.getMessage("message.loginFailure"),
+					message.getMessage("message.failure"));
+			}else{
+			mes = ErrorMessage.getMessage(code
+					,message.getMessage("message.userAuthenticated"),
+					message.getMessage("message.success"));
+
 			mes.setUserKey(userInfo.getUserkey());
 		}
 		return mes;
@@ -269,33 +197,71 @@ public class UserServiceUtil {
 			if(d instanceof UserInfo){
 				try {
 					UserInfoDao.saveUserInfo(d);
+					Map<String,Object> input = new HashMap<String,Object>(10);
+					input.put(EnvestConstants.ENVEST_RESPONSE, d);
+					Map<String,Object> output = recommendationEngine.processRequest(input);
+					List<AccountDetail> accountsDetailList = ((UserInfo)d).getAccounts();
+					Map<String,List<UserProfileResponse>> profileData = (Map)output.get(EnvestConstants.USER_PROFILE);
+					if(null != profileData){
+						for(AccountDetail acc :accountsDetailList){
+
+							acc.setAccProfile(profileData.get(acc.getAccountId()));
+						}
+					}
 				} catch (EnvestException e) {
 					d = e.getErrorMessage();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					logger.error("Error occurred during recomendationsengine" ,e);
 				}
+
+			}else{
+				UserInfoDao.saveAccessToken(token);
 			}
-			//UserInfoDao.saveAccessToken(token);
-			try {
-				Map<String,Object> input = new HashMap<String,Object>(10);
-				input.put(EnvestConstants.ENVEST_RESPONSE, d);
-				Map<String,Object> output = recommendationEngine.processRequest(input);
-				List<AccountDetail> accountsDetailList = ((UserInfo)d).getAccounts();
-				Map<String,List<UserProfileResponse>> profileData = (Map)output.get(EnvestConstants.USER_PROFILE);
-				if(null != profileData){
-					for(AccountDetail acc :accountsDetailList){
-						/*List<AccountDetail.AccountProfile> list = new ArrayList<AccountDetail.AccountProfile>();
-						list.add(profileData.get(acc.getAccountId()));
-						acc.setAccProfile(list);*/
-						acc.setAccProfile(profileData.get(acc.getAccountId()));
-					}
-				}
-				
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				logger.error("Error occurred during recomendationsengine" ,e);
-			}
+			
 		}
 		return d;
 	}
 
+	public EnvestResponse submitMFA(Long userKey,String mfa,String bank){
+		UserInfo info = null;
+		PlaidUserClient plaidUserClient = null;
+		try{
+			List<UserAccessTokenDTO> list = UserInfoDao.getAccesTokens(userKey,bank);
+			UserAccessTokenDTO  dto = null;
+			if(null != list && list.size() > 0){
+				dto = list.get(0);
+			}else{
+				logger.info("access token not found");
+				return ErrorMessage.getServerErrorMessage("Access token not found"
+						,message.getMessage("message.failure"));
+			}
+			 PlaidHttpRequest request = new PlaidHttpRequest("/info/step");
+			 Map<String, Object> requestParams = new HashMap<String, Object>();
+			 request.addParameter("client_id",config.getResultString("clientid"));
+			 request.addParameter("secret",config.getResultString("key"));
+			 request.addParameter("mfa",mfa);
+			 request.addParameter("access_token",dto.getAccessToken());		 
+			 ApacheHttpClientHttpDelegate httpDelegate =  new ApacheHttpClientHttpDelegate
+					 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
+		    HttpResponseWrapper<InfoResponse> response = httpDelegate.doPost(request, InfoResponse.class);
+		    info = CommonUtil.parseInfoResponse(response.getResponseBody(), null, null);
+		    info.setUserKey(userKey);
+		    plaidUserClient = plaidClient.getPlaidClient();
+		    plaidUserClient.setAccessToken(dto.getAccessToken());
+		    plaidUserClient.addProduct("connect", null);
+		    UserInfoDao.saveUserInfo(info,false);
+		}catch(PlaidMfaException e){
+			logger.info("MFA required");
+			return CommonUtil.handleMfaException(e.getMfaResponse(), bank);
+					
+		}catch(PlaidServersideException e){
+			logger.error("Error occured while retriving user info", e);
+			return ErrorMessage.getServerErrorMessage(e.getErrorResponse().getResolve()
+					,message.getMessage("message.failure"));
+		}catch (EnvestException e) {
+			return e.getErrorMessage();
+		}
+		return info;
+	}
 }
