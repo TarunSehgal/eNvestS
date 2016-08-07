@@ -103,11 +103,9 @@ public class UserAccountServiceUtil {
 					MfaResponse mfa = e.getMfaResponse();
 					CommonUtil.handleMfaException(mfa, token.getUserBank());
 				}catch(PlaidServersideException e){
-					ErrorMessage mes = new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					return ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
 							,e.getErrorResponse().getResolve()
-							,null
 							,message.getMessage("message.failure"));
-					return mes;
 				}
 				
 			}
@@ -174,11 +172,9 @@ public class UserAccountServiceUtil {
 					MfaResponse mfa = e.getMfaResponse();
 					CommonUtil.handleMfaException(mfa, token.getUserBank());
 				}catch(PlaidServersideException e){
-					ErrorMessage mes = new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					return ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
 							,e.getErrorResponse().getResolve()
-							,null
 							,message.getMessage("message.failure"));
-					return mes;
 				}
 				
 			}

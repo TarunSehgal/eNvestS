@@ -58,9 +58,8 @@ public class UserProductDao {
 			}
 		}catch (HibernateException e) {
 			log.error("Error occured while getting all products",e);
-			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
 					,e.getMessage()
-					,null
 					,"failure")) ;	
 					
 		}finally{
@@ -81,9 +80,8 @@ public class UserProductDao {
 			}			
 		}catch (HibernateException e) {
 			log.error("Error occured while getting product",e);
-			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
 					,e.getMessage()
-					,null
 					,"failure")) ;	
 					
 		}finally{
@@ -105,9 +103,8 @@ public class UserProductDao {
 			if(null != bankExists && bankExists.size() > 0){
 				returnCode = EnvestConstants.RETURN_CODE_USER_ALREADY_EXISTS;
 				log.info("product already exists"+productDTO.getUserProductId());
-				throw new EnvestException(new ErrorMessage(returnCode
+				throw new EnvestException(ErrorMessage.getMessage(returnCode
 						,message.getMessage("message.ProductAlreadyExist")
-						,null
 						,message.getMessage("message.failure"))) ;				
 			}else {
 				productDTO.setPurchaseDate(new Date());				
@@ -117,9 +114,8 @@ public class UserProductDao {
 			
 		}catch (HibernateException e) {
 			log.error("Error occured while saving adding bank",e);
-			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
 					,e.getMessage()
-					,null
 					,message.getMessage("message.failure"))) ;	
 					
 		}finally{

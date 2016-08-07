@@ -49,9 +49,8 @@ public class BankDao {
 			}			
 		}catch (HibernateException e) {
 			log.error("Error occured while getting bank info",e);
-			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
 					,e.getMessage()
-					,null
 					,"failure")) ;	
 					
 		}finally{
@@ -73,9 +72,8 @@ public class BankDao {
 			if(null != bankExists && bankExists.size() > 0){
 				returnCode = EnvestConstants.RETURN_CODE_USER_ALREADY_EXISTS;
 				log.info("user already exists"+bankId);
-				throw new EnvestException(new ErrorMessage(returnCode
+				throw new EnvestException(ErrorMessage.getMessage(returnCode
 						,message.getMessage("message.bankAlreadyExist")
-						,null
 						,message.getMessage("message.failure"))) ;				
 			}else {
 				bankDTO = new BankDTO();
@@ -88,9 +86,8 @@ public class BankDao {
 			
 		}catch (HibernateException e) {
 			log.error("Error occured while saving adding bank",e);
-			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
 					,e.getMessage()
-					,null
 					,message.getMessage("message.failure"))) ;	
 					
 		}finally{

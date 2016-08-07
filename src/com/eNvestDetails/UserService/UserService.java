@@ -47,11 +47,7 @@ public class UserService {
 	
 	@RequestMapping(value="/UserService/test",method=RequestMethod.GET,produces="application/json")	
 	public @ResponseBody ErrorMessage test(@RequestParam(value="test",defaultValue="test") String test){
-		ErrorMessage mes  = new ErrorMessage();
-		mes.setCode(0);
-		mes.setMessage("Test message");
-		mes.setStatus(":Test");
-		mes.setType("Success");
+		ErrorMessage mes  = ErrorMessage.getMessage(0, "Test message", "Success", ":Test");
 		message.getMessage("message.success");
 		config.getResultString("key");
 		try {
