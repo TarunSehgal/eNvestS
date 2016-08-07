@@ -7,7 +7,6 @@ public class PlaidEnvironment implements IPlaidEnvironment {
 	
 	public PlaidEnvironment(String environment, String clientId,
 			String secretKey) {
-		super();
 		this.environment = environment;
 		this.clientId = clientId;
 		this.secretKey = secretKey;

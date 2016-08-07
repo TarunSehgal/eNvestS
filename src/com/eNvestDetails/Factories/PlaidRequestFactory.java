@@ -11,17 +11,18 @@ public class PlaidRequestFactory implements IPlaidRequestFactory {
 
 	@Autowired
 	private ConfigFactory config = null;
-	
+	private static boolean isInitialized = false;
 	IPlaidEnvironment plaidEnvironment;
 	
 	public PlaidRequestFactory() {
-		plaidEnvironment = new PlaidEnvironment(config.getResultString("env"), 
-				config.getResultString("clientid"), 
-				config.getResultString("key"));
 	}	
 
 	@Override
 	public PlaidHttpRequest GetPlaidMFARequest(String mfa, String accessToken) {
+		if(!isInitialized)
+		{
+			Initialize();
+		}
 		PlaidHttpRequest request = new PlaidHttpRequest("/info/step");
 		request.addParameter("client_id", plaidEnvironment.getClientId());
 		request.addParameter("secret", plaidEnvironment.getSecretKey());
@@ -29,5 +30,12 @@ public class PlaidRequestFactory implements IPlaidRequestFactory {
 		request.addParameter("access_token", accessToken);
 
 		return request;
+	}
+	
+	private void Initialize()
+	{
+		plaidEnvironment = new PlaidEnvironment(config.getResultString("env"), 
+				config.getResultString("clientid"), 
+				config.getResultString("key"));
 	}
 }

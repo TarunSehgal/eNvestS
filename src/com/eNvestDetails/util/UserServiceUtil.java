@@ -1,6 +1,5 @@
 package com.eNvestDetails.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +35,6 @@ import com.plaid.client.http.HttpResponseWrapper;
 import com.plaid.client.http.PlaidHttpRequest;
 import com.plaid.client.request.Credentials;
 import com.plaid.client.response.InfoResponse;
-import com.plaid.client.response.InfoResponse.Address;
-import com.plaid.client.response.InfoResponse.Email;
-import com.plaid.client.response.InfoResponse.Info;
-import com.plaid.client.response.InfoResponse.PhoneNumber;
 
 @Component
 public class UserServiceUtil {
