@@ -14,6 +14,8 @@ import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
+import com.eNvestDetails.Factories.IPlaidRequestFactory;
+import com.eNvestDetails.Factories.PlaidRequestFactory;
 import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
 import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.EnvestResponse;
@@ -55,6 +57,8 @@ public class UserServiceUtil {
 	
 	@Autowired
 	private InitiateRecommendation recommendationEngine = null;
+	
+	IPlaidRequestFactory plaidRequestFactory = new PlaidRequestFactory();
 	
 	public Map<String,String> getCategories(){
 		logger.info("getting categories");
@@ -200,14 +204,14 @@ public class UserServiceUtil {
 					Map<String,Object> input = new HashMap<String,Object>(10);
 					input.put(EnvestConstants.ENVEST_RESPONSE, d);
 					Map<String,Object> output = recommendationEngine.processRequest(input);
-					/*List<AccountDetail> accountsDetailList = ((UserInfo)d).getAccounts();
+					List<AccountDetail> accountsDetailList = ((UserInfo)d).getAccounts();
 					Map<String,List<UserProfileResponse>> profileData = (Map)output.get(EnvestConstants.USER_PROFILE);
 					if(null != profileData){
 						for(AccountDetail acc :accountsDetailList){
 
 							acc.setAccProfile(profileData.get(acc.getAccountId()));
 						}
-					}*/
+					}
 				} catch (EnvestException e) {
 					d = e.getErrorMessage();
 				} catch (Exception e) {
@@ -236,12 +240,14 @@ public class UserServiceUtil {
 				return ErrorMessage.getServerErrorMessage("Access token not found"
 						,message.getMessage("message.failure"));
 			}
-			 PlaidHttpRequest request = new PlaidHttpRequest("/info/step");
-			 Map<String, Object> requestParams = new HashMap<String, Object>();
-			 request.addParameter("client_id",config.getResultString("clientid"));
-			 request.addParameter("secret",config.getResultString("key"));
-			 request.addParameter("mfa",mfa);
-			 request.addParameter("access_token",dto.getAccessToken());		 
+			
+			PlaidHttpRequest request  = plaidRequestFactory.GetPlaidMFARequest(mfa, dto.getAccessToken());
+			 //PlaidHttpRequest request = new PlaidHttpRequest("/info/step");
+			 //Map<String, Object> requestParams = new HashMap<String, Object>();
+			 //request.addParameter("client_id",config.getResultString("clientid"));
+			 //request.addParameter("secret",config.getResultString("key"));
+			 //request.addParameter("mfa",mfa);
+			 //request.addParameter("access_token",dto.getAccessToken());		 
 			 ApacheHttpClientHttpDelegate httpDelegate =  new ApacheHttpClientHttpDelegate
 					 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
 		    HttpResponseWrapper<InfoResponse> response = httpDelegate.doPost(request, InfoResponse.class);

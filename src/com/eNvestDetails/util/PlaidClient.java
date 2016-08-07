@@ -19,41 +19,57 @@ public class PlaidClient {
 	 public static final String BASE_URI_PRODUCTION = PlaidClients.BASE_URI_PRODUCTION;
 	 
 	 public static final String BASE_TEST = PlaidClients.BASE_URI_TEST;
+	 
+	 IPlaidEnvironment plaidEnvironment = null;
+	 
+	 public PlaidClient(){
+		 plaidEnvironment = new PlaidEnvironment(
+				 config.getResultString("env"), 
+				 config.getResultString("clientid"), 
+				 config.getResultString("key"));
+	 }
 	
 	public PlaidUserClient getPlaidClient(){
-		String clientid = config.getResultString("clientid");
 		
-		String key = config.getResultString("key");
-		
-		String environment = config.getResultString("env");
-		PlaidUserClient client = null;
-		if("TEST".equals(environment)){
-			client = PlaidClients.testUserClient(
-					clientid, key);
-		}else if("PROD".equals(environment)){
-			client =  PlaidClients.productionUserClient(
-					clientid, key);
-		}
-		return client;
+		if(IsTestEnvironment()){
+			return PlaidClients.testUserClient(GetClientId(), GetEnvironment());
 			
-	}
-	
-	public PlaidPublicClient getPlaidPublicClient(){
-		String clientid = config.getResultString("clientid");
-		
-		String key = config.getResultString("key");
-		
-		String environment = config.getResultString("env");
-		PlaidPublicClient client = null;
-		if("TEST".equals(environment)){
-			client = PlaidClients.testPublicClient();
-		}else if("PROD".equals(environment)){
-			client =  PlaidClients.productionPublicClient();
+		}else if(IsProductionEnvironment()){
+			return PlaidClients.productionUserClient(GetClientId(), GetSecretKey());
 		}
-		return client;
-			
+		return null;
 	}
 	
 	
-
+	
+	public PlaidPublicClient getPlaidPublicClient(){		
+		
+		if(IsTestEnvironment()){
+			return PlaidClients.testPublicClient();
+		}else if(IsProductionEnvironment()){
+			return PlaidClients.productionPublicClient();
+		}
+		
+		return null;
+	}
+	
+	private Boolean IsTestEnvironment(){
+		return "TEST".equals(plaidEnvironment.getEnvironment());
+	}
+	
+	private Boolean IsProductionEnvironment(){
+		return "PROD".equals(plaidEnvironment.getEnvironment());
+	}
+	
+	private String GetClientId() {
+		return plaidEnvironment.getClientId();
+	}
+	
+	private String GetSecretKey() {
+		return plaidEnvironment.getSecretKey();
+	}
+	
+	private String GetEnvironment() {
+		return plaidEnvironment.getEnvironment();
+	}	
 }
