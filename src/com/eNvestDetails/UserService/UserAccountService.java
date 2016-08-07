@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 
+
 import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.constant.EnvestConstants;
+import com.eNvestDetails.dto.UserProfileDataDTO;
 import com.eNvestDetails.util.UserAccountServiceUtil;
 
 @CrossOrigin(origins= "*")
@@ -53,6 +55,6 @@ public class UserAccountService {
 
 	@RequestMapping(value="/UserAccountService/users/getUserProfile",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
 	public EnvestResponse getUserProfile(@RequestParam("userKey") Long userKey){
-		return accountServiceUtil.getUserProfile(userKey);		
+		return accountServiceUtil.getProfileData(userKey);	
 	}
 }

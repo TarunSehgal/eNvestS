@@ -13,15 +13,56 @@ public class UserProfileResponse extends EnvestResponse {
 	private double salary = 0.0;
 	private double inflow = 0.0;
 	private double outflow =  0.0;
-	private double monthlyInterest = 0.0;
-	private double monthlyFee = 0.0;
+	private double interest = 0.0;
+	private double fee = 0.0;
+
 	private double loanPayment = 0.0;
 	private String employer = null;
 	private double otherInflow;
 	private double otherOutflow;
+	private double expense30Days;
+	private double expense90Days;
+	private double income30Days;
+	private double income90Days;
 	
 	private List<UserProfileResponse> profileData;
 	
+	public double getExpense30Days() {
+		return expense30Days;
+	}
+	public void setExpense30Days(double expense30Days) {
+		this.expense30Days = expense30Days;
+	}
+	public double getExpense90Days() {
+		return expense90Days;
+	}
+	public void setExpense90Days(double expense90Days) {
+		this.expense90Days = expense90Days;
+	}
+	public double getIncome30Days() {
+		return income30Days;
+	}
+	public void setIncome30Days(double income30Days) {
+		this.income30Days = income30Days;
+	}
+	public double getIncome90Days() {
+		return income90Days;
+	}
+	public void setIncome90Days(double income90Days) {
+		this.income90Days = income90Days;
+	}
+	public double getInterest() {
+		return interest;
+	}
+	public void setInterest(double interest) {
+		this.interest = interest;
+	}
+	public double getFee() {
+		return fee;
+	}
+	public void setFee(double fee) {
+		this.fee = fee;
+	}
 
 	public double getOtherInflow() {
 		return otherInflow;
@@ -99,18 +140,5 @@ public class UserProfileResponse extends EnvestResponse {
 	public void setOutflow(double outflow) {
 		this.outflow = outflow;
 	}
-	public double getMonthlyInterest() {
-		return monthlyInterest;
-	}
-	public void setMonthlyInterest(double monthlyInterest) {
-		this.monthlyInterest = monthlyInterest;
-	}
-	public double getMonthlyFee() {
-		return monthlyFee;
-	}
-	public void setMonthlyFee(double monthlyFee) {
-		this.monthlyFee = monthlyFee;
-	}
-
 	
 }

@@ -307,29 +307,4 @@ public class UserInfo extends EnvestResponse {
 		}	
     	
     }
-    
-    public final static class BankBalance{
-      	private String bankName;
-    	private double currentBalance;
-    	private double availableBalance;
-		public String getBankName() {
-			return bankName;
-		}
-		public void setBankName(String bankName) {
-			this.bankName = bankName;
-		}
-		public double getCurrentBalance() {
-			return currentBalance;
-		}
-		public void setCurrentBalance(double currentBalance) {
-			this.currentBalance = currentBalance;
-		}
-		public double getAvailableBalance() {
-			return availableBalance;
-		}
-		public void setAvailableBalance(double availableBalance) {
-			this.availableBalance = availableBalance;
-		}
-    }
-	
 }

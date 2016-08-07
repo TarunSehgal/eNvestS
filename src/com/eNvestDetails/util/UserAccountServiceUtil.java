@@ -15,14 +15,15 @@ import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.Response.AccountDetail;
+import com.eNvestDetails.Response.BankBalance;
 import com.eNvestDetails.Response.EnvestResponse;
+import com.eNvestDetails.Response.ProfileResponse;
 import com.eNvestDetails.Response.TransactionDetail;
 import com.eNvestDetails.Response.UserInfo;
-import com.eNvestDetails.Response.UserProfileResponse;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
-import com.eNvestDetails.dto.UserProfileDTO;
+import com.eNvestDetails.dto.UserProfileDataDTO;
 import com.plaid.client.PlaidUserClient;
 import com.plaid.client.exception.PlaidMfaException;
 import com.plaid.client.exception.PlaidServersideException;
@@ -63,7 +64,7 @@ public class UserAccountServiceUtil {
 			List<UserInfo.Summary> summary = new ArrayList<UserInfo.Summary>();
 			Map<String,UserInfo.Summary> summaryMap = new HashMap<String,UserInfo.Summary>(20);
 			UserInfo.DashBoardSummary dashBoardSummaryObject = new UserInfo.DashBoardSummary();
-			List<UserInfo.BankBalance> balance = new ArrayList<UserInfo.BankBalance>(10);
+			List<BankBalance> balance = new ArrayList<BankBalance>(10);
 			//list = new ArrayList<UserAccessTokenDTO>(1);
 			for(UserAccessTokenDTO token : list){				
 				try{
@@ -83,7 +84,7 @@ public class UserAccountServiceUtil {
 					}
 					
 					
-					UserInfo.BankBalance bankBalance = new UserInfo.BankBalance();
+					BankBalance bankBalance = new BankBalance();
 					for(Account account :acc){
 						bankBalance.setBankName(token.getUserBank());
 						if(null != account.getBalance()){
@@ -152,6 +153,7 @@ public class UserAccountServiceUtil {
 					plaidUserClient.setAccessToken(token.getAccessToken());		
 					//response = new UserDetails();
 					response.setUserKey(userKey);
+					
 					GetOptions option = new GetOptions();
 					option.setGte("04/01/2016");
 					tResponse = plaidUserClient.updateTransactions();
@@ -193,7 +195,7 @@ public class UserAccountServiceUtil {
 		return response;
 	}
 	
-	public UserProfileResponse getUserProfile(Long userKey){
+	/*public UserProfileResponse getUserProfile(Long userKey){
 		List<UserProfileResponse> list = new ArrayList<UserProfileResponse>(10);
 		UserProfileResponse summary = null;
 		try{
@@ -215,10 +217,10 @@ public class UserAccountServiceUtil {
 				response.setLoanPayment(r.getLoanPayment());
 				summary.setLoanPayment(summary.getLoanPayment() + r.getLoanPayment());
 				response.setMonth(r.getMonth());
-				response.setMonthlyFee(r.getMonthlyFee());
-				summary.setMonthlyFee(summary.getMonthlyFee() + r.getMonthlyFee());
-				response.setMonthlyInterest(r.getMonthlyInterest());
-				summary.setMonthlyInterest(summary.getMonthlyInterest() + r.getMonthlyInterest());
+				response.setFee(r.getMonthlyFee());
+				summary.setFee(summary.getFee() + r.getMonthlyFee());
+				response.setInterest(r.getMonthlyInterest());
+				summary.setInterest(summary.getInterest() + r.getMonthlyInterest());
 				response.setOutflow(r.getOutflow());
 				summary.setOutflow(summary.getOutflow() + r.getOutflow());
 				response.setSalary(r.getSalary());
@@ -248,6 +250,21 @@ public class UserAccountServiceUtil {
 			logger.error("error occured while getting user profile",e);
 		}
 		return summary;
+	}*/
+	
+	public EnvestResponse getProfileData(Long userKey){
+		List<UserProfileDataDTO> list = null;
+		ProfileResponse response = null;
+		try{
+			list =  UserInfoDao.getUserProfileData(userKey);
+			response = new ProfileResponse();
+			response.setProfile(list);
+			response.setUserKey(userKey);
+	
+		}catch(EnvestException e){
+			logger.error("error occured while getting user profile",e);
+		}
+		return response;
 	}
 
 }

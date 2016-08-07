@@ -9,13 +9,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-
-
-
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
@@ -27,7 +20,7 @@ import com.eNvestDetails.dto.UserAccessTokenDTO;
 import com.eNvestDetails.dto.UserEmailDTO;
 import com.eNvestDetails.dto.UserInfoDTO;
 import com.eNvestDetails.dto.UserPhoneDTO;
-import com.eNvestDetails.dto.UserProfileDTO;
+import com.eNvestDetails.dto.UserProfileDataDTO;
 import com.eNvestDetails.util.ConvertBeanToDTO;
 import com.eNvestDetails.util.HibernateUtils;
 
@@ -274,7 +267,7 @@ public class UserInfoDao {
 		return list;		
 	}
 	
-	public static void saveUserProfile(List<UserProfileDTO> userProfile)throws EnvestException{
+	/*public static void saveUserProfile(List<UserProfileDTO> userProfile)throws EnvestException{
 		log.info("inside method saveUserProfile");
 		UserInfoDTO userInfoDTO = null;
 		Session session = null;
@@ -295,15 +288,57 @@ public class UserInfoDao {
 		}finally{
 			session.close();
 		}			
+	}*/
+	
+	public static void saveUserProfileData(List<UserProfileDataDTO> userProfile)throws EnvestException{
+		log.info("inside method saveUserProfileData");
+		UserInfoDTO userInfoDTO = null;
+		Session session = null;
+		try{
+			session = HibernateUtils.getSessionFactory().openSession();
+			session.beginTransaction();
+			for(UserProfileDataDTO adto : userProfile){
+				session.saveOrUpdate(adto);
+			}
+			session.getTransaction().commit();
+		}catch (HibernateException e) {
+			log.error("Error occured while getting user info",e);
+			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,null
+					,"failure")) ;	
+					
+		}finally{
+			session.close();
+		}			
 	}
 	
-	public static List<UserProfileDTO> getUserProfile(Long userKey) throws EnvestException{
+	/*public static List<UserProfileDTO> getUserProfile(Long userKey) throws EnvestException{
 		Session session = null;
 		List<UserProfileDTO> list = null;
 		try{
 			session = HibernateUtils.getSessionFactory().openSession();
 			//need to add active flag condition
 			list = session.createCriteria(UserProfileDTO.class).add(Restrictions.eq("userKey", userKey)).list();
+		}catch (HibernateException e) {
+			log.error("Error occured while getting access token",e);
+			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,null
+					,"failure")) ;			
+		}finally{
+			session.close();
+		}
+		return list;	
+	}*/
+	
+	public static List<UserProfileDataDTO> getUserProfileData(Long userKey) throws EnvestException{
+		Session session = null;
+		List<UserProfileDataDTO> list = null;
+		try{
+			session = HibernateUtils.getSessionFactory().openSession();
+			//need to add active flag condition
+			list = session.createCriteria(UserProfileDataDTO.class).add(Restrictions.eq("userKey", userKey)).list();
 		}catch (HibernateException e) {
 			log.error("Error occured while getting access token",e);
 			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR

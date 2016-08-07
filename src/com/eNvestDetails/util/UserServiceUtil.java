@@ -200,14 +200,14 @@ public class UserServiceUtil {
 					Map<String,Object> input = new HashMap<String,Object>(10);
 					input.put(EnvestConstants.ENVEST_RESPONSE, d);
 					Map<String,Object> output = recommendationEngine.processRequest(input);
-					List<AccountDetail> accountsDetailList = ((UserInfo)d).getAccounts();
+					/*List<AccountDetail> accountsDetailList = ((UserInfo)d).getAccounts();
 					Map<String,List<UserProfileResponse>> profileData = (Map)output.get(EnvestConstants.USER_PROFILE);
 					if(null != profileData){
 						for(AccountDetail acc :accountsDetailList){
 
 							acc.setAccProfile(profileData.get(acc.getAccountId()));
 						}
-					}
+					}*/
 				} catch (EnvestException e) {
 					d = e.getErrorMessage();
 				} catch (Exception e) {

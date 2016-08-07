@@ -15,7 +15,7 @@ import com.fasterxml.jackson.datatype.joda.deser.LocalDateDeserializer;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
 @XmlRootElement(name = "transactions")
-public class TransactionDetail extends EnvestResponse{
+public class TransactionDetail extends EnvestResponse implements Comparable<TransactionDetail> {
     
     private String transactionId;
     public String getTransactionId() {
@@ -231,6 +231,14 @@ public class TransactionDetail extends EnvestResponse{
             this.latitude = latitude;
         }        
     }
+
+	@Override
+	public int compareTo(TransactionDetail o) {
+		LocalDate date = o.getDate();
+		return this.getDate().isAfter(date) ? 1: -1;
+		//return 0;
+		//return this.getDate().isAfter(partial) > date? 1: -1;
+	}
     
 
     

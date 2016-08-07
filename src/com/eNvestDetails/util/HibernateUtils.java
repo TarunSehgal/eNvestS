@@ -18,7 +18,7 @@ import com.eNvestDetails.dto.UserEmailDTO;
 import com.eNvestDetails.dto.UserInfoDTO;
 import com.eNvestDetails.dto.UserPhoneDTO;
 import com.eNvestDetails.dto.UserProductDTO;
-import com.eNvestDetails.dto.UserProfileDTO;
+import com.eNvestDetails.dto.UserProfileDataDTO;
 
 
 
@@ -64,7 +64,8 @@ public class HibernateUtils {
                 configuration.addAnnotatedClass(ProductDTO.class);
                 configuration.addAnnotatedClass(UserProductDTO.class);
                 configuration.addAnnotatedClass(BankDTO.class);
-                configuration.addAnnotatedClass(UserProfileDTO.class);
+               // configuration.addAnnotatedClass(UserProfileDTO.class);
+                configuration.addAnnotatedClass(UserProfileDataDTO.class);
                 sessionFactory = configuration.configure().buildSessionFactory();
                 log.info("successfully build the session");
 			}else{

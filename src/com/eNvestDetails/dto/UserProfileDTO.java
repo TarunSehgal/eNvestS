@@ -1,4 +1,4 @@
-package com.eNvestDetails.dto;
+/*package com.eNvestDetails.dto;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,9 +6,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name="envest_user_profile")
-public class UserProfileDTO {
+
+public class UserProfileDTO  {
 	
 	@Id @GeneratedValue
 	@Column
@@ -151,3 +154,4 @@ public class UserProfileDTO {
 	}
 
 }
+*/
