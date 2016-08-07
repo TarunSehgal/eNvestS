@@ -27,7 +27,7 @@ public class UserProductDTOtoProductConverter {
 	
 	private static CDProduct getCD(UserProductDTO ProductDTO, BankDTO bankDTO, ProductDTO productTemplate)
 	{
-		CDProduct cdProduct = new CDProduct(bankDTO.getBankName(), ProductDTO.getInterest(),ProductDTO.getUserProductId(), ProductDTO.getProductId(), ProductDTO.getMaturityValue());
+		CDProduct cdProduct = new CDProduct(bankDTO.getBankName(), ProductDTO.getInterest(),ProductDTO.getUserProductId(), ProductDTO.getProductId(), productTemplate.getMaturityYears());
 				
 		cdProduct.minimumAmount = productTemplate.getMinAmount();
 		cdProduct.principle = ProductDTO.getPrinciple();

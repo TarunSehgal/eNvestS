@@ -16,9 +16,9 @@ public class AnnuityCalculatorTest {
 	@Test
 	public void getTransaction() throws Exception {
 		//ProductService service = new ProductService();
-		PlaidClient client = new PlaidClient();
 		ProductUtil util = new ProductUtil();
-		List<Product> list = util.GetRecommendedProducts();
+		int val = util.SaveUserProduct(1002, 5000, 5000, 1.5, (long) 1001);
+		List<Product> list = util.GetUserProduct((long) 1001);
 		assertNotNull(util);
 	}
 	

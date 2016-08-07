@@ -13,13 +13,11 @@ import com.plaid.client.PlaidUserClient;
 @Scope("singleton")
 public class PlaidClient {
 	
-	@Autowired
-	private ConfigFactory config = null;
-	private static boolean isInitialized = false;
 	 public static final String BASE_URI_PRODUCTION = PlaidClients.BASE_URI_PRODUCTION;
 	 
 	 public static final String BASE_TEST = PlaidClients.BASE_URI_TEST;
 	 
+	 @Autowired
 	 IPlaidEnvironment plaidEnvironment = null;
 	 
 	 public PlaidClient(){
@@ -27,10 +25,6 @@ public class PlaidClient {
 	 }
 	
 	public PlaidUserClient getPlaidClient(){
-		if(!isInitialized)
-		{
-			Initialize();
-		}
 		if(IsTestEnvironment()){
 			return PlaidClients.testUserClient(GetClientId(), GetEnvironment());
 			
@@ -43,10 +37,7 @@ public class PlaidClient {
 	
 	
 	public PlaidPublicClient getPlaidPublicClient(){		
-		if(!isInitialized)
-		{
-			Initialize();
-		}
+
 		if(IsTestEnvironment()){
 			return PlaidClients.testPublicClient();
 		}else if(IsProductionEnvironment()){
@@ -56,15 +47,7 @@ public class PlaidClient {
 		return null;
 	}
 	
-	private void Initialize()
-	{
-		 String env = config.getResultString("env");
-		 String id = config.getResultString("clientid");
-		 plaidEnvironment = new PlaidEnvironment(
-				env, 
-				 id, 
-				 "test");
-	}
+
 	private Boolean IsTestEnvironment(){
 		return "TEST".equals(plaidEnvironment.getEnvironment());
 	}
