@@ -1,0 +1,23 @@
+package com.eNvestDetails.dao;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import com.eNvestDetails.dto.UserInfoDTO;
+import com.eNvestDetails.security.User;
+
+public class UserDao implements UserDetailsService  {
+
+	@Override
+	public UserDetails loadUserByUsername(String username)
+			throws UsernameNotFoundException {
+		UserInfoDTO dto = UserInfoDao.authenticateUser(username, null);
+		
+		User details = new User(dto.getEnvestUserID(), dto.getPassword()); 
+		details.setId(dto.getUserkey());
+	
+		return details;
+	}
+
+}

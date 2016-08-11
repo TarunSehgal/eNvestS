@@ -56,7 +56,7 @@ public class UserInfoDTO implements Serializable{
 	private String envestUserID;
 	
 	@Column (columnDefinition="VARCHAR(1000) default 'N'" )
-	@Type(type="encryptedString")
+	//@Type(type="encryptedString")
 	private String password;
 	
 	@Column

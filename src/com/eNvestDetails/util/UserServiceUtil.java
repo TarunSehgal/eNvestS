@@ -4,9 +4,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.ConfigFactory;
@@ -26,6 +36,8 @@ import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
 import com.eNvestDetails.dto.UserInfoDTO;
+import com.eNvestDetails.security.TokenUtils;
+import com.eNvestDetails.security.User;
 import com.plaid.client.PlaidPublicClient;
 import com.plaid.client.PlaidUserClient;
 import com.plaid.client.exception.PlaidMfaException;
@@ -54,6 +66,16 @@ public class UserServiceUtil {
 	private InitiateRecommendation recommendationEngine = null;
 	
 	IPlaidRequestFactory plaidRequestFactory = new PlaidRequestFactory();
+	
+	 @Autowired
+	 private PasswordEncoder passwordEncoder;
+	 
+	 @Autowired
+		private UserDetailsService userService;
+		
+		@Autowired
+		@Qualifier("authenticationManager")
+		private AuthenticationManager authManager;
 	
 	public Map<String,String> getCategories(){
 		logger.info("getting categories");
@@ -112,11 +134,16 @@ public class UserServiceUtil {
 		long userKey = 0;
 		try{
 			//getCategories();
-			userKey = UserInfoDao.createUser(userID, password,message);
+			String encodePassword = passwordEncoder.encode(password);
+			userKey = UserInfoDao.createUser(userID, encodePassword,message);
 			mes = ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SUCCESS
 					, message.getMessage("message.useraddedsuccess"),
 					message.getMessage("message.success"));
 			mes.setUserKey(userKey);
+			User user = new User(userID.toUpperCase(), encodePassword);
+			user.setId(userKey);
+			String token = TokenUtils.createToken(user);
+			mes.setAuthToken(token);
 		}catch(EnvestException e){
 			mes = e.getErrorMessage();
 		}
@@ -152,19 +179,31 @@ public class UserServiceUtil {
 	
 	public EnvestResponse authenticate(String userID,String password){
 		int code = EnvestConstants.RETURN_CODE_INVALID_USERID_PASSWORD;
-		ErrorMessage mes;
+		ErrorMessage mes = null;
 		UserInfoDTO userInfo = null;
+		UserDetails userDetails = null;
 		try{
+			UsernamePasswordAuthenticationToken authenticationToken =
+					new UsernamePasswordAuthenticationToken(userID, password);
+			Authentication authentication = this.authManager.authenticate(authenticationToken);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			userDetails = userService.loadUserByUsername(userID);
 			
-			userInfo = UserInfoDao.authenticateUser(userID, password);
+			mes = ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SUCCESS
+					,message.getMessage("message.userAuthenticated"),
+					message.getMessage("message.success"));
+			mes.setUserKey(((User)userDetails).getId());
+			String token = TokenUtils.createToken(userDetails);
+			mes.setAuthToken(token);
+		/*	userInfo = UserInfoDao.authenticateUser(userID, password);
 			if(null != userInfo && password.equals(userInfo.getPassword())){
 				code =EnvestConstants.RETURN_CODE_SUCCESS;
-			}
+			}*/
 		}catch (Exception e){
 			code = EnvestConstants.RETURN_CODE_SERVER_ERROR;
 			logger.error("Error ouccured while authenticate user",e);
 		}
-		if(code != EnvestConstants.RETURN_CODE_SUCCESS ){
+		/*if(code != EnvestConstants.RETURN_CODE_SUCCESS ){
 			mes =  ErrorMessage.getMessage(code
 					,message.getMessage("message.loginFailure"),
 					message.getMessage("message.failure"));
@@ -174,7 +213,7 @@ public class UserServiceUtil {
 					message.getMessage("message.success"));
 
 			mes.setUserKey(userInfo.getUserkey());
-		}
+		}*/
 		return mes;
 	}
 	
@@ -199,14 +238,14 @@ public class UserServiceUtil {
 					Map<String,Object> input = new HashMap<String,Object>(10);
 					input.put(EnvestConstants.ENVEST_RESPONSE, d);
 					Map<String,Object> output = recommendationEngine.processRequest(input);
-					List<AccountDetail> accountsDetailList = ((UserInfo)d).getAccounts();
+					/*List<AccountDetail> accountsDetailList = ((UserInfo)d).getAccounts();
 					Map<String,List<UserProfileResponse>> profileData = (Map)output.get(EnvestConstants.USER_PROFILE);
 					if(null != profileData){
 						for(AccountDetail acc :accountsDetailList){
 
 							acc.setAccProfile(profileData.get(acc.getAccountId()));
 						}
-					}
+					}*/
 				} catch (EnvestException e) {
 					d = e.getErrorMessage();
 				} catch (Exception e) {

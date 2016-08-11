@@ -3,7 +3,14 @@ package com.eNvestDetails.UserService;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +25,7 @@ import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.UserInfo;
+import com.eNvestDetails.Service.eNvestService;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.util.UserAccountServiceUtil;
@@ -26,7 +34,7 @@ import com.eNvestDetails.util.UserServiceUtil;
 
 @CrossOrigin(origins= "*")
 @RestController
-public class UserService {
+public class UserService implements eNvestService {
 	
 	@Autowired
 	private ConfigFactory config = null;
@@ -44,6 +52,8 @@ public class UserService {
 	
 	@Autowired
 	private UserAccountServiceUtil accountServiceUtil;
+	
+	
 	
 	@RequestMapping(value="/UserService/test",method=RequestMethod.GET,produces="application/json")	
 	public @ResponseBody ErrorMessage test(@RequestParam(value="test",defaultValue="test") String test){
@@ -85,6 +95,7 @@ public class UserService {
 	public @ResponseBody EnvestResponse registerUser(@RequestParam("userID") String userID,
 			@RequestParam("password") String password
 			,@RequestParam("firstName") String firstName,@RequestParam("lastName") String lastName) {
+		
 		return plaidUtil.createUser(userID, password);
 	}
 	
@@ -107,5 +118,10 @@ public class UserService {
 	@RequestMapping(value="/UserService/users/submitMFA",method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)	
 	public EnvestResponse submitMFA(@RequestParam("userKey") Long userKey,@RequestParam("mfa")String mfa,@RequestParam("bank")String bank){
 		return plaidUtil.submitMFA(userKey, mfa,bank);
+	}
+	
+	@RequestMapping(value="/UserService/users/deleteUser",method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)	
+	public EnvestResponse deleteUser(@RequestParam("userKey") Long userKey){
+		return null;
 	}
 }

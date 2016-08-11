@@ -26,7 +26,7 @@ public class PlaidClient {
 	
 	public PlaidUserClient getPlaidClient(){
 		if(IsTestEnvironment()){
-			return PlaidClients.testUserClient(GetClientId(), GetEnvironment());
+			return PlaidClients.testUserClient(GetClientId(), GetSecretKey());
 			
 		}else if(IsProductionEnvironment()){
 			return PlaidClients.productionUserClient(GetClientId(), GetSecretKey());

@@ -3,6 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:security="http://www.springframework.org/schema/security"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	   		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	   		http://www.springframework.org/schema/context
@@ -10,7 +11,9 @@
 	   		http://www.springframework.org/schema/tx 
 			http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
 			http://www.springframework.org/schema/mvc 
-			http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+			http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+			http://www.springframework.org/schema/security 
+			http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
 	<context:annotation-config />
 
@@ -116,5 +119,43 @@
 		<property name="ruleEnable">
         <value>true</value></property>
    </bean>
+   
+   <bean id="userDao" class="com.eNvestDetails.dao.UserDao"></bean>
+
+<bean id="passwordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder">
+		<constructor-arg value="${app.secret}" />
+	</bean>
+	
+	<!-- <security:http pattern="/UserService/users/registerUser" security="none"/>
+	<security:http pattern="/UserService/users/authenticate" security="none"/> -->
+	<security:authentication-manager id="authenticationManager">
+		<security:authentication-provider user-service-ref="userDao">
+			<security:password-encoder ref="passwordEncoder"></security:password-encoder>
+		</security:authentication-provider>
+	</security:authentication-manager>
+	
+	<!-- <security:websocket-message-broker
+	same-origin-disabled="true" /> -->
+	<security:http
+		entry-point-ref="unauthorizedEntryPoint"
+		authentication-manager-ref="authenticationManager"
+		create-session="stateless">
+		<security:csrf disabled="true"/>				
+		<security:intercept-url pattern="/UserService/users/authenticate" access="permitAll" />
+		<security:intercept-url pattern="/UserService/users/registerUser" access="permitAll" />
+		<security:custom-filter ref="cors" position="FIRST" />
+		<security:custom-filter ref="authenticationTokenProcessingFilter" position="PRE_AUTH_FILTER" />
+		<security:intercept-url method="GET" pattern="/eNvest/*" access="hasRole('USER')" />
+		<security:intercept-url method="PUT" pattern="/eNvest/*" access="hasRole('USER')" />
+		<security:intercept-url method="POST" pattern="/eNvests/*" access="hasRole('USER')" />
+		<security:intercept-url method="DELETE" pattern="/eNvests/*" access="hasRole('USER')" />
+	</security:http>
+
+	<bean id="unauthorizedEntryPoint" class="com.eNvestDetails.security.UnauthorizedEntryPoint" />
+	<bean id="cors" class="com.eNvestDetails.security.CORSFilter" />
+
+	<bean id="authenticationTokenProcessingFilter" class="com.eNvestDetails.security.AuthenticationTokenProcessingFilter">
+		<constructor-arg ref="userDao" />
+	</bean>
 
 </beans>

@@ -13,16 +13,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 
+
 import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Response.EnvestResponse;
+import com.eNvestDetails.Service.eNvestService;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dto.UserProfileDataDTO;
 import com.eNvestDetails.util.UserAccountServiceUtil;
 
 @CrossOrigin(origins= "*")
 @RestController
-public class UserAccountService {
+public class UserAccountService implements eNvestService {
 	
 	@Autowired
 	private ConfigFactory config = null;

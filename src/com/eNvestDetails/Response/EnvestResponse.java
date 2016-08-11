@@ -15,6 +15,16 @@ public class EnvestResponse {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	
+	public String authToken = null;
+
+	public String getAuthToken() {
+		return authToken;
+	}
+
+	public void setAuthToken(String authToken) {
+		this.authToken = authToken;
+	}
 
 	private String accessToken = null;
 
