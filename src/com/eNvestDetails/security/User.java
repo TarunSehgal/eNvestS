@@ -26,6 +26,7 @@ public class User implements UserDetails
 	{
 		this.name = name;
 		this.password = passwordHash;
+		this.addRole(Role.USER);
 	}
 
 	public Long getId()

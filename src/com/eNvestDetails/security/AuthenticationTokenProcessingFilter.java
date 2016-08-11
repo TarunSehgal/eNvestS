@@ -43,7 +43,8 @@ public class AuthenticationTokenProcessingFilter extends GenericFilterBean
 		String urlPath = httpRequest.getPathInfo();
 		log.info("Inside authentication token processing filter for request method: " +httpRequest.getMethod() +" and urlpath:"+urlPath);
 		
-		if(true || "/UserService/users/registerUser".equals(urlPath) || "/UserService/users/authenticate".equals(urlPath)){
+		if(urlPath.contains("/UserService/users/registerUser") || urlPath.contains("/UserService/users/authenticate") ){
+			log.info("by passing register and authenticate service from token check");
 			chain.doFilter(request, response);
 			return;
 		}
