@@ -34,7 +34,7 @@ public class CORSFilter extends OncePerRequestFilter {
             // CORS "pre-flight" request
             response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
             // response.addHeader("Access-Control-Allow-Headers", "Authorization");
-            response.addHeader("Access-Control-Allow-Headers", "Origin,Content-Type,X-Auth-Token");
+            response.addHeader("Access-Control-Allow-Headers", "Content-Type,X-Auth-Token");
             response.addHeader("Access-Control-Max-Age", "3600");
             LOG.info("flushing buffer for request for option method:"+request.getPathInfo());
             response.flushBuffer();
