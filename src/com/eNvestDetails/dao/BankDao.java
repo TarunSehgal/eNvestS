@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
+import com.eNvestDetails.Factories.IErrorMessageFactory;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dto.AccountsDTO;
@@ -34,6 +35,8 @@ import com.eNvestDetails.util.HibernateUtils;
 
 public class BankDao {
 	
+	@Autowired
+	private IErrorMessageFactory errorMessageFactory = null;
 	private static Logger log = Logger.getLogger(BankDao.class.getName());			
 	
 	public BankDTO getBankInfo(int bankId) throws EnvestException{
@@ -49,9 +52,7 @@ public class BankDao {
 			}			
 		}catch (HibernateException e) {
 			log.error("Error occured while getting bank info",e);
-			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
-					,e.getMessage()
-					,"failure")) ;	
+			throw new EnvestException(errorMessageFactory.getServerErrorMessage(e.getMessage())) ;	
 					
 		}finally{
 			session.close();
@@ -59,7 +60,7 @@ public class BankDao {
 		return bankDTO;			
 	}
 		
-	public static void addNewBank(int bankId,String bankName, Double interest, MessageFactory message) throws EnvestException{
+	public void addNewBank(int bankId,String bankName, Double interest, MessageFactory message) throws EnvestException{
 
 		BankDTO bankDTO = null;
 		Session session = null;
@@ -72,9 +73,8 @@ public class BankDao {
 			if(null != bankExists && bankExists.size() > 0){
 				returnCode = EnvestConstants.RETURN_CODE_USER_ALREADY_EXISTS;
 				log.info("user already exists"+bankId);
-				throw new EnvestException(ErrorMessage.getMessage(returnCode
-						,message.getMessage("message.bankAlreadyExist")
-						,message.getMessage("message.failure"))) ;				
+				throw new EnvestException(errorMessageFactory.getFailureMessage(returnCode
+						,message.getMessage("message.bankAlreadyExist"))) ;				
 			}else {
 				bankDTO = new BankDTO();
 				bankDTO.setBankId(bankId);
@@ -86,9 +86,7 @@ public class BankDao {
 			
 		}catch (HibernateException e) {
 			log.error("Error occured while saving adding bank",e);
-			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
-					,e.getMessage()
-					,message.getMessage("message.failure"))) ;	
+			throw new EnvestException(errorMessageFactory.getServerErrorMessage(e.getMessage())) ;	
 					
 		}finally{
 			session.close();

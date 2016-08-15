@@ -12,7 +12,7 @@ public class ErrorMessage extends EnvestResponse  {
 	
 	private String type;
 	
-	private ErrorMessage(int code,String msg,String type,String status){
+	public ErrorMessage(int code,String msg,String type,String status){
 		this.code = code;
 		this.message=msg;
 		this.type=type;
@@ -31,24 +31,4 @@ public class ErrorMessage extends EnvestResponse  {
 		return type;
 	}
 	
-	public static ErrorMessage getServerErrorMessage(String msg,String status){
-		return new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
-				,msg
-				,null
-				,status);	
-	}
-	
-	public static ErrorMessage getMessage(int returnCode,String msg,String status){
-		return new ErrorMessage(returnCode
-				,msg
-				,null
-				,status);	
-	}	
-	
-	public static ErrorMessage getMessage(int returnCode,String msg,String type, String status){
-		return new ErrorMessage(returnCode
-				,msg
-				,type
-				,status);	
-	}	
 }

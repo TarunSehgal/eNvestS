@@ -14,6 +14,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.eNvestDetails.Factories.IErrorMessageFactory;
 import com.eNvestDetails.RecommendationEngine.AbstractRule;
 import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.EnvestResponse;
@@ -36,6 +37,9 @@ public class UserProfile extends AbstractRule {
 	
 	@Autowired
 	private UserAccountServiceUtil accountServiceUtil;
+	
+	@Autowired 
+	private UserInfoDao userInfoDao;
 	
 	protected boolean makeDecision(Map<String,Object> arg) throws Exception {
 		log.info("inside make decision method in testoppurtunity");
@@ -204,7 +208,7 @@ public class UserProfile extends AbstractRule {
 			for(UserProfileDataDTO dto1 : saveProfileDataList){
 				dto1.setUserKey(userKey);
 			}
-			UserInfoDao.saveUserProfileData(saveProfileDataList);
+			userInfoDao.saveUserProfileData(saveProfileDataList);
 		}catch (Exception e){
 			log.error("error occured while building userprofile",e);
 		}

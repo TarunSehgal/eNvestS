@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Response.AccountDetail;
@@ -42,22 +43,21 @@ public class ConvertBeanToDTO {
 	
 	public static final String ACCOUNTDTO = AccountsDTO.class.getName();
 	
-	public static Map<String,Object> getUserInfoDTO(EnvestResponse response) throws EnvestException{
+	public Map<String,Object> getUserInfoDTO(EnvestResponse response, UserInfoDTO userInfoDto) throws EnvestException{
 		Map<String,Object> returnMap = new HashMap<String,Object>(10);
 		Info info = ((UserInfo)response).getInfo();
 		
-		UserInfoDTO d = UserInfoDao.getUserInfoDetail(response.getUserKey());
 		for(String s : info.getNames()){
-			d.setUserName(s);
+			userInfoDto.setUserName(s);
 		}
-		d.setUserID(info.getUserId());
-		d.setUserID(response.getUserId());
-		d.setIsDeleted(NO);
-		d.setIsActive(YES);
-		d.setAccessToken(response.getAccessToken());
+		userInfoDto.setUserID(info.getUserId());
+		userInfoDto.setUserID(response.getUserId());
+		userInfoDto.setIsDeleted(NO);
+		userInfoDto.setIsActive(YES);
+		userInfoDto.setAccessToken(response.getAccessToken());
 		//d.setPassword("test");
 		//d.setUser_id(1L);
-		returnMap.put(USERINFODTO, d);
+		returnMap.put(USERINFODTO, userInfoDto);
 		//returnList.add(d);
 		AddressDTO addressdto = null;
 		List<AddressDTO> addressList = new ArrayList<AddressDTO>();
