@@ -39,7 +39,7 @@ public class ProductDTOtoProductConverter {
 	private static MIProduct getMip(ProductDTO productDTO, BankDTO bankDTO)
 	{
 		MIProduct mipProduct = new MIProduct(bankDTO.getBankName(), productDTO.getProductInterest(),0, productDTO.getProductId());		
-		mipProduct.maturityYears = productDTO.getMaturityYears();
+		mipProduct.noOfYears = productDTO.getMaturityYears();
 		mipProduct.minimumTenureYears = productDTO.getMinTenure();
 		mipProduct.maxTenureYears = productDTO.getMaxTenure();
 		mipProduct.preMatureClosureCharges = productDTO.getPreMatureClosureCharges();

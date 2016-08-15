@@ -52,7 +52,7 @@ public class UserProductDTOtoProductConverter {
 		mipProduct.compoundingTenor = ProductDTO.getTenor();
 		
 		
-		mipProduct.maturityYears = productTemplate.getMaturityYears();
+		mipProduct.noOfYears = productTemplate.getMaturityYears();
 		mipProduct.minimumTenureYears = productTemplate.getMinTenure();
 		mipProduct.maxTenureYears = productTemplate.getMaxTenure();
 		mipProduct.preMatureClosureCharges = productTemplate.getPreMatureClosureCharges();

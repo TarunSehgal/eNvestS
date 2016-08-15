@@ -1,11 +1,10 @@
-package com.eNvestDetails.TransferService;
+package com.eNvestDetails.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.ConfigFactory;
-import com.eNvestDetails.util.IPlaidEnvironment;
 import com.plaid.client.PlaidClients;
 import com.plaid.client.PlaidPublicClient;
 import com.plaid.client.PlaidUserClient;
@@ -37,7 +36,7 @@ public class PlaidClient {
 	
 	
 	
-/*	public PlaidPublicClient getPlaidPublicClient(){		
+	public PlaidPublicClient getPlaidPublicClient(){		
 
 		if(IsTestEnvironment()){
 			return PlaidClients.testPublicClient();
@@ -46,7 +45,7 @@ public class PlaidClient {
 		}
 		
 		return null;
-	}*/
+	}
 	
 
 	private Boolean IsTestEnvironment(){

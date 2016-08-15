@@ -105,7 +105,7 @@ public class ProductUtil {
 		product.interestEarned = response.interest;
 		product.monthlyCashFlow = cashFlow;		
 		product.valueAtMaturity = response.maturity;
-		product.maturityYears = response.noOfYears;
+		product.noOfYears = response.noOfYears;
 		
 		product.minimumTenureYears = 1;
 		product.maxTenureYears = 10;
@@ -128,13 +128,13 @@ public class ProductUtil {
 	public int SaveUserProduct(int productId, double principle,double valueAtMaturity,double interestRate, Long userKey) throws EnvestException
 	{
 		UserProductDTO userProductDTO = ProductToDTOConverter.convertProductToDTO(productId,principle,interestRate,valueAtMaturity  , userKey);
-		return userProductDAO.addNewProduct(userProductDTO, message);
+		return UserProductDao.addNewProduct(userProductDTO, message);
 	}
 	
 	public List<Product> GetUserProduct(Long userKey) throws EnvestException
 	{
 		List<Product> availableUserProducts = new ArrayList<Product>();
-		List<UserProductDTO> userProductDTO =userProductDAO.getAllProduct(userKey); 
+		List<UserProductDTO> userProductDTO =UserProductDao.getAllProduct(userKey); 
 		if(userProductDTO != null && userProductDTO.size()>0)
 		{
 			for(UserProductDTO dto:userProductDTO)

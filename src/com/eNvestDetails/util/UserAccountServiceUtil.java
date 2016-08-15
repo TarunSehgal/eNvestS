@@ -14,14 +14,12 @@ import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
-import com.eNvestDetails.Factories.IErrorMessageFactory;
 import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.BankBalance;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.ProfileResponse;
 import com.eNvestDetails.Response.TransactionDetail;
 import com.eNvestDetails.Response.UserInfo;
-import com.eNvestDetails.TransferService.PlaidClient;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
@@ -45,12 +43,6 @@ public class UserAccountServiceUtil {
 	
 	@Autowired
 	private PlaidClient plaidClient = null;
-	
-	@Autowired
-	private UserInfoDao userInfoDao;
-	
-	@Autowired
-	private IErrorMessageFactory errorMessageFactory;
 	
 	private Logger logger = Logger.getLogger(UserAccountServiceUtil.class.getName());
 	
@@ -111,7 +103,9 @@ public class UserAccountServiceUtil {
 					MfaResponse mfa = e.getMfaResponse();
 					CommonUtil.handleMfaException(mfa, token.getUserBank());
 				}catch(PlaidServersideException e){
-					return errorMessageFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
+					return ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+							,e.getErrorResponse().getResolve()
+							,message.getMessage("message.failure"));
 				}
 				
 			}
@@ -178,7 +172,9 @@ public class UserAccountServiceUtil {
 					MfaResponse mfa = e.getMfaResponse();
 					CommonUtil.handleMfaException(mfa, token.getUserBank());
 				}catch(PlaidServersideException e){
-					return errorMessageFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
+					return ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+							,e.getErrorResponse().getResolve()
+							,message.getMessage("message.failure"));
 				}
 				
 			}
@@ -256,7 +252,7 @@ public class UserAccountServiceUtil {
 		List<UserProfileDataDTO> list = null;
 		ProfileResponse response = null;
 		try{
-			list =  userInfoDao.getUserProfileData(userKey);
+			list =  UserInfoDao.getUserProfileData(userKey);
 			response = new ProfileResponse();
 			response.setProfile(list);
 			response.setUserKey(userKey);

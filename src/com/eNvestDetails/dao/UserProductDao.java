@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
-import com.eNvestDetails.Factories.IErrorMessageFactory;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dto.AccountsDTO;
@@ -39,13 +38,10 @@ import com.eNvestDetails.util.HibernateUtils;
 
 public class UserProductDao {
 	
-	@Autowired
-	private IErrorMessageFactory errorMessageFactory = null;
-	
 	private static Logger log = Logger.getLogger(UserProductDao.class.getName());
 	
 		
-	public List<UserProductDTO> getAllProduct(Long userKey) throws EnvestException{
+	public static List<UserProductDTO> getAllProduct(Long userKey) throws EnvestException{
 		log.info("inside method getAllProducts");
 		List<UserProductDTO> productsList = new ArrayList<UserProductDTO>();
 		Session session = null;
@@ -62,14 +58,16 @@ public class UserProductDao {
 			}
 		}catch (HibernateException e) {
 			log.error("Error occured while getting all products",e);
-			throw new EnvestException(errorMessageFactory.getServerErrorMessage(e.getMessage())) ;	
+			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,"failure")) ;	
 					
 		}finally{
 			session.close();
 		}
 		return productsList;	
 	}
-	public UserProductDTO getProduct(String userId) throws EnvestException{
+	public static UserProductDTO getProduct(String userId) throws EnvestException{
 		log.info("inside method getproduct");
 		UserProductDTO productDTO = null;
 		Session session = null;
@@ -82,7 +80,9 @@ public class UserProductDao {
 			}			
 		}catch (HibernateException e) {
 			log.error("Error occured while getting product",e);
-			throw new EnvestException(errorMessageFactory.getServerErrorMessage(e.getMessage())) ;	
+			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,"failure")) ;	
 					
 		}finally{
 			session.close();
@@ -91,7 +91,7 @@ public class UserProductDao {
 	}
 	
 		
-	public int addNewProduct(UserProductDTO productDTO, MessageFactory message) throws EnvestException{
+	public static int addNewProduct(UserProductDTO productDTO, MessageFactory message) throws EnvestException{
 
 		Session session = null;
 		int returnCode = EnvestConstants.RETURN_CODE_SUCCESS;
@@ -103,8 +103,9 @@ public class UserProductDao {
 			if(null != bankExists && bankExists.size() > 0){
 				returnCode = EnvestConstants.RETURN_CODE_USER_ALREADY_EXISTS;
 				log.info("product already exists"+productDTO.getUserProductId());
-				throw new EnvestException(errorMessageFactory.getFailureMessage(returnCode
-						,message.getMessage("message.ProductAlreadyExist"))) ;				
+				throw new EnvestException(ErrorMessage.getMessage(returnCode
+						,message.getMessage("message.ProductAlreadyExist")
+						,message.getMessage("message.failure"))) ;				
 			}else {
 				productDTO.setPurchaseDate(new Date());				
 			}
@@ -113,7 +114,9 @@ public class UserProductDao {
 			
 		}catch (HibernateException e) {
 			log.error("Error occured while saving adding bank",e);
-			throw new EnvestException(errorMessageFactory.getServerErrorMessage(e.getMessage())) ;	
+			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,message.getMessage("message.failure"))) ;	
 					
 		}finally{
 			session.close();

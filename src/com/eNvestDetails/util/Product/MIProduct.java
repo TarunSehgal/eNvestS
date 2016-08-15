@@ -2,7 +2,7 @@ package com.eNvestDetails.util.Product;
 
 public class MIProduct extends Product {
 public double monthlyCashFlow;
-public double maturityYears;
+public double noOfYears;
 public double minimumTenureYears;
 public double maxTenureYears;
 public String compoundingTenor;

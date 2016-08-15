@@ -8,12 +8,10 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
-import com.eNvestDetails.Factories.IErrorMessageFactory;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dto.AccountsDTO;
@@ -28,25 +26,19 @@ import com.eNvestDetails.util.HibernateUtils;
 
 public class UserInfoDao {
 	
-	@Autowired
-	private IErrorMessageFactory errorMessageFactory = null;
 	private static Logger log = Logger.getLogger(UserInfoDao.class.getName());
 	
-	@Autowired
-	private ConvertBeanToDTO convertBeanToDTO;
-	
-	public Long saveUserInfo(EnvestResponse saveRespone) throws EnvestException{
+	public static Long saveUserInfo(EnvestResponse saveRespone) throws EnvestException{
 		return saveUserInfo(saveRespone, true);
 	}
 	
-	public Long saveUserInfo(EnvestResponse saveRespone, boolean saveAccesToken) throws EnvestException{
+	public static Long saveUserInfo(EnvestResponse saveRespone, boolean saveAccesToken) throws EnvestException{
 		
 		UserInfoDTO userInfoDTO = null;
 		Session session = null;
 		try{
 			session = HibernateUtils.getSessionFactory().openSession();
-			UserInfoDTO dto = getUserInfoDetail(saveRespone.getUserKey());
-			Map<String, Object> data = convertBeanToDTO.getUserInfoDTO(saveRespone, dto);
+			Map<String, Object> data = ConvertBeanToDTO.getUserInfoDTO(saveRespone);
 			session.beginTransaction();
 			userInfoDTO = (UserInfoDTO)data.get(ConvertBeanToDTO.USERINFODTO);	
 			List<UserAccessTokenDTO> accessTokenList = getAccesTokens(userInfoDTO.getUserkey());
@@ -94,7 +86,9 @@ public class UserInfoDao {
 			session.getTransaction().commit();
 		} catch (HibernateException e) {
 			log.error("Error occured while saving user info",e);
-			throw new EnvestException(errorMessageFactory.getServerErrorMessage(e.getMessage())) ;	
+			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,"failure")) ;	
 		}finally{
 			session.close();
 		}
@@ -102,7 +96,7 @@ public class UserInfoDao {
 		return userInfoDTO.getUserkey();
 	}
 	
-	public UserInfoDTO getUserInfoDetail(long key) throws EnvestException{
+	public static UserInfoDTO getUserInfoDetail(long key) throws EnvestException{
 		log.info("inside method getUserInfoDetail");
 		UserInfoDTO userInfoDTO = null;
 		Session session = null;
@@ -115,7 +109,9 @@ public class UserInfoDao {
 			}			
 		}catch (HibernateException e) {
 			log.error("Error occured while getting user info",e);
-			throw new EnvestException(errorMessageFactory.getServerErrorMessage(e.getMessage())) ;	
+			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,"failure")) ;	
 					
 		}finally{
 			session.close();
@@ -123,7 +119,7 @@ public class UserInfoDao {
 		return userInfoDTO;			
 	}
 	
-	public long createUser(String userID,String password, MessageFactory message) throws EnvestException{
+	public static long createUser(String userID,String password, MessageFactory message) throws EnvestException{
 
 		UserInfoDTO userInfoDTO = null;
 		Session session = null;
@@ -136,8 +132,9 @@ public class UserInfoDao {
 			if(null != userExists && userExists.size() > 0){
 				returnCode = EnvestConstants.RETURN_CODE_USER_ALREADY_EXISTS;
 				log.info("user already exists"+userID);
-				throw new EnvestException(errorMessageFactory.getFailureMessage(returnCode
-						,message.getMessage("message.userAlreadyExist"))) ;				
+				throw new EnvestException(ErrorMessage.getMessage(returnCode
+						,message.getMessage("message.userAlreadyExist")
+						,message.getMessage("message.failure"))) ;				
 			}else {
 				userInfoDTO = new UserInfoDTO();
 				userInfoDTO.setIsActive("Y");
@@ -150,11 +147,15 @@ public class UserInfoDao {
 			
 		}catch (HibernateException e) {
 			log.error("Error occured while saving user",e);
-			throw new EnvestException(errorMessageFactory.getServerErrorMessage(e.getMessage())) ;	
+			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,message.getMessage("message.failure"))) ;	
 					
 		}catch(Exception e){
 			log.error("Error occured while saving user",e);
-			throw new EnvestException(errorMessageFactory.getServerErrorMessage(e.getMessage())) ;	
+			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,message.getMessage("message.failure"))) ;	
 		}
 		finally{
 			log.info("Starting to close session");
@@ -284,7 +285,7 @@ public class UserInfoDao {
 		}			
 	}*/
 	
-	public void saveUserProfileData(List<UserProfileDataDTO> userProfile)throws EnvestException{
+	public static void saveUserProfileData(List<UserProfileDataDTO> userProfile)throws EnvestException{
 		log.info("inside method saveUserProfileData");
 		UserInfoDTO userInfoDTO = null;
 		Session session = null;
@@ -297,7 +298,9 @@ public class UserInfoDao {
 			session.getTransaction().commit();
 		}catch (HibernateException e) {
 			log.error("Error occured while getting user info",e);
-			throw new EnvestException(errorMessageFactory.getServerErrorMessage(e.getMessage())) ;	
+			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,"failure")) ;	
 					
 		}finally{
 			session.close();
@@ -323,7 +326,7 @@ public class UserInfoDao {
 		return list;	
 	}*/
 	
-	public List<UserProfileDataDTO> getUserProfileData(Long userKey) throws EnvestException{
+	public static List<UserProfileDataDTO> getUserProfileData(Long userKey) throws EnvestException{
 		Session session = null;
 		List<UserProfileDataDTO> list = null;
 		try{
@@ -332,7 +335,9 @@ public class UserInfoDao {
 			list = session.createCriteria(UserProfileDataDTO.class).add(Restrictions.eq("userKey", userKey)).list();
 		}catch (HibernateException e) {
 			log.error("Error occured while getting access token",e);
-			throw new EnvestException(errorMessageFactory.getServerErrorMessage(e.getMessage())) ;			
+			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
+					,e.getMessage()
+					,"failure")) ;			
 		}finally{
 			session.close();
 		}

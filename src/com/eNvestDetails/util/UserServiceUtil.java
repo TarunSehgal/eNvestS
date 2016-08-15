@@ -23,7 +23,6 @@ import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
-import com.eNvestDetails.Factories.IErrorMessageFactory;
 import com.eNvestDetails.Factories.IPlaidRequestFactory;
 import com.eNvestDetails.Factories.PlaidRequestFactory;
 import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
@@ -33,8 +32,6 @@ import com.eNvestDetails.Response.MfaResponseDetail;
 import com.eNvestDetails.Response.PlaidCategory;
 import com.eNvestDetails.Response.UserInfo;
 import com.eNvestDetails.Response.UserProfileResponse;
-import com.eNvestDetails.TransferService.IPlaidGateway;
-import com.eNvestDetails.TransferService.PlaidClient;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
@@ -63,15 +60,6 @@ public class UserServiceUtil {
 	@Autowired
 	private PlaidClient plaidClient = null;
 	
-	@Autowired
-	private IPlaidGateway plaidGateway;
-	
-	@Autowired
-	private UserInfoDao userInfoDao;
-	
-	@Autowired
-	private IErrorMessageFactory errorMessageFactory;
-	
 	private Logger logger = Logger.getLogger(UserServiceUtil.class.getName());
 	
 	@Autowired
@@ -97,7 +85,9 @@ public class UserServiceUtil {
 			/*plaidPublicClient = plaidClient.getPlaidPublicClient();
 			res = plaidPublicClient.getAllCategories();*/
 			 PlaidHttpRequest request = new PlaidHttpRequest("/categories");
-		    HttpResponseWrapper<PlaidCategory[]> response = plaidGateway.executeGetRequest(request, PlaidCategory[].class);
+			 ApacheHttpClientHttpDelegate httpDelegate =  new ApacheHttpClientHttpDelegate
+					 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());
+		    HttpResponseWrapper<PlaidCategory[]> response = httpDelegate.doGet(request, PlaidCategory[].class);
 			for(PlaidCategory category : response.getResponseBody()){
 				String path = "";
 				for(String hierarchy: category.getHierarchy()){
@@ -113,24 +103,24 @@ public class UserServiceUtil {
 	
 	public EnvestResponse getInfo(String userId, String password, String bank){
 		logger.info("Starting to get user info");
-/*		PlaidUserClient plaidUserClient = null;
-		Credentials testCredentials = null;*/
+		PlaidUserClient plaidUserClient = null;
+		Credentials testCredentials = null;
 		InfoResponse r = null;
 		try{
-/*		plaidUserClient = plaidClient.getPlaidClient();
+		plaidUserClient = plaidClient.getPlaidClient();
 		//plaidUserClient.setAccessToken("test_wells");
 		testCredentials = new Credentials(userId, password);
 		r = plaidUserClient.info(testCredentials, bank,
-					null);*/
-		r = plaidGateway.getInfoResponse(userId, password, bank, null);
-		plaidGateway.addConnectProduct(null);
+					null);
+		plaidUserClient.addProduct("connect", null);
 		}catch(PlaidMfaException e){
 			logger.info("MFA required");
 			return CommonUtil.handleMfaException(e.getMfaResponse(), bank);
 					
 		}catch(PlaidServersideException e){
 			logger.error("Error occured while retriving user info", e);
-			return errorMessageFactory.getServerErrorMessage(e.getErrorResponse().getResolve()					);
+			return ErrorMessage.getServerErrorMessage(e.getErrorResponse().getResolve()
+					,message.getMessage("message.failure"));
 		}
 		
 		UserInfo userInfo = CommonUtil.parseInfoResponse(r, bank, userId);
@@ -145,8 +135,8 @@ public class UserServiceUtil {
 		try{
 			//getCategories();
 			String encodePassword = passwordEncoder.encode(password);
-			userKey = userInfoDao.createUser(userID, encodePassword,message);
-			mes = errorMessageFactory.getMessage(EnvestConstants.RETURN_CODE_SUCCESS
+			userKey = UserInfoDao.createUser(userID, encodePassword,message);
+			mes = ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SUCCESS
 					, message.getMessage("message.useraddedsuccess"),
 					message.getMessage("message.success"));
 			mes.setUserKey(userKey);
@@ -169,14 +159,16 @@ public class UserServiceUtil {
 			
 		}catch (Exception e){
 			logger.error("Error occured while saving user", e);
-			return errorMessageFactory.getServerErrorMessage(message.getMessage("message.serverError"));
+			return ErrorMessage.getServerErrorMessage(message.getMessage("message.serverError")
+					,message.getMessage("message.failure"));
 		}
 		
 		if(code != EnvestConstants.RETURN_CODE_SUCCESS ){
-			mes = errorMessageFactory.getFailureMessage(code
-					, message.getMessage("message.userAddFailure"));
+			mes = ErrorMessage.getMessage(code
+					, message.getMessage("message.userAddFailure"),
+					message.getMessage("message.failure"));
 		}else{
-			mes =  errorMessageFactory.getMessage(code
+			mes =  ErrorMessage.getMessage(code
 					,message.getMessage("message.useraddedsuccess"),
 					message.getMessage("message.success"));
 
@@ -197,7 +189,7 @@ public class UserServiceUtil {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			userDetails = userService.loadUserByUsername(userID);
 			
-			mes = errorMessageFactory.getMessage(EnvestConstants.RETURN_CODE_SUCCESS
+			mes = ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SUCCESS
 					,message.getMessage("message.userAuthenticated"),
 					message.getMessage("message.success"));
 			mes.setUserKey(((User)userDetails).getId());
@@ -242,7 +234,7 @@ public class UserServiceUtil {
 			token.setUserKey(userKey);
 			if(d instanceof UserInfo){
 				try {
-					userInfoDao.saveUserInfo(d);
+					UserInfoDao.saveUserInfo(d);
 					Map<String,Object> input = new HashMap<String,Object>(10);
 					input.put(EnvestConstants.ENVEST_RESPONSE, d);
 					Map<String,Object> output = recommendationEngine.processRequest(input);
@@ -279,7 +271,8 @@ public class UserServiceUtil {
 				dto = list.get(0);
 			}else{
 				logger.info("access token not found");
-				return errorMessageFactory.getServerErrorMessage("Access token not found");
+				return ErrorMessage.getServerErrorMessage("Access token not found"
+						,message.getMessage("message.failure"));
 			}
 			
 			PlaidHttpRequest request  = plaidRequestFactory.GetPlaidMFARequest(mfa, dto.getAccessToken());
@@ -289,21 +282,23 @@ public class UserServiceUtil {
 			 //request.addParameter("secret",config.getResultString("key"));
 			 //request.addParameter("mfa",mfa);
 			 //request.addParameter("access_token",dto.getAccessToken());		 
-		    HttpResponseWrapper<InfoResponse> response = plaidGateway.executePostRequest(request, InfoResponse.class);
+			 ApacheHttpClientHttpDelegate httpDelegate =  new ApacheHttpClientHttpDelegate
+					 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
+		    HttpResponseWrapper<InfoResponse> response = httpDelegate.doPost(request, InfoResponse.class);
 		    info = CommonUtil.parseInfoResponse(response.getResponseBody(), null, null);
 		    info.setUserKey(userKey);
-		    plaidGateway.addConnectProduct(null, dto.getAccessToken());
-/*		    plaidUserClient = plaidClient.getPlaidClient();
+		    plaidUserClient = plaidClient.getPlaidClient();
 		    plaidUserClient.setAccessToken(dto.getAccessToken());
-		    plaidUserClient.addProduct("connect", null);*/
-		    userInfoDao.saveUserInfo(info,false);
+		    plaidUserClient.addProduct("connect", null);
+		    UserInfoDao.saveUserInfo(info,false);
 		}catch(PlaidMfaException e){
 			logger.info("MFA required");
 			return CommonUtil.handleMfaException(e.getMfaResponse(), bank);
 					
 		}catch(PlaidServersideException e){
 			logger.error("Error occured while retriving user info", e);
-			return errorMessageFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
+			return ErrorMessage.getServerErrorMessage(e.getErrorResponse().getResolve()
+					,message.getMessage("message.failure"));
 		}catch (EnvestException e) {
 			return e.getErrorMessage();
 		}
