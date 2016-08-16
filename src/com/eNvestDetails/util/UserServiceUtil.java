@@ -60,6 +60,9 @@ public class UserServiceUtil {
 	private MessageFactory message = null;
 	
 	@Autowired
+	private ErrorMessageFactory errorFactory = null;
+	
+	@Autowired
 	private PlaidClient plaidClient = null;
 	
 	private Logger logger = Logger.getLogger(UserServiceUtil.class.getName());
@@ -121,7 +124,7 @@ public class UserServiceUtil {
 					
 		}catch(PlaidServersideException e){
 			logger.error("Error occured while retriving user info", e);
-			return ErrorMessageFactory.Instance.getServerErrorMessage(e.getErrorResponse().getResolve());
+			return errorFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
 		}
 		
 		UserInfo userInfo = CommonUtil.parseInfoResponse(r, bank, userId);
@@ -136,8 +139,8 @@ public class UserServiceUtil {
 		try{
 			//getCategories();
 			String encodePassword = passwordEncoder.encode(password);
-			userKey = UserInfoDao.createUser(userID, encodePassword,message);
-			mes = ErrorMessageFactory.Instance.getSuccessMessage(EnvestConstants.RETURN_CODE_SUCCESS
+			userKey = UserInfoDao.createUser(userID, encodePassword,message,errorFactory);
+			mes = errorFactory.getSuccessMessage(EnvestConstants.RETURN_CODE_SUCCESS
 					, message.getMessage("message.useraddedsuccess"));
 			mes.setUserKey(userKey);
 			User user = new User(userID.toUpperCase(), encodePassword);
@@ -159,14 +162,14 @@ public class UserServiceUtil {
 			
 		}catch (Exception e){
 			logger.error("Error occured while saving user", e);
-			return ErrorMessageFactory.Instance.getServerErrorMessage(message.getMessage("message.serverError"));
+			return errorFactory.getServerErrorMessage(message.getMessage("message.serverError"));
 		}
 		
 		if(code != EnvestConstants.RETURN_CODE_SUCCESS ){
-			mes = ErrorMessageFactory.Instance.getFailureMessage(code
+			mes = errorFactory.getFailureMessage(code
 					, message.getMessage("message.userAddFailure"));
 		}else{
-			mes =  ErrorMessageFactory.Instance.getSuccessMessage(code
+			mes =  errorFactory.getSuccessMessage(code
 					,message.getMessage("message.useraddedsuccess"));
 
 			mes.setUserKey(userKey);
@@ -186,7 +189,7 @@ public class UserServiceUtil {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			userDetails = userService.loadUserByUsername(userID);
 			
-			mes = ErrorMessageFactory.Instance.getSuccessMessage(EnvestConstants.RETURN_CODE_SUCCESS
+			mes = errorFactory.getSuccessMessage(EnvestConstants.RETURN_CODE_SUCCESS
 					,message.getMessage("message.userAuthenticated"));
 			mes.setUserKey(((User)userDetails).getId());
 			String token = TokenUtils.createToken(userDetails);
@@ -230,7 +233,7 @@ public class UserServiceUtil {
 			token.setUserKey(userKey);
 			if(d instanceof UserInfo){
 				try {
-					UserInfoDao.saveUserInfo(d);
+					UserInfoDao.saveUserInfo(d,errorFactory);
 					Map<String,Object> input = new HashMap<String,Object>(10);
 					input.put(EnvestConstants.ENVEST_RESPONSE, d);
 					Map<String,Object> output = recommendationEngine.processRequest(input);
@@ -267,7 +270,7 @@ public class UserServiceUtil {
 				dto = list.get(0);
 			}else{
 				logger.info("access token not found");
-				return ErrorMessageFactory.Instance.getServerErrorMessage("Access token not found");
+				return errorFactory.getServerErrorMessage("Access token not found");
 			}
 			
 			PlaidHttpRequest request  = plaidRequestFactory.GetPlaidMFARequest(mfa, dto.getAccessToken());
@@ -285,14 +288,14 @@ public class UserServiceUtil {
 		    plaidUserClient = plaidClient.getPlaidClient();
 		    plaidUserClient.setAccessToken(dto.getAccessToken());
 		    plaidUserClient.addProduct("connect", null);
-		    UserInfoDao.saveUserInfo(info,false);
+		    UserInfoDao.saveUserInfo(info,false,errorFactory);
 		}catch(PlaidMfaException e){
 			logger.info("MFA required");
 			return CommonUtil.handleMfaException(e.getMfaResponse(), bank);
 					
 		}catch(PlaidServersideException e){
 			logger.error("Error occured while retriving user info", e);
-			return ErrorMessageFactory.Instance.getServerErrorMessage(e.getErrorResponse().getResolve());
+			return errorFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
 		}catch (EnvestException e) {
 			return e.getErrorMessage();
 		}

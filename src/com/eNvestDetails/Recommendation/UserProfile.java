@@ -14,6 +14,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.RecommendationEngine.AbstractRule;
 import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.EnvestResponse;
@@ -33,6 +34,9 @@ public class UserProfile extends AbstractRule {
 
 	@Autowired
 	private UserServiceUtil userServiceUtil;
+	
+	@Autowired
+	private ErrorMessageFactory errorFactory = null;
 	
 	@Autowired
 	private UserAccountServiceUtil accountServiceUtil;
@@ -204,7 +208,7 @@ public class UserProfile extends AbstractRule {
 			for(UserProfileDataDTO dto1 : saveProfileDataList){
 				dto1.setUserKey(userKey);
 			}
-			UserInfoDao.saveUserProfileData(saveProfileDataList);
+			UserInfoDao.saveUserProfileData(saveProfileDataList, errorFactory);
 		}catch (Exception e){
 			log.error("error occured while building userprofile",e);
 		}

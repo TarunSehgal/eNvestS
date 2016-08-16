@@ -1,21 +1,19 @@
 package com.eNvestDetails.Factories;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.constant.EnvestConstants;
 
+@Component
 public class ErrorMessageFactory implements IErrorMessageFactory {
 
 	@Autowired
-	private static MessageFactory messageFactory = null;
+	private MessageFactory messageFactory = null;
 	
-	public static IErrorMessageFactory Instance = new ErrorMessageFactory();
-	
-	private ErrorMessageFactory(){}
+	public ErrorMessageFactory(){}
 	public ErrorMessage getServerErrorMessage(String msg){
 		return new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
 				,msg

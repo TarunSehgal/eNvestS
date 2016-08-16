@@ -47,6 +47,9 @@ public class UserService implements eNvestService {
 	private UserServiceUtil plaidUtil = null;
 	
 	@Autowired
+	private ErrorMessageFactory errorFactory = null;
+	
+	@Autowired
 	private InitiateRecommendation recommendationEngine = null;
 	
 	private static Logger log = Logger.getLogger(UserService.class.getName()); 
@@ -54,11 +57,11 @@ public class UserService implements eNvestService {
 	@Autowired
 	private UserAccountServiceUtil accountServiceUtil;
 	
-	
+		
 	
 	@RequestMapping(value="/UserService/test",method=RequestMethod.GET,produces="application/json")	
 	public @ResponseBody ErrorMessage test(@RequestParam(value="test",defaultValue="test") String test){
-		ErrorMessage mes  = ErrorMessageFactory.Instance.getMessage(0, "Test message", "Success", ":Test");
+		ErrorMessage mes  = errorFactory.getMessage(0, "Test message", "Success", ":Test");
 		message.getMessage("message.success");
 		config.getResultString("key");
 		try {
@@ -78,7 +81,7 @@ public class UserService implements eNvestService {
 		EnvestResponse response = plaidUtil.getInfo(userId, password, bank);
 		if(response instanceof UserInfo){
 			try {
-				response.setUserKey(UserInfoDao.saveUserInfo(response));
+				response.setUserKey(UserInfoDao.saveUserInfo(response, errorFactory));
 			} catch (EnvestException e) {
 				return e.getErrorMessage();
 			}

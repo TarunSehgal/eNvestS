@@ -46,6 +46,9 @@ public class UserAccountServiceUtil {
 	@Autowired
 	private PlaidClient plaidClient = null;
 	
+	@Autowired
+	private ErrorMessageFactory errorFactory = null;
+	
 	private Logger logger = Logger.getLogger(UserAccountServiceUtil.class.getName());
 	
 	@Autowired
@@ -105,7 +108,7 @@ public class UserAccountServiceUtil {
 					MfaResponse mfa = e.getMfaResponse();
 					CommonUtil.handleMfaException(mfa, token.getUserBank());
 				}catch(PlaidServersideException e){
-					return ErrorMessageFactory.Instance.getServerErrorMessage(e.getErrorResponse().getResolve());
+					return errorFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
 				}
 				
 			}
@@ -172,7 +175,7 @@ public class UserAccountServiceUtil {
 					MfaResponse mfa = e.getMfaResponse();
 					CommonUtil.handleMfaException(mfa, token.getUserBank());
 				}catch(PlaidServersideException e){
-					return ErrorMessageFactory.Instance.getServerErrorMessage(e.getErrorResponse().getResolve());
+					return errorFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
 				}
 				
 			}
@@ -250,7 +253,7 @@ public class UserAccountServiceUtil {
 		List<UserProfileDataDTO> list = null;
 		ProfileResponse response = null;
 		try{
-			list =  UserInfoDao.getUserProfileData(userKey);
+			list =  UserInfoDao.getUserProfileData(userKey, errorFactory);
 			response = new ProfileResponse();
 			response.setProfile(list);
 			response.setUserKey(userKey);

@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import com.eNvestDetails.Exception.EnvestException;
+import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.UserInfo;
@@ -42,11 +43,11 @@ public class ConvertBeanToDTO {
 	
 	public static final String ACCOUNTDTO = AccountsDTO.class.getName();
 	
-	public static Map<String,Object> getUserInfoDTO(EnvestResponse response) throws EnvestException{
+	public static Map<String,Object> getUserInfoDTO(EnvestResponse response, ErrorMessageFactory errorFactory) throws EnvestException{
 		Map<String,Object> returnMap = new HashMap<String,Object>(10);
 		Info info = ((UserInfo)response).getInfo();
 		
-		UserInfoDTO d = UserInfoDao.getUserInfoDetail(response.getUserKey());
+		UserInfoDTO d = UserInfoDao.getUserInfoDetail(response.getUserKey(), errorFactory);
 		for(String s : info.getNames()){
 			d.setUserName(s);
 		}
