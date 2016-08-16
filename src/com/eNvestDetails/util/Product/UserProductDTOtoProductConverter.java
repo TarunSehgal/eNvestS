@@ -52,7 +52,7 @@ public class UserProductDTOtoProductConverter {
 		mipProduct.compoundingTenor = ProductDTO.getTenor();
 		
 		
-		mipProduct.noOfYears = productTemplate.getMaturityYears();
+		mipProduct.maturityYears = productTemplate.getMaturityYears();
 		mipProduct.minimumTenureYears = productTemplate.getMinTenure();
 		mipProduct.maxTenureYears = productTemplate.getMaxTenure();
 		mipProduct.preMatureClosureCharges = productTemplate.getPreMatureClosureCharges();
@@ -75,7 +75,7 @@ public class UserProductDTOtoProductConverter {
 	{
 		GoalSeekProduct goalSeekProduct = new GoalSeekProduct(bankDTO.getBankName(), ProductDTO.getInterest(),ProductDTO.getUserProductId(), ProductDTO.getProductId());
 		
-		goalSeekProduct.noOfYears = ProductDTO.getMaturityValue();
+		goalSeekProduct.maturityYears = ProductDTO.getMaturityValue();
 		goalSeekProduct.principle = ProductDTO.getPrinciple();
 		goalSeekProduct.interestRate = ProductDTO.getInterest();
 		goalSeekProduct.compoundingTenor = ProductDTO.getTenor();

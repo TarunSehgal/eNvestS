@@ -109,7 +109,7 @@ public class ProductUtil {
 		product.interestEarned = response.interest;
 		product.monthlyCashFlow = cashFlow;		
 		product.valueAtMaturity = response.maturity;
-		product.noOfYears = response.noOfYears;
+		product.maturityYears = response.noOfYears;
 		
 		product.minimumTenureYears = 1;
 		product.maxTenureYears = 10;
@@ -125,7 +125,7 @@ public class ProductUtil {
 		product.compoundingTenor = compoundingTenor;
 		product.cashFlow = response.cashFlow;
 		product.principle = response.principle;		
-		product.noOfYears = response.noOfYears;		
+		product.maturityYears = response.noOfYears;		
 		return product;
 	}
 	
