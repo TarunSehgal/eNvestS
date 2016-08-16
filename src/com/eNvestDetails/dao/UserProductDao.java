@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
+import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dto.AccountsDTO;
@@ -58,9 +59,7 @@ public class UserProductDao {
 			}
 		}catch (HibernateException e) {
 			log.error("Error occured while getting all products",e);
-			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
-					,e.getMessage()
-					,"failure")) ;	
+			throw new EnvestException(ErrorMessageFactory.Instance.getServerErrorMessage(e.getMessage())) ;	
 					
 		}finally{
 			session.close();
@@ -80,9 +79,7 @@ public class UserProductDao {
 			}			
 		}catch (HibernateException e) {
 			log.error("Error occured while getting product",e);
-			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
-					,e.getMessage()
-					,"failure")) ;	
+			throw new EnvestException(ErrorMessageFactory.Instance.getServerErrorMessage(e.getMessage())) ;	
 					
 		}finally{
 			session.close();
@@ -103,9 +100,8 @@ public class UserProductDao {
 			if(null != bankExists && bankExists.size() > 0){
 				returnCode = EnvestConstants.RETURN_CODE_USER_ALREADY_EXISTS;
 				log.info("product already exists"+productDTO.getUserProductId());
-				throw new EnvestException(ErrorMessage.getMessage(returnCode
-						,message.getMessage("message.ProductAlreadyExist")
-						,message.getMessage("message.failure"))) ;				
+				throw new EnvestException(ErrorMessageFactory.Instance.getFailureMessage(returnCode
+						,message.getMessage("message.ProductAlreadyExist"))) ;				
 			}else {
 				productDTO.setPurchaseDate(new Date());				
 			}
@@ -114,9 +110,7 @@ public class UserProductDao {
 			
 		}catch (HibernateException e) {
 			log.error("Error occured while saving adding bank",e);
-			throw new EnvestException(ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
-					,e.getMessage()
-					,message.getMessage("message.failure"))) ;	
+			throw new EnvestException(ErrorMessageFactory.Instance.getServerErrorMessage(e.getMessage())) ;	
 					
 		}finally{
 			session.close();

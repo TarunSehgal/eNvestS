@@ -22,6 +22,7 @@ import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
+import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.UserInfo;
@@ -57,7 +58,7 @@ public class UserService implements eNvestService {
 	
 	@RequestMapping(value="/UserService/test",method=RequestMethod.GET,produces="application/json")	
 	public @ResponseBody ErrorMessage test(@RequestParam(value="test",defaultValue="test") String test){
-		ErrorMessage mes  = ErrorMessage.getMessage(0, "Test message", "Success", ":Test");
+		ErrorMessage mes  = ErrorMessageFactory.Instance.getMessage(0, "Test message", "Success", ":Test");
 		message.getMessage("message.success");
 		config.getResultString("key");
 		try {

@@ -14,6 +14,8 @@ import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
+import com.eNvestDetails.Factories.ErrorMessageFactory;
+import com.eNvestDetails.Factories.IErrorMessageFactory;
 import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.BankBalance;
 import com.eNvestDetails.Response.EnvestResponse;
@@ -103,9 +105,7 @@ public class UserAccountServiceUtil {
 					MfaResponse mfa = e.getMfaResponse();
 					CommonUtil.handleMfaException(mfa, token.getUserBank());
 				}catch(PlaidServersideException e){
-					return ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
-							,e.getErrorResponse().getResolve()
-							,message.getMessage("message.failure"));
+					return ErrorMessageFactory.Instance.getServerErrorMessage(e.getErrorResponse().getResolve());
 				}
 				
 			}
@@ -172,9 +172,7 @@ public class UserAccountServiceUtil {
 					MfaResponse mfa = e.getMfaResponse();
 					CommonUtil.handleMfaException(mfa, token.getUserBank());
 				}catch(PlaidServersideException e){
-					return ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
-							,e.getErrorResponse().getResolve()
-							,message.getMessage("message.failure"));
+					return ErrorMessageFactory.Instance.getServerErrorMessage(e.getErrorResponse().getResolve());
 				}
 				
 			}
