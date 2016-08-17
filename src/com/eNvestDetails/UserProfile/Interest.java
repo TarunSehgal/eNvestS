@@ -1,5 +1,6 @@
 package com.eNvestDetails.UserProfile;
 
+import java.util.Date;
 import java.util.List;
 
 import com.eNvestDetails.Response.TransactionDetail;
@@ -34,6 +35,8 @@ public class Interest extends UserProfileDataElement {
 				}
 				if(isAllowedCategory(transaction.getCategoryId(), dto.getPlaidCategory())){
 					dto.setAmount(dto.getAmount() +transaction.getAmount());
+					dto.setInterestAsOf(transaction.getDate().toDate());					
+					
 				}
 				
 			}

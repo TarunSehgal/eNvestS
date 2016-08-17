@@ -168,6 +168,30 @@
 						</property> 
 					</bean> 	
 				</entry>
+				<entry key="Outflow30"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+						<property name="id" value="15" />
+						<property name="type" value="Outflow" />
+						<property name="subType" value="Total Outflow for 30 Days" />
+						<property name="addAlways" value="Y" />
+						<property name= "plaidCategory">
+							<list>
+								<value>All</value>	
+							</list>
+						</property> 
+					</bean> 	
+				</entry>
+				<entry key="Outflow90"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+						<property name="id" value="16" />
+						<property name="type" value="Outflow" />
+						<property name="subType" value="Total Outflow for 90 Days" />
+						<property name="addAlways" value="Y" />
+						<property name= "plaidCategory">
+							<list>
+								<value>All</value>	
+							</list>
+						</property> 
+					</bean> 	
+				</entry>
 				<entry key="Payment,Rent"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
 						<property name="id" value="12" />
 						<property name="type" value="Payment" />
@@ -179,6 +203,30 @@
 								<value>16002000</value>	
 							</list>
 						</property>
+					</bean> 	
+				</entry>
+				<entry key="Inflow30"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+						<property name="id" value="17" />
+						<property name="type" value="Inflow" />
+						<property name="subType" value="Total Inflow for 30 Days" />
+						<property name="addAlways" value="Y" />
+						<property name= "plaidCategory">
+							<list>
+								<value>All</value>	
+							</list>
+						</property> 
+					</bean> 	
+				</entry>
+				<entry key="Inflow90"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+						<property name="id" value="18" />
+						<property name="type" value="Inflow" />
+						<property name="subType" value="Total Inflow for 90 Days" />
+						<property name="addAlways" value="Y" />
+						<property name= "plaidCategory">
+							<list>
+								<value>All</value>	
+							</list>
+						</property> 
 					</bean> 	
 				</entry>
 			</map>

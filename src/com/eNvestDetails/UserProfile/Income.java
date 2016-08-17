@@ -1,6 +1,9 @@
 package com.eNvestDetails.UserProfile;
 
+import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang.time.DateUtils;
 
 import com.eNvestDetails.Response.TransactionDetail;
 import com.eNvestDetails.dto.UserProfileDataDTO;
@@ -31,14 +34,63 @@ public class Income extends UserProfileDataElement{
 					getProfileDataMap().put(captureDTO, dto);
 				}
 				if(isAllowedCategory(transaction.getCategoryId(), dto.getPlaidCategory())){
-					if("10".equals(dto.getId())){
+					if("10".equals(dto.getId())){//inflow
 						if(transaction.getAmount() < 0.0){
 							dto.setAmount(dto.getAmount() + transaction.getAmount());
 						}
-					}else if ("11".equals(dto.getId())){
+					}else if ("11".equals(dto.getId())){//outflow
 						if(transaction.getAmount() > 0.0){
 							dto.setAmount(dto.getAmount() +transaction.getAmount());
 						}					
+					}else if ("15".equals(dto.getId())){//outflow 30 days
+						if(transaction.getAmount() > 0.0){
+							if(dto.getInflowOutflowStartDate() == null){
+								dto.setInflowOutflowStartDate(transaction.getDate()
+										.toDate());
+							}
+							Date startDate = dto.getInflowOutflowStartDate();
+							Date transactionDate = transaction.getDate().toDate();
+							if(transactionDate.after(DateUtils.addDays(startDate, -30))){
+								dto.setAmount(dto.getAmount() +transaction.getAmount());								
+							}
+						}
+																	
+					}else if ("16".equals(dto.getId())){//outflow 90 days
+						if(transaction.getAmount() > 0.0){
+							if(dto.getInflowOutflowStartDate() == null){
+								dto.setInflowOutflowStartDate(transaction.getDate()
+										.toDate());
+							}
+							Date startDate = dto.getInflowOutflowStartDate();
+							Date transactionDate = transaction.getDate().toDate();
+							if(transactionDate.after(DateUtils.addDays(startDate, -90))){
+								dto.setAmount(dto.getAmount() +transaction.getAmount());								
+							}
+						}											
+					}else if ("17".equals(dto.getId())){//inflow 30 days
+						if(transaction.getAmount() < 0.0){
+							if(dto.getInflowOutflowStartDate() == null){
+								dto.setInflowOutflowStartDate(transaction.getDate()
+										.toDate());
+							}
+							Date startDate = dto.getInflowOutflowStartDate();
+							Date transactionDate = transaction.getDate().toDate();
+							if(transactionDate.after(DateUtils.addDays(startDate, -30))){
+								dto.setAmount(dto.getAmount() +transaction.getAmount());								
+							}
+						}											
+					}else if ("18".equals(dto.getId())){//inflow 30 days
+						if(transaction.getAmount() < 0.0){
+							if(dto.getInflowOutflowStartDate() == null){
+								dto.setInflowOutflowStartDate(transaction.getDate()
+										.toDate());
+							}
+							Date startDate = dto.getInflowOutflowStartDate();
+							Date transactionDate = transaction.getDate().toDate();
+							if(transactionDate.after(DateUtils.addDays(startDate, -90))){
+								dto.setAmount(dto.getAmount() +transaction.getAmount());								
+							}
+						}											
 					}
 				}
 							

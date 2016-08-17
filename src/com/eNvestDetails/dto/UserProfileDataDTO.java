@@ -1,5 +1,6 @@
 package com.eNvestDetails.dto;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -52,7 +53,29 @@ public class UserProfileDataDTO {
 	@Transient
 	private List<String> plaidCategory = null;
 	
+	@Transient
+	private Date inflowOutflowStartDate = null;
 	
+	public Date getInflowOutflowStartDate() {
+		return inflowOutflowStartDate;
+	}
+
+	public void setInflowOutflowStartDate(Date inflowOutflowStartDate) {
+		this.inflowOutflowStartDate = inflowOutflowStartDate;
+	}
+
+	@Column
+	private Date interestAsOf;
+	
+	
+	public Date getInterestAsOf() {
+		return interestAsOf;
+	}
+
+	public void setInterestAsOf(Date interestAsOf) {
+		this.interestAsOf = interestAsOf;
+	}
+
 	public List<String> getPlaidCategory() {
 		return plaidCategory;
 	}

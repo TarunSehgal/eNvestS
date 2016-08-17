@@ -89,6 +89,10 @@
         						<list>
         						<value>Inflow</value>
         						<value>Outflow</value>
+        						<value>Outflow30</value>
+        						<value>Outflow90</value>
+        						<value>Inflow30</value>
+        						<value>Inflow90</value>
         						</list>
         				</property>
 					</bean> 
