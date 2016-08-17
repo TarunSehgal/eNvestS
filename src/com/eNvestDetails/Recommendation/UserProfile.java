@@ -1,25 +1,23 @@
 package com.eNvestDetails.Recommendation;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.hibernate.mapping.Array;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.RecommendationEngine.AbstractRule;
-import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.TransactionDetail;
 import com.eNvestDetails.Response.UserInfo;
 import com.eNvestDetails.Response.UserProfileResponse;
+import com.eNvestDetails.UserProfile.UserProfileDataElement;
+import com.eNvestDetails.UserProfile.UserProfileDataMapping;
+import com.eNvestDetails.UserProfile.UserProfileFactory;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 //import com.eNvestDetails.dto.UserProfileDTO;
@@ -36,6 +34,9 @@ public class UserProfile extends AbstractRule {
 	
 	@Autowired
 	private UserAccountServiceUtil accountServiceUtil;
+	
+	
+	private UserProfileFactory profileFactory;
 	
 	protected boolean makeDecision(Map<String,Object> arg) throws Exception {
 		log.info("inside make decision method in testoppurtunity");
@@ -56,6 +57,13 @@ public class UserProfile extends AbstractRule {
 	private static final String KEY_BILL_PAY = "9";
 	private static final String KEY_INFLOW_TOTAL = "10";
 	private static final String KEY_OUTFLOW_TOTAL = "11";
+	private static final String KEY_RENT_PAYMENT = "12";
+	
+	@Autowired
+	private MessageFactory message = null;
+	
+	@Autowired
+	UserProfileDataMapping profileMapping;
 	
 	protected Map<String,Object> doWork(Map<String,Object> arg) throws Exception {
 		log.info("inside doWork method in UserProfile");
@@ -67,8 +75,7 @@ public class UserProfile extends AbstractRule {
 		try{
 			if(null == arg || null == arg.get(EnvestConstants.ENVEST_RESPONSE) ){
 				return arg;
-			}
-			
+			}			
 			EnvestResponse eNvestRes = (EnvestResponse) arg.get(EnvestConstants.ENVEST_RESPONSE);
 			userKey = ((UserInfo)eNvestRes).getUserKey();
 			UserInfo info = (UserInfo)accountServiceUtil.getAccountAndTransaction(userKey, EnvestConstants.GET_ACCOUNT_TRANSACTIONS);
@@ -77,7 +84,9 @@ public class UserProfile extends AbstractRule {
 			Collections.sort(transactionList);
 			
 			Map<String, String> categories = userServiceUtil.getCategories();
-			double bankFee = 0.0;
+			//clear profile data for fresh building
+			UserInfoDao.clearProfileData(userKey, message);
+			/*double bankFee = 0.0;
 			double interest = 0.0;
 			double utilityBill = 0.0;
 			double creditBill = 0.0;
@@ -89,11 +98,44 @@ public class UserProfile extends AbstractRule {
 			double billPay = 0.0;
 			double inflow = 0.0;
 			double outflow = 0.0;
+			double rentPayment = 0.0;*/
+			
 			profileData = new HashMap<String,List<UserProfileResponse>>(10);
-		
+			saveProfileDataList = new ArrayList<UserProfileDataDTO>();
+			profileFactory = new UserProfileFactory();
+			UserProfileDataElement.initializeProfileMap();
 			for(TransactionDetail transaction : transactionList){
+				
 				String categoryID = transaction.getCategoryId();
 				String categoryHierarchy = categories.get(categoryID);
+				if(null != categoryHierarchy){
+					String concatenatedCategory = null;
+					String[] split = categoryHierarchy.split(",");
+					concatenatedCategory = split[0];
+					
+					if(split.length >1){
+						concatenatedCategory  = concatenatedCategory + ","+split[1];
+					}else{
+						log.info("array of category is less than 2 : "+split);
+					}
+					
+					List<UserProfileDataElement> list = profileMapping.getBean(split[0]);
+					if(null != list){
+						for(UserProfileDataElement bean : list){
+							bean.calculateDataelement(transaction, categoryHierarchy,profileFactory);
+						}
+					}
+					List<UserProfileDataElement> inflowOutflow = profileMapping.getBean("Income");
+					if(null != inflowOutflow){
+						for(UserProfileDataElement bean : inflowOutflow){
+							bean.calculateDataelement(transaction, categoryHierarchy,profileFactory);
+						}
+					}
+					//profileFactory.setProfileData(concatenatedCategory, transaction);
+					
+					
+				}				
+				/*
 				if(null != categoryHierarchy && categoryHierarchy.contains("Interest")){
 					interest = interest + transaction.getAmount();
 				}else if (null != categoryHierarchy && categoryHierarchy.contains("Bank Fees")){
@@ -113,6 +155,17 @@ public class UserProfile extends AbstractRule {
 					taxPayment = taxPayment + transaction.getAmount();
 				}else if(null != categoryHierarchy &&categoryHierarchy.contains("Transfer,Billpay")){
 					billPay = billPay + transaction.getAmount();
+				}else if(null != categoryHierarchy &&categoryHierarchy.contains("Payment,Rent") && rentPayment <= 0.0){
+					//execute this once for rent payment. save to add dto in loop
+					profileDataDTO = new UserProfileDataDTO();
+					rentPayment = transaction.getAmount();
+					profileDataDTO.setAmount(rentPayment);
+					profileDataDTO.setId(KEY_RENT_PAYMENT);
+					profileDataDTO.setType("Rent Payment");
+					profileDataDTO.setSubType("Rent Payment/month");
+					profileDataDTO.setAccountId(transaction.getAccountId());
+					saveProfileDataList.add(profileDataDTO);
+					
 				}
 				
 				if(transaction.getAmount() < 0.0){
@@ -120,9 +173,9 @@ public class UserProfile extends AbstractRule {
 				}else{
 					outflow = outflow + transaction.getAmount();
 				
-				}								
+				}*/								
 			}	
-			saveProfileDataList = new ArrayList<UserProfileDataDTO>();
+			/*//profileFactory.getProfileData();
 			
 			profileDataDTO = new UserProfileDataDTO();			
 			profileDataDTO.setAmount(interest);
@@ -199,8 +252,10 @@ public class UserProfile extends AbstractRule {
 			profileDataDTO.setId(KEY_OUTFLOW_TOTAL);
 			profileDataDTO.setType("Outflow");
 			profileDataDTO.setSubType("Total Outflow");
-			saveProfileDataList.add(profileDataDTO);
+			saveProfileDataList.add(profileDataDTO);*/
 			
+			saveProfileDataList = UserProfileDataElement.getData();
+			//saveProfileDataList = profileFactory.getProfileData();
 			for(UserProfileDataDTO dto1 : saveProfileDataList){
 				dto1.setUserKey(userKey);
 			}

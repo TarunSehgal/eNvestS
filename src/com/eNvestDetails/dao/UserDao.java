@@ -14,6 +14,9 @@ public class UserDao implements UserDetailsService  {
 			throws UsernameNotFoundException {
 		UserInfoDTO dto = UserInfoDao.authenticateUser(username, null);
 		
+		if(null == dto){
+			throw  new UsernameNotFoundException("User not found");
+		}
 		User details = new User(dto.getEnvestUserID(), dto.getPassword()); 
 		details.setId(dto.getUserkey());
 	

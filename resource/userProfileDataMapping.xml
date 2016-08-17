@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="userProfileDataMapping" class="java.util.HashMap">
+		<constructor-arg>
+			<map>					
+				<entry key="Interest"> 
+					<list>
+						<bean class="com.eNvestDetails.UserProfile.Interest">
+							<property name="captureElement">
+							<list>
+        						<value>Interest,Interest Charged</value>
+        						<value>Interest</value>
+        					</list>	
+        					</property>						
+						</bean> 
+					</list>		
+				</entry>				
+				<entry key="Bank Fees">
+					<list>
+						<bean class="com.eNvestDetails.UserProfile.BankFee">
+							<property name="captureElement">
+        						<list><value>Bank Fees</value></list>
+        					</property>
+						</bean>
+					</list>
+ 
+				</entry>
+				<entry key="Service"> 
+					<list>
+						<bean class="com.eNvestDetails.UserProfile.Payment">
+							<property name="captureElement">
+        						<list>
+        						<value>Service,Utilities</value>
+        						</list>
+        					</property>
+						</bean> 
+					</list>				
+				</entry>
+				<entry key="Transfer"> 
+					<list>
+						<bean class="com.eNvestDetails.UserProfile.Deposit">
+							<property name="captureElement">
+        						<list>
+        						<value>Transfer,Payroll</value>
+        						</list>
+        					</property>
+						</bean> 
+						<bean class="com.eNvestDetails.UserProfile.Payment">
+							<property name="captureElement">
+        						<list>
+        						<value>Transfer,Billpay</value>
+        						</list>
+        					</property>
+						</bean> 
+					</list>
+				</entry>	
+				<entry key="Payment"> 
+					<list>
+						<bean class="com.eNvestDetails.UserProfile.Payment">
+							<property name="captureElement">
+        						<list>
+        						<value>Payment,Credit Card</value>
+        						<value>Payment,Loan</value>
+        						<value>Payment,Rent</value>
+        						</list>
+        					</property>
+						</bean> 
+					</list>
+				</entry>
+				<entry key="Tax"> 
+					<list>
+						<bean class="com.eNvestDetails.UserProfile.Payment">
+							<property name="captureElement">
+        						<list>
+        						<value>Tax,Payment</value>
+        						</list>
+        					</property>
+						</bean> 
+					</list>
+				</entry>	
+				<entry key="Income"> 
+					<list>
+						<bean class="com.eNvestDetails.UserProfile.Income">
+							<property name="captureElement">
+        						<list>
+        						<value>Inflow</value>
+        						<value>Outflow</value>
+        						</list>
+        				</property>
+					</bean> 
+					</list>		
+				</entry>			
+			</map>
+		</constructor-arg>	
+	</bean>
+</beans>			

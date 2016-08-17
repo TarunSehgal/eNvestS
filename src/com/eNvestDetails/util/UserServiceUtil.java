@@ -6,16 +6,22 @@ import java.util.Map;
 
 
 
+
+
+
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -199,9 +205,12 @@ public class UserServiceUtil {
 			if(null != userInfo && password.equals(userInfo.getPassword())){
 				code =EnvestConstants.RETURN_CODE_SUCCESS;
 			}*/
+		} catch(AuthenticationException e){
+			mes = ErrorMessage.getServerErrorMessage(e.getMessage()
+					,message.getMessage("message.failure"));
 		}catch (Exception e){
-			code = EnvestConstants.RETURN_CODE_SERVER_ERROR;
-			logger.error("Error ouccured while authenticate user",e);
+			mes = ErrorMessage.getServerErrorMessage(e.getMessage()
+					,message.getMessage("message.failure"));
 		}
 		/*if(code != EnvestConstants.RETURN_CODE_SUCCESS ){
 			mes =  ErrorMessage.getMessage(code
@@ -303,5 +312,25 @@ public class UserServiceUtil {
 			return e.getErrorMessage();
 		}
 		return info;
+	}
+	
+	public EnvestResponse deleteUser(Long userKey){
+		ErrorMessage mes = null;
+		PlaidUserClient plaidUserClient;
+		try{
+			List<UserAccessTokenDTO> list = UserInfoDao.getAccesTokens(userKey);
+			plaidUserClient = plaidClient.getPlaidClient();
+			for(UserAccessTokenDTO token : list){	
+				plaidUserClient.setAccessToken(token.getAccessToken());
+				plaidUserClient.deleteUser();
+			}
+			
+			UserInfoDao.deleteUser(userKey, message);
+			mes = ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SUCCESS,message.getMessage("message.userdelete")
+					,message.getMessage("message.success"));
+		}catch(EnvestException e){
+			mes = e.getErrorMessage();
+		}
+		return mes;
 	}
 }
