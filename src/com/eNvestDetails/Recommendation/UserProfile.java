@@ -9,7 +9,10 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+
 import com.eNvestDetails.Config.MessageFactory;
+
+import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.RecommendationEngine.AbstractRule;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.TransactionDetail;
@@ -31,6 +34,9 @@ public class UserProfile extends AbstractRule {
 
 	@Autowired
 	private UserServiceUtil userServiceUtil;
+	
+	@Autowired
+	private ErrorMessageFactory errorFactory = null;
 	
 	@Autowired
 	private UserAccountServiceUtil accountServiceUtil;
@@ -85,7 +91,7 @@ public class UserProfile extends AbstractRule {
 			
 			Map<String, String> categories = userServiceUtil.getCategories();
 			//clear profile data for fresh building
-			UserInfoDao.clearProfileData(userKey, message);
+			UserInfoDao.clearProfileData(userKey, errorFactory);
 			/*double bankFee = 0.0;
 			double interest = 0.0;
 			double utilityBill = 0.0;
@@ -259,7 +265,7 @@ public class UserProfile extends AbstractRule {
 			for(UserProfileDataDTO dto1 : saveProfileDataList){
 				dto1.setUserKey(userKey);
 			}
-			UserInfoDao.saveUserProfileData(saveProfileDataList);
+			UserInfoDao.saveUserProfileData(saveProfileDataList, errorFactory);
 		}catch (Exception e){
 			log.error("error occured while building userprofile",e);
 		}

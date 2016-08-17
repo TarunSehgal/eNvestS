@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
+import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
 import com.eNvestDetails.dao.BankDao;
 import com.eNvestDetails.dao.ProductDao;
@@ -32,6 +33,9 @@ public class ProductUtil {
 	
 	@Autowired
 	private InitiateRecommendation recommendationEngine = null;
+	
+	@Autowired
+	private ErrorMessageFactory errorFactory = null;
 	
 	@Autowired
 	private InterestCalculator interestCalculator = null;
@@ -105,7 +109,7 @@ public class ProductUtil {
 		product.interestEarned = response.interest;
 		product.monthlyCashFlow = cashFlow;		
 		product.valueAtMaturity = response.maturity;
-		product.noOfYears = response.noOfYears;
+		product.maturityYears = response.noOfYears;
 		
 		product.minimumTenureYears = 1;
 		product.maxTenureYears = 10;
@@ -121,26 +125,26 @@ public class ProductUtil {
 		product.compoundingTenor = compoundingTenor;
 		product.cashFlow = response.cashFlow;
 		product.principle = response.principle;		
-		product.noOfYears = response.noOfYears;		
+		product.maturityYears = response.noOfYears;		
 		return product;
 	}
 	
 	public int SaveUserProduct(int productId, double principle,double valueAtMaturity,double interestRate, Long userKey) throws EnvestException
 	{
 		UserProductDTO userProductDTO = ProductToDTOConverter.convertProductToDTO(productId,principle,interestRate,valueAtMaturity  , userKey);
-		return UserProductDao.addNewProduct(userProductDTO, message);
+		return UserProductDao.addNewProduct(userProductDTO, message, errorFactory);
 	}
 	
 	public List<Product> GetUserProduct(Long userKey) throws EnvestException
 	{
 		List<Product> availableUserProducts = new ArrayList<Product>();
-		List<UserProductDTO> userProductDTO =UserProductDao.getAllProduct(userKey); 
+		List<UserProductDTO> userProductDTO =UserProductDao.getAllProduct(userKey, errorFactory); 
 		if(userProductDTO != null && userProductDTO.size()>0)
 		{
 			for(UserProductDTO dto:userProductDTO)
 			{
 				ProductDTO productDTO = ProductDao.getProducts(dto.getProductId());
-				BankDTO bankDTO = bankDAO.getBankInfo(productDTO.getBankId());
+				BankDTO bankDTO = bankDAO.getBankInfo(productDTO.getBankId(), errorFactory);
 				availableUserProducts.add(UserProductDTOtoProductConverter.getProductFromDTO(dto, bankDTO, productDTO));
 			}
 		}
@@ -155,7 +159,7 @@ public class ProductUtil {
 		List<Product> products = new ArrayList<Product>();
 		for(ProductDTO prdDto:productDTO)
 		{
-			BankDTO bankDTO = bankDAO.getBankInfo(prdDto.getBankId());
+			BankDTO bankDTO = bankDAO.getBankInfo(prdDto.getBankId(), errorFactory);
 			products.add(ProductDTOtoProductConverter.getProductFromDTO(prdDto, bankDTO));
 		}
 		

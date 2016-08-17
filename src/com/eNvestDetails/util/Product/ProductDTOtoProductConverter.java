@@ -39,7 +39,7 @@ public class ProductDTOtoProductConverter {
 	private static MIProduct getMip(ProductDTO productDTO, BankDTO bankDTO)
 	{
 		MIProduct mipProduct = new MIProduct(bankDTO.getBankName(), productDTO.getProductInterest(),0, productDTO.getProductId());		
-		mipProduct.noOfYears = productDTO.getMaturityYears();
+		mipProduct.maturityYears = productDTO.getMaturityYears();
 		mipProduct.minimumTenureYears = productDTO.getMinTenure();
 		mipProduct.maxTenureYears = productDTO.getMaxTenure();
 		mipProduct.preMatureClosureCharges = productDTO.getPreMatureClosureCharges();
@@ -57,7 +57,7 @@ public class ProductDTOtoProductConverter {
 	private static GoalSeekProduct getGoalSeek(ProductDTO productDTO, BankDTO bankDTO)
 	{
 		GoalSeekProduct goalSeekProduct = new GoalSeekProduct(bankDTO.getBankName(), productDTO.getProductInterest(),0, productDTO.getProductId());
-		goalSeekProduct.noOfYears = productDTO.getMaturityYears();
+		goalSeekProduct.maturityYears = productDTO.getMaturityYears();
 		return goalSeekProduct;		
 	}
 

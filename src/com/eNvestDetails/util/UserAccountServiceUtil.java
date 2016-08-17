@@ -14,6 +14,8 @@ import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
+import com.eNvestDetails.Factories.ErrorMessageFactory;
+import com.eNvestDetails.Factories.IErrorMessageFactory;
 import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.BankBalance;
 import com.eNvestDetails.Response.EnvestResponse;
@@ -43,6 +45,9 @@ public class UserAccountServiceUtil {
 	
 	@Autowired
 	private PlaidClient plaidClient = null;
+	
+	@Autowired
+	private ErrorMessageFactory errorFactory = null;
 	
 	private Logger logger = Logger.getLogger(UserAccountServiceUtil.class.getName());
 	
@@ -103,9 +108,7 @@ public class UserAccountServiceUtil {
 					MfaResponse mfa = e.getMfaResponse();
 					CommonUtil.handleMfaException(mfa, token.getUserBank());
 				}catch(PlaidServersideException e){
-					return ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
-							,e.getErrorResponse().getResolve()
-							,message.getMessage("message.failure"));
+					return errorFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
 				}
 				
 			}
@@ -172,9 +175,7 @@ public class UserAccountServiceUtil {
 					MfaResponse mfa = e.getMfaResponse();
 					CommonUtil.handleMfaException(mfa, token.getUserBank());
 				}catch(PlaidServersideException e){
-					return ErrorMessage.getMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
-							,e.getErrorResponse().getResolve()
-							,message.getMessage("message.failure"));
+					return errorFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
 				}
 				
 			}
@@ -252,7 +253,7 @@ public class UserAccountServiceUtil {
 		List<UserProfileDataDTO> list = null;
 		ProfileResponse response = null;
 		try{
-			list =  UserInfoDao.getUserProfileData(userKey);
+			list =  UserInfoDao.getUserProfileData(userKey, errorFactory);
 			response = new ProfileResponse();
 			response.setProfile(list);
 			response.setUserKey(userKey);
