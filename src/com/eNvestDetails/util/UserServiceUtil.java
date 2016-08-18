@@ -318,7 +318,7 @@ public class UserServiceUtil {
 		PlaidUserClient plaidUserClient;
 		try{
 			List<UserAccessTokenDTO> list = UserInfoDao.getAccesTokens(userKey);
-			plaidUserClient = plaidClient.getPlaidClient();
+			plaidUserClient = plaidGateway.getPlaidClient();
 			for(UserAccessTokenDTO token : list){	
 				plaidUserClient.setAccessToken(token.getAccessToken());
 				plaidUserClient.deleteUser();
