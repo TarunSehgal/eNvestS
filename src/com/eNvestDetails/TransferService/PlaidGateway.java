@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.eNvestDetails.util.IPlaidEnvironment;
 import com.plaid.client.PlaidUserClient;
 import com.plaid.client.http.ApacheHttpClientHttpDelegate;
 import com.plaid.client.http.HttpResponseWrapper;

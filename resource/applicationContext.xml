@@ -123,8 +123,7 @@
    <bean id="userDao" class="com.eNvestDetails.dao.UserDao"></bean>
 
 <bean id="passwordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder">
-		<!-- <constructor-arg value="${app.secret}" /> -->
-		<constructor-arg value="test" />
+		<constructor-arg value="${app.secret}" />
 	</bean>
 	<security:debug/>
 	<!-- <security:http pattern="/UserService/users/registerUser" security="none"/>

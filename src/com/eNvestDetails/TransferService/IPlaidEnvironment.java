@@ -1,4 +1,4 @@
-package com.eNvestDetails.util;
+package com.eNvestDetails.TransferService;
 
 public interface IPlaidEnvironment {
 	String getEnvironment();

@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.ConfigFactory;
-import com.eNvestDetails.util.IPlaidEnvironment;
 import com.plaid.client.PlaidClients;
 import com.plaid.client.PlaidPublicClient;
 import com.plaid.client.PlaidUserClient;
