@@ -10,100 +10,96 @@ import com.eNvestDetails.dto.UserProfileDataDTO;
 
 public class Income extends UserProfileDataElement{
 
-	private List<String >captureElement = null;
-	
-	public List<String> getCaptureElement() {
-		return captureElement;
+	@Override
+	protected void extractPrimaryInformation(UserProfileDataDTO userProfile, TransactionDetail transaction){
+		switch (userProfile.getId()) {
+		
+		case "10": // inflow
+			addIfNegative(userProfile, getAmount(transaction));
+			break;
+			
+		case "11": // outflow
+			addIfPositive(userProfile, getAmount(transaction));
+			break;
+			
+		case "15": // outflow 30 days
+			addAmountOfLastDays(transaction, userProfile, 30, false);
+			break;
+			
+		case "16": // outflow 90 days
+			addAmountOfLastDays(transaction, userProfile, 90, false);
+			break;
+			
+		case "17": // inflow 30 days
+			addAmountOfLastDays(transaction, userProfile, 30, true);
+			break;
+			
+		case "18": // inflow 90 days
+			addAmountOfLastDays(transaction, userProfile, 90, true);
+			break;
+			
+		default:						
+			break;
+		}	
 	}
 
-	public void setCaptureElement(List<String> captureElement) {
-		this.captureElement = captureElement;
-	}
-	
-	@Override
-	public void calculateDataelement(TransactionDetail transaction, String categoryHierarchy,UserProfileFactory profileFactory) {
-		// TODO Auto-generated method stub
-		try {
-			/*if (!allowedCategory(categoryHierarchy, handleCategory)) {
-				return;
-			}*/
-			for (String captureDTO : captureElement) {
-				UserProfileDataDTO dto = getProfileDataMap().get(captureDTO);
-				if (null == dto) {
-					dto = profileFactory.getProfileDTO(captureDTO);
-					getProfileDataMap().put(captureDTO, dto);
-				}
-				if(isAllowedCategory(transaction.getCategoryId(), dto.getPlaidCategory())){
-					if("10".equals(dto.getId())){//inflow
-						if(transaction.getAmount() < 0.0){
-							dto.setAmount(dto.getAmount() + transaction.getAmount());
-						}
-					}else if ("11".equals(dto.getId())){//outflow
-						if(transaction.getAmount() > 0.0){
-							dto.setAmount(dto.getAmount() +transaction.getAmount());
-						}					
-					}else if ("15".equals(dto.getId())){//outflow 30 days
-						if(transaction.getAmount() > 0.0){
-							if(dto.getInflowOutflowStartDate() == null){
-								dto.setInflowOutflowStartDate(transaction.getDate()
-										.toDate());
-							}
-							Date startDate = dto.getInflowOutflowStartDate();
-							Date transactionDate = transaction.getDate().toDate();
-							if(transactionDate.after(DateUtils.addDays(startDate, -30))){
-								dto.setAmount(dto.getAmount() +transaction.getAmount());								
-							}
-						}
-																	
-					}else if ("16".equals(dto.getId())){//outflow 90 days
-						if(transaction.getAmount() > 0.0){
-							if(dto.getInflowOutflowStartDate() == null){
-								dto.setInflowOutflowStartDate(transaction.getDate()
-										.toDate());
-							}
-							Date startDate = dto.getInflowOutflowStartDate();
-							Date transactionDate = transaction.getDate().toDate();
-							if(transactionDate.after(DateUtils.addDays(startDate, -90))){
-								dto.setAmount(dto.getAmount() +transaction.getAmount());								
-							}
-						}											
-					}else if ("17".equals(dto.getId())){//inflow 30 days
-						if(transaction.getAmount() < 0.0){
-							if(dto.getInflowOutflowStartDate() == null){
-								dto.setInflowOutflowStartDate(transaction.getDate()
-										.toDate());
-							}
-							Date startDate = dto.getInflowOutflowStartDate();
-							Date transactionDate = transaction.getDate().toDate();
-							if(transactionDate.after(DateUtils.addDays(startDate, -30))){
-								dto.setAmount(dto.getAmount() +transaction.getAmount());								
-							}
-						}											
-					}else if ("18".equals(dto.getId())){//inflow 30 days
-						if(transaction.getAmount() < 0.0){
-							if(dto.getInflowOutflowStartDate() == null){
-								dto.setInflowOutflowStartDate(transaction.getDate()
-										.toDate());
-							}
-							Date startDate = dto.getInflowOutflowStartDate();
-							Date transactionDate = transaction.getDate().toDate();
-							if(transactionDate.after(DateUtils.addDays(startDate, -90))){
-								dto.setAmount(dto.getAmount() +transaction.getAmount());								
-							}
-						}											
-					}
-				}
-							
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+	private void addIfNegative(UserProfileDataDTO userProfileDto, double amount){
+		if(amount < 0.0){
+			addAmount(userProfileDto, amount);;
 		}
 	}
-
+	
+	private void addIfPositive(UserProfileDataDTO userProfileDto, double amount){
+		if(amount > 0.0){
+			addAmount(userProfileDto, amount);;
+		}
+	}
+	
+	private boolean isNegativeAmount(TransactionDetail transaction) {
+		return getAmount(transaction) < 0.0;
+	}
+	
+	private boolean isPositiveAmount(TransactionDetail transaction) {
+		return getAmount(transaction) > 0.0;
+	}
+	
+	private Date getTransactionDate(TransactionDetail transaction) {
+		return transaction.getDate().toDate();
+	}
+	
+	private Date setAndGetInflowOutflowStartDate(UserProfileDataDTO userProfileDto, TransactionDetail transaction){
+		if(userProfileDto.getInflowOutflowStartDate() != null)
+			return userProfileDto.getInflowOutflowStartDate();
+		
+		userProfileDto.setInflowOutflowStartDate(getTransactionDate(transaction));
+		return userProfileDto.getInflowOutflowStartDate();		
+	}
+	
+	private boolean isTransactionDateInRange(Date transactionDate, Date startDate, int days){
+		return transactionDate.after(DateUtils.addDays(startDate, days * -1));
+	}
+	
+	private void addAmountOfLastDays(TransactionDetail transaction,
+			UserProfileDataDTO dto, int days, boolean inflows) {
+		if(shouldIncludeTransaction(transaction, inflows)){
+			Date startDate = setAndGetInflowOutflowStartDate(dto, transaction);
+			Date transactionDate = getTransactionDate(transaction);
+			
+			if(isTransactionDateInRange(transactionDate, startDate, days)){
+				addAmount(dto, getAmount(transaction));																
+			}
+		}
+	}
+	
+	private boolean shouldIncludeTransaction(TransactionDetail transaction, boolean inflow){
+		if(inflow){
+			return isNegativeAmount(transaction);
+		}
+		return isPositiveAmount(transaction);
+	}
+	
 	@Override
-	public List<UserProfileDataDTO> returnDataList() {
-		// TODO Auto-generated method stub
+	public List<UserProfileDataDTO> returnDataList() {		
 		return null;
 	}
-
 }

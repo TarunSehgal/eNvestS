@@ -1,5 +1,8 @@
 package com.eNvestDetails.UserProfile;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +10,8 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Component;
+
+import com.eNvestDetails.dto.UserProfileDataDTO;
 
 @Component
 public class UserProfileDataMapping {
@@ -33,5 +38,18 @@ public class UserProfileDataMapping {
 	
 	public List<UserProfileDataElement> getBean(String value){
 		return data.get(value);
+	}
+	
+	public List<UserProfileDataDTO> getAllValues(){
+		Collection<List<UserProfileDataElement>> allBean =  data.values();
+		Iterator<List<UserProfileDataElement>> iterator = allBean.iterator();
+		List<UserProfileDataDTO> dtoList = new ArrayList<UserProfileDataDTO>(100);
+		while(iterator.hasNext()){
+			List<UserProfileDataElement> list = iterator.next();
+			for(UserProfileDataElement dataElement : list){
+				dtoList.addAll(dataElement.getData());
+			}
+		}
+		return dtoList;
 	}
 }
