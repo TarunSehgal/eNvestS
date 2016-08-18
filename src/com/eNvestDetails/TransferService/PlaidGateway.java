@@ -93,4 +93,11 @@ public PlaidGateway()
 	public PlaidUserClient getPlaidClient() {
 		return plaidUserClient;
 	}
+
+
+	@Override
+	public void deleteAccount(String accessToken) {
+		plaidUserClient.setAccessToken(accessToken);
+		plaidUserClient.deleteUser();		
+	}
 }

@@ -230,10 +230,19 @@ public class UserInfoDao {
 	}
 	
 	public static List<UserAccessTokenDTO> getAccesTokens(Long id){
-		return getAccesTokens(id,null);		
+		return getAccessTokensList(id,null);		
 	}
 	
-	public static List<UserAccessTokenDTO> getAccesTokens(Long id,String bank){
+	public static UserAccessTokenDTO getAccesTokens(Long id,String bank){
+		
+		List<UserAccessTokenDTO> tokens = getAccessTokensList(id, bank);		
+		if(tokens != null && tokens.size() > 0)
+			return tokens.get(0);
+		
+		return null;
+	}
+	
+	private static List<UserAccessTokenDTO> getAccessTokensList(Long id,String bank){
 		Session session = null;
 		List<UserAccessTokenDTO> list = null;
 		try{

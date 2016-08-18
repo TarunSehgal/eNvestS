@@ -272,32 +272,18 @@ public class UserServiceUtil {
 
 	public EnvestResponse submitMFA(Long userKey,String mfa,String bank){
 		UserInfo info = null;
-		PlaidUserClient plaidUserClient = null;
 		try{
-			List<UserAccessTokenDTO> list = UserInfoDao.getAccesTokens(userKey,bank);
-			UserAccessTokenDTO  dto = null;
-			if(null != list && list.size() > 0){
-				dto = list.get(0);
-			}else{
+			UserAccessTokenDTO  dto = UserInfoDao.getAccesTokens(userKey,bank);
+			if(dto==null)
+			{
 				logger.info("access token not found");
 				return errorFactory.getServerErrorMessage("Access token not found");
 			}
 			
-			PlaidHttpRequest request  = plaidRequestFactory.GetPlaidMFARequest(mfa, dto.getAccessToken());
-			 //PlaidHttpRequest request = new PlaidHttpRequest("/info/step");
-			 //Map<String, Object> requestParams = new HashMap<String, Object>();
-			 //request.addParameter("client_id",config.getResultString("clientid"));
-			 //request.addParameter("secret",config.getResultString("key"));
-			 //request.addParameter("mfa",mfa);
-			 //request.addParameter("access_token",dto.getAccessToken());		 
-/*			 ApacheHttpClientHttpDelegate httpDelegate =  new ApacheHttpClientHttpDelegate
-					 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());*/
+			PlaidHttpRequest request  = plaidRequestFactory.GetPlaidMFARequest(mfa, dto.getAccessToken());			 
 		    HttpResponseWrapper<InfoResponse> response = plaidGateway.executePostRequest(request, InfoResponse.class);
 		    info = CommonUtil.parseInfoResponse(response.getResponseBody(), null, null);
 		    info.setUserKey(userKey);
-/*		    plaidUserClient = plaidClient.getPlaidClient();
-		    plaidUserClient.setAccessToken(dto.getAccessToken());
-		    plaidUserClient.addProduct("connect", null);*/
 		    plaidGateway.addConnectProduct(null, dto.getAccessToken());
 		    UserInfoDao.saveUserInfo(info,false,errorFactory);
 		}catch(PlaidMfaException e){
@@ -315,13 +301,10 @@ public class UserServiceUtil {
 	
 	public EnvestResponse deleteUser(Long userKey){
 		ErrorMessage mes = null;
-		PlaidUserClient plaidUserClient;
 		try{
 			List<UserAccessTokenDTO> list = UserInfoDao.getAccesTokens(userKey);
-			plaidUserClient = plaidGateway.getPlaidClient();
 			for(UserAccessTokenDTO token : list){	
-				plaidUserClient.setAccessToken(token.getAccessToken());
-				plaidUserClient.deleteUser();
+				plaidGateway.deleteAccount(token.getAccessToken());
 			}
 			
 			UserInfoDao.deleteUser(userKey, errorFactory);

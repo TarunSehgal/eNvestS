@@ -2,9 +2,7 @@ package com.eNvestDetails.Factories;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.TransferService.IPlaidEnvironment;
-import com.eNvestDetails.TransferService.PlaidEnvironment;
 import com.plaid.client.http.PlaidHttpRequest;
 
 public class PlaidRequestFactory implements IPlaidRequestFactory {

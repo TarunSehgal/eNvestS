@@ -18,4 +18,5 @@ public interface IPlaidGateway {
 	public TransactionsResponse addConnectProduct(ConnectOptions options);
 	public InfoResponse getInfoResponse(String userName, String password, String bankName, InfoOptions options);
 	public PlaidUserClient getPlaidClient();
+	public void deleteAccount(String accessToken);
 }

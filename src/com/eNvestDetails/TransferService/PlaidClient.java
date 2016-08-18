@@ -11,7 +11,7 @@ import com.plaid.client.PlaidUserClient;
 
 @Component
 @Scope("singleton")
-public class PlaidClient {
+class PlaidClient {
 	
 	 public static final String BASE_URI_PRODUCTION = PlaidClients.BASE_URI_PRODUCTION;
 	 
