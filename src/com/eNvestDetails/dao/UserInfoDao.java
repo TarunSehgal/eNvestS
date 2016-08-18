@@ -195,10 +195,10 @@ public class UserInfoDao {
 		Session session = null;
 		try{
 			session = HibernateUtils.getSessionFactory().openSession();
-			userInfoDTO = new UserInfoDTO();
-			userInfoDTO.setEnvestUserID(userId.toUpperCase());
+			//userInfoDTO = new UserInfoDTO();
+			//userInfoDTO.setEnvestUserID(userId.toUpperCase());
 			List userExists = session.createCriteria(UserInfoDTO.class)
-					.add(Restrictions.eq("envestUserID", userInfoDTO.getEnvestUserID())).
+					.add(Restrictions.eq("envestUserID", userId.toUpperCase())).
 					add(Restrictions.eq("isActive", "Y")).list();
 			if(null == userExists || userExists.size() > 0){
 				userInfoDTO = (UserInfoDTO)userExists.get(0);
@@ -255,28 +255,8 @@ public class UserInfoDao {
 		return list;		
 	}
 	
-	/*public static void saveUserProfile(List<UserProfileDTO> userProfile)throws EnvestException{
-		log.info("inside method saveUserProfile");
-		UserInfoDTO userInfoDTO = null;
-		Session session = null;
-		try{
-			session = HibernateUtils.getSessionFactory().openSession();
-			session.beginTransaction();
-			for(UserProfileDTO adto : userProfile){
-				session.saveOrUpdate(adto);
-			}
-			session.getTransaction().commit();
-		}catch (HibernateException e) {
-			log.error("Error occured while getting user info",e);
-			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
-					,e.getMessage()
-					,null
-					,"failure")) ;	
-					
-		}finally{
-			session.close();
-		}			
-	}*/
+
+	
 	
 	public static void saveUserProfileData(List<UserProfileDataDTO> userProfile, ErrorMessageFactory errorFactory)throws EnvestException{
 		log.info("inside method saveUserProfileData");
@@ -298,25 +278,7 @@ public class UserInfoDao {
 		}			
 	}
 	
-	/*public static List<UserProfileDTO> getUserProfile(Long userKey) throws EnvestException{
-		Session session = null;
-		List<UserProfileDTO> list = null;
-		try{
-			session = HibernateUtils.getSessionFactory().openSession();
-			//need to add active flag condition
-			list = session.createCriteria(UserProfileDTO.class).add(Restrictions.eq("userKey", userKey)).list();
-		}catch (HibernateException e) {
-			log.error("Error occured while getting access token",e);
-			throw new EnvestException(new ErrorMessage(EnvestConstants.RETURN_CODE_SERVER_ERROR
-					,e.getMessage()
-					,null
-					,"failure")) ;			
-		}finally{
-			session.close();
-		}
-		return list;	
-	}*/
-	
+
 	public static List<UserProfileDataDTO> getUserProfileData(Long userKey, ErrorMessageFactory errorFactory) throws EnvestException{
 		Session session = null;
 		List<UserProfileDataDTO> list = null;
@@ -347,5 +309,47 @@ public class UserInfoDao {
 			session.close();
 		}
 		return true;
+	}
+	
+	public static void deleteUser(Long key 
+			, ErrorMessageFactory errorFactory) throws EnvestException{
+		Session session = null;
+		try{
+			session = HibernateUtils.getSessionFactory().openSession();
+			session.beginTransaction();
+			session.createQuery("delete from UserEmailDTO email where email.userKey = :userKey")
+				.setLong("userKey", key).executeUpdate();
+			session.createQuery("delete from UserPhoneDTO phone where phone.userKey = :userKey")
+			.setLong("userKey", key).executeUpdate();
+			session.createQuery("delete from AddressDTO addr where addr.userKey = :userKey")
+			.setLong("userKey", key).executeUpdate();
+			session.createQuery("delete from AccountsDTO acc where acc.userKey = :userKey")
+			.setLong("userKey", key).executeUpdate();
+			session.createQuery("delete from UserAccessTokenDTO tok where tok.userKey = :userKey")
+			.setLong("userKey", key).executeUpdate();
+			session.createQuery("delete from UserInfoDTO inf where inf.userkey = :userKey")
+			.setLong("userKey", key).executeUpdate();
+			session.createQuery("delete from UserProfileDataDTO pro where pro.userKey = :userKey")
+			.setLong("userKey", key).executeUpdate();
+			session.getTransaction().commit();
+		}catch(HibernateException e){
+			log.error("error deleting user",e);
+			throw new EnvestException(errorFactory.getServerErrorMessage(e.getMessage())) ;	
+		}
+	}
+	
+	public static void clearProfileData(Long key 
+			, ErrorMessageFactory errorFactory) throws EnvestException{
+		Session session = null;
+		try{
+			session = HibernateUtils.getSessionFactory().openSession();
+			session.beginTransaction();	
+			session.createQuery("delete from UserProfileDataDTO pro where pro.userKey = :userKey")
+			.setLong("userKey", key).executeUpdate();
+			session.getTransaction().commit();
+		}catch(HibernateException e){
+			log.error("error deleting user",e);
+			throw new EnvestException(errorFactory.getServerErrorMessage(e.getMessage())) ;	
+		}
 	}
 }

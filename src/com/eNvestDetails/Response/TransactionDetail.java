@@ -235,7 +235,7 @@ public class TransactionDetail extends EnvestResponse implements Comparable<Tran
 	@Override
 	public int compareTo(TransactionDetail o) {
 		LocalDate date = o.getDate();
-		return this.getDate().isAfter(date) ? 1: -1;
+		return this.getDate().isBefore(date) ? 1: -1;
 		//return 0;
 		//return this.getDate().isAfter(partial) > date? 1: -1;
 	}
