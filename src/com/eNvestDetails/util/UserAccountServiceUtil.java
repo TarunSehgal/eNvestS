@@ -22,6 +22,7 @@ import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.ProfileResponse;
 import com.eNvestDetails.Response.TransactionDetail;
 import com.eNvestDetails.Response.UserInfo;
+import com.eNvestDetails.TransferService.PlaidGateway;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
@@ -44,7 +45,7 @@ public class UserAccountServiceUtil {
 	private MessageFactory message = null;
 	
 	@Autowired
-	private PlaidClient plaidClient = null;
+	private PlaidGateway plaidGateway = null;
 	
 	@Autowired
 	private ErrorMessageFactory errorFactory = null;
@@ -62,7 +63,7 @@ public class UserAccountServiceUtil {
 		try{
 			List<UserAccessTokenDTO> list = UserInfoDao.getAccesTokens(userKey);
 			
-			plaidUserClient = plaidClient.getPlaidClient();
+			plaidUserClient = plaidGateway.getPlaidClient();
 			response = new UserInfo();
 			List<AccountDetail> accDetails = new ArrayList<AccountDetail>(10);
 			List<TransactionDetail> transactionsList = new ArrayList<TransactionDetail>();
@@ -78,7 +79,7 @@ public class UserAccountServiceUtil {
 					response.setUserKey(userKey);
 					GetOptions option = new GetOptions();
 					option.setGte("04/01/2016");
-					tResponse = plaidUserClient.updateTransactions();
+					tResponse = plaidUserClient.updateTransactions();					
 					List<Account> acc = null;
 					if(null !=tResponse.getAccounts()){
 						acc = tResponse.getAccounts();
@@ -142,7 +143,7 @@ public class UserAccountServiceUtil {
 		try{
 			List<UserAccessTokenDTO> list = UserInfoDao.getAccesTokens(userKey);
 			
-			plaidUserClient = plaidClient.getPlaidClient();
+			plaidUserClient = plaidGateway.getPlaidClient();
 			response = new UserInfo();
 			List<AccountDetail> accDetails = new ArrayList<AccountDetail>(10);
 			List<TransactionDetail> transactionsList = new ArrayList<TransactionDetail>();

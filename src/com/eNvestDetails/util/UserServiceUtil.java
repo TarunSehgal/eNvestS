@@ -34,6 +34,7 @@ import com.eNvestDetails.Response.MfaResponseDetail;
 import com.eNvestDetails.Response.PlaidCategory;
 import com.eNvestDetails.Response.UserInfo;
 import com.eNvestDetails.Response.UserProfileResponse;
+import com.eNvestDetails.TransferService.PlaidGateway;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
@@ -63,7 +64,7 @@ public class UserServiceUtil {
 	private ErrorMessageFactory errorFactory = null;
 	
 	@Autowired
-	private PlaidClient plaidClient = null;
+	private PlaidGateway plaidGateway = null;
 	
 	private Logger logger = Logger.getLogger(UserServiceUtil.class.getName());
 	
@@ -90,9 +91,9 @@ public class UserServiceUtil {
 			/*plaidPublicClient = plaidClient.getPlaidPublicClient();
 			res = plaidPublicClient.getAllCategories();*/
 			 PlaidHttpRequest request = new PlaidHttpRequest("/categories");
-			 ApacheHttpClientHttpDelegate httpDelegate =  new ApacheHttpClientHttpDelegate
-					 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());
-		    HttpResponseWrapper<PlaidCategory[]> response = httpDelegate.doGet(request, PlaidCategory[].class);
+/*			 ApacheHttpClientHttpDelegate httpDelegate =  new ApacheHttpClientHttpDelegate
+					 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());*/
+		    HttpResponseWrapper<PlaidCategory[]> response = plaidGateway.executeGetRequest(request, PlaidCategory[].class);
 			for(PlaidCategory category : response.getResponseBody()){
 				String path = "";
 				for(String hierarchy: category.getHierarchy()){
@@ -112,12 +113,14 @@ public class UserServiceUtil {
 		Credentials testCredentials = null;
 		InfoResponse r = null;
 		try{
-		plaidUserClient = plaidClient.getPlaidClient();
+/*		plaidUserClient = plaidClient.getPlaidClient();
 		//plaidUserClient.setAccessToken("test_wells");
 		testCredentials = new Credentials(userId, password);
 		r = plaidUserClient.info(testCredentials, bank,
-					null);
-		plaidUserClient.addProduct("connect", null);
+					null);*/
+		r = plaidGateway.getInfoResponse(userId, password, bank, null);
+		plaidGateway.addConnectProduct(null);
+		//plaidUserClient.addProduct("connect", null);
 		}catch(PlaidMfaException e){
 			logger.info("MFA required");
 			return CommonUtil.handleMfaException(e.getMfaResponse(), bank);
@@ -280,14 +283,15 @@ public class UserServiceUtil {
 			 //request.addParameter("secret",config.getResultString("key"));
 			 //request.addParameter("mfa",mfa);
 			 //request.addParameter("access_token",dto.getAccessToken());		 
-			 ApacheHttpClientHttpDelegate httpDelegate =  new ApacheHttpClientHttpDelegate
-					 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
-		    HttpResponseWrapper<InfoResponse> response = httpDelegate.doPost(request, InfoResponse.class);
+/*			 ApacheHttpClientHttpDelegate httpDelegate =  new ApacheHttpClientHttpDelegate
+					 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());*/
+		    HttpResponseWrapper<InfoResponse> response = plaidGateway.executePostRequest(request, InfoResponse.class);
 		    info = CommonUtil.parseInfoResponse(response.getResponseBody(), null, null);
 		    info.setUserKey(userKey);
-		    plaidUserClient = plaidClient.getPlaidClient();
+/*		    plaidUserClient = plaidClient.getPlaidClient();
 		    plaidUserClient.setAccessToken(dto.getAccessToken());
-		    plaidUserClient.addProduct("connect", null);
+		    plaidUserClient.addProduct("connect", null);*/
+		    plaidGateway.addConnectProduct(null, dto.getAccessToken());
 		    UserInfoDao.saveUserInfo(info,false,errorFactory);
 		}catch(PlaidMfaException e){
 			logger.info("MFA required");
