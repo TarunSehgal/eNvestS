@@ -1,11 +1,12 @@
-package com.eNvestDetails.Factories;
+package com.eNvestDetails.TransferService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import com.eNvestDetails.TransferService.IPlaidEnvironment;
 import com.plaid.client.http.PlaidHttpRequest;
 
-public class PlaidRequestFactory implements IPlaidRequestFactory {
+@Component
+class PlaidRequestFactory implements IPlaidRequestFactory {
 
 	@Autowired
 	IPlaidEnvironment plaidEnvironment;
@@ -15,12 +16,18 @@ public class PlaidRequestFactory implements IPlaidRequestFactory {
 
 	@Override
 	public PlaidHttpRequest GetPlaidMFARequest(String mfa, String accessToken) {
-		PlaidHttpRequest request = new PlaidHttpRequest("/info/step");
+		PlaidHttpRequest request = getPlaidRequest("/info/step");
 		request.addParameter("client_id", plaidEnvironment.getClientId());
 		request.addParameter("secret", plaidEnvironment.getSecretKey());
 		request.addParameter("mfa", mfa);
 		request.addParameter("access_token", accessToken);
 
 		return request;
+	}
+	
+	@Override
+	public PlaidHttpRequest getPlaidRequest(String path)
+	{
+		return new PlaidHttpRequest(path);
 	}
 }

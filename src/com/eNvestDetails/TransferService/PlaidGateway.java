@@ -27,6 +27,8 @@ public class PlaidGateway implements IPlaidGateway {
 private PlaidClient plaidClient;
 	@Autowired
 	PlaidToEnvestConverter plaidToEnvestConverter;
+	@Autowired
+	IPlaidRequestFactory plaidRequestFactory;
 private PlaidUserClient plaidUserClient;
 
 public PlaidGateway()
@@ -36,19 +38,30 @@ public PlaidGateway()
 
 		
 	@Override
-	public <R> HttpResponseWrapper<R> executePostRequest(PlaidHttpRequest input, Class<R> inputClass)
+	public <R> HttpResponseWrapper<R> createExecutePostRequest(String path, Class<R> inputClass)
 	{
+		PlaidHttpRequest request = plaidRequestFactory.getPlaidRequest(path);
 		 httpDelegate =  new ApacheHttpClientHttpDelegate
 				 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
-	    return (HttpResponseWrapper<R>) httpDelegate.doPost(input, inputClass);
+	    return (HttpResponseWrapper<R>) httpDelegate.doPost(request, inputClass);
 	}
 	
 	@Override
-	public <R> HttpResponseWrapper<R> executeGetRequest(PlaidHttpRequest input, Class<R> inputClass)
+	public <R> HttpResponseWrapper<R> createExecuteMFARequest(String mfa, String accessToken, Class<R> inputClass)
 	{
+		PlaidHttpRequest request = plaidRequestFactory.GetPlaidMFARequest(mfa, accessToken);
+		 httpDelegate =  new ApacheHttpClientHttpDelegate
+				 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
+	    return (HttpResponseWrapper<R>) httpDelegate.doPost(request, inputClass);
+	}
+	
+	@Override
+	public <R> HttpResponseWrapper<R> createExecuteGetRequest(String path, Class<R> inputClass)
+	{
+		PlaidHttpRequest request = plaidRequestFactory.getPlaidRequest(path);
 		 httpDelegate =  new ApacheHttpClientHttpDelegate
 				 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());
-	    return (HttpResponseWrapper<R>) httpDelegate.doGet(input, inputClass);
+	    return (HttpResponseWrapper<R>) httpDelegate.doGet(request, inputClass);
 	}
 	
 	@PostConstruct

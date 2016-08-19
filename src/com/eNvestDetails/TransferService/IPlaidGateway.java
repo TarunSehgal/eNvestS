@@ -10,8 +10,9 @@ import com.plaid.client.response.InfoResponse;
 import com.plaid.client.response.TransactionsResponse;
 
 public interface IPlaidGateway {
-	public <R> HttpResponseWrapper<R> executeGetRequest(PlaidHttpRequest input, Class<R> inputClass);
-	public <R> HttpResponseWrapper<R> executePostRequest(PlaidHttpRequest input, Class<R> inputClass);	
+	public <R> HttpResponseWrapper<R> createExecuteGetRequest(String path, Class<R> inputClass);
+	public <R> HttpResponseWrapper<R> createExecutePostRequest(String path, Class<R> inputClass);	
+	public <R> HttpResponseWrapper<R> createExecuteMFARequest(String mfa, String accessToken, Class<R> inputClass);
 	public UpdateTransactionResult updateTransactions(String acessToken);
 	public UpdateTransactionResult updateTransactions(String accessToken, GetOptions options);
 	public TransactionsResponse addConnectProduct(ConnectOptions options, String accesToken);
