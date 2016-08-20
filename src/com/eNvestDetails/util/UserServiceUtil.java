@@ -40,7 +40,6 @@ import com.eNvestDetails.security.User;
 import com.plaid.client.exception.PlaidMfaException;
 import com.plaid.client.exception.PlaidServersideException;
 import com.plaid.client.http.HttpResponseWrapper;
-import com.plaid.client.response.InfoResponse;
 
 @Component
 public class UserServiceUtil {
@@ -89,9 +88,9 @@ public class UserServiceUtil {
 	
 	public EnvestResponse getInfo(String userId, String password, String bank){
 		logger.info("Starting to get user info");
-		InfoResponse r = null;
+		UserInfo userInfo;
 		try{
-		r = plaidGateway.getInfoResponse(userId, password, bank, null);
+		userInfo = plaidGateway.getInfoResponse(userId, password, bank, null);
 		plaidGateway.addConnectProduct(null);
 		}catch(PlaidMfaException e){
 			logger.info("MFA required");
@@ -101,8 +100,6 @@ public class UserServiceUtil {
 			logger.error("Error occured while retriving user info", e);
 			return errorFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
 		}
-		
-		UserInfo userInfo = CommonUtil.parseInfoResponse(r, bank, userId);
 
 		logger.info("Exiting user info method");
 		return userInfo;
@@ -221,8 +218,7 @@ public class UserServiceUtil {
 				return errorFactory.getServerErrorMessage("Access token not found");
 			}
 			
-		    HttpResponseWrapper<InfoResponse> response = plaidGateway.createExecuteMFARequest(mfa, dto.getAccessToken(), InfoResponse.class);
-		    info = CommonUtil.parseInfoResponse(response.getResponseBody(), null, null);
+		    info = plaidGateway.createExecuteMFARequest(mfa, dto.getAccessToken());
 		    info.setUserKey(userKey);
 		    plaidGateway.addConnectProduct(null, dto.getAccessToken());
 		    UserInfoDao.saveUserInfo(info,false,errorFactory);

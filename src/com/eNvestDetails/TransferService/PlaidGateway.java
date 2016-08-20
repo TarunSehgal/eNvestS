@@ -1,5 +1,8 @@
 package com.eNvestDetails.TransferService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -7,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.eNvestDetails.Response.PlaidCategory;
+import com.eNvestDetails.Response.UserInfo;
 import com.plaid.client.PlaidUserClient;
 import com.plaid.client.http.ApacheHttpClientHttpDelegate;
 import com.plaid.client.http.HttpResponseWrapper;
@@ -26,9 +31,10 @@ public class PlaidGateway implements IPlaidGateway {
 	@Autowired
 private PlaidClient plaidClient;
 	@Autowired
-	PlaidToEnvestConverter plaidToEnvestConverter;
+	IPlaidToEnvestConverter plaidToEnvestConverter;
 	@Autowired
 	IPlaidRequestFactory plaidRequestFactory;
+
 private PlaidUserClient plaidUserClient;
 
 public PlaidGateway()
@@ -47,12 +53,13 @@ public PlaidGateway()
 	}
 	
 	@Override
-	public <R> HttpResponseWrapper<R> createExecuteMFARequest(String mfa, String accessToken, Class<R> inputClass)
+	public UserInfo createExecuteMFARequest(String mfa, String accessToken)
 	{
 		PlaidHttpRequest request = plaidRequestFactory.GetPlaidMFARequest(mfa, accessToken);
 		 httpDelegate =  new ApacheHttpClientHttpDelegate
 				 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
-	    return (HttpResponseWrapper<R>) httpDelegate.doPost(request, inputClass);
+	    HttpResponseWrapper<InfoResponse> response= httpDelegate.doPost(request, InfoResponse.class);
+	    return plaidToEnvestConverter.convertInforesponseToUserinfo(response.getResponseBody(), null, null);
 	}
 	
 	@Override
@@ -73,15 +80,15 @@ public PlaidGateway()
 	}
 
 	@Override
-	public UpdateTransactionResult updateTransactions(String accessToken, GetOptions options) {
+	public UpdateTransactionResult updateTransactions(String accessToken, GetOptions options, String bank) {
 		plaidUserClient.setAccessToken(accessToken);
-		return plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions(options));
+		return plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions(options), bank, getCategories());
 	}
 	
 	@Override
-	public UpdateTransactionResult updateTransactions(String accessToken) {
+	public UpdateTransactionResult updateTransactions(String accessToken, String bank) {
 		plaidUserClient.setAccessToken(accessToken);	
-		return plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions());
+		return plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions(), bank, getCategories());
 	}
 
 	@Override
@@ -96,9 +103,10 @@ public PlaidGateway()
 	}
 
 	@Override
-	public InfoResponse getInfoResponse(String userName, String password, String bankName, InfoOptions options) {
-		Credentials testCredentials = new Credentials(userName, password);
-		return plaidUserClient.info(testCredentials, bankName,	options);
+	public UserInfo getInfoResponse(String userId, String password, String bankName, InfoOptions options) {
+		Credentials testCredentials = new Credentials(userId, password);
+		InfoResponse response =  plaidUserClient.info(testCredentials, bankName,	options);
+		return plaidToEnvestConverter.convertInforesponseToUserinfo(response, bankName, userId);
 	}
 
 
@@ -112,5 +120,21 @@ public PlaidGateway()
 	public void deleteAccount(String accessToken) {
 		plaidUserClient.setAccessToken(accessToken);
 		plaidUserClient.deleteUser();		
+	}
+	
+	public Map<String,String> getCategories(){
+		Map<String,String> cmap = new HashMap<String,String>(1000);
+		try{
+		    HttpResponseWrapper<PlaidCategory[]> response = createExecuteGetRequest("/categories", PlaidCategory[].class);
+			for(PlaidCategory category : response.getResponseBody()){
+				String path = "";
+				for(String hierarchy: category.getHierarchy()){
+					path = path +hierarchy +",";
+				}
+				cmap.put(category.getId(), path);	
+			}
+		}catch (Exception e){
+		}
+		return cmap;
 	}
 }

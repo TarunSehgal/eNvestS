@@ -10,19 +10,17 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.eNvestDetails.Config.ConfigFactory;
-import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
-import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
-import com.eNvestDetails.Factories.IErrorMessageFactory;
 import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.BankBalance;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.ProfileResponse;
 import com.eNvestDetails.Response.TransactionDetail;
 import com.eNvestDetails.Response.UserInfo;
+import com.eNvestDetails.Response.UserInfo.Summary;
 import com.eNvestDetails.TransferService.PlaidGateway;
+import com.eNvestDetails.TransferService.UpdateTransactionResult;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
@@ -39,12 +37,6 @@ import com.plaid.client.response.TransactionsResponse;
 public class UserAccountServiceUtil {
 	
 	@Autowired
-	private ConfigFactory config = null;
-	
-	@Autowired
-	private MessageFactory message = null;
-	
-	@Autowired
 	private PlaidGateway plaidGateway = null;
 	
 	@Autowired
@@ -52,18 +44,12 @@ public class UserAccountServiceUtil {
 	
 	private Logger logger = Logger.getLogger(UserAccountServiceUtil.class.getName());
 	
-	@Autowired
-	private UserServiceUtil serviceUtil;
-	
 	public EnvestResponse getDashboardData(Long userKey,int type){
 
 		UserInfo response = null;
-		PlaidUserClient plaidUserClient = null;
 		TransactionsResponse tResponse = null;
 		try{
 			List<UserAccessTokenDTO> list = UserInfoDao.getAccesTokens(userKey);
-			
-			plaidUserClient = plaidGateway.getPlaidClient();
 			response = new UserInfo();
 			List<AccountDetail> accDetails = new ArrayList<AccountDetail>(10);
 			List<TransactionDetail> transactionsList = new ArrayList<TransactionDetail>();
@@ -74,35 +60,22 @@ public class UserAccountServiceUtil {
 			//list = new ArrayList<UserAccessTokenDTO>(1);
 			for(UserAccessTokenDTO token : list){				
 				try{
-					plaidUserClient.setAccessToken(token.getAccessToken());		
 					//response = new UserDetails();
 					response.setUserKey(userKey);
 					GetOptions option = new GetOptions();
 					option.setGte("04/01/2016");
-					tResponse = plaidUserClient.updateTransactions();					
-					List<Account> acc = null;
-					if(null !=tResponse.getAccounts()){
-						acc = tResponse.getAccounts();
-					}
-					
+					UpdateTransactionResult result = plaidGateway.updateTransactions(token.getAccessToken(),token.getUserBank());					
+
 					if (type == EnvestConstants.GET_ACCOUNTS|| type == EnvestConstants.GET_ACCOUNT_TRANSACTIONS){						
-						accDetails.addAll(CommonUtil.parseAccounts(acc, token.getUserBank()));
-					}
+						accDetails.addAll(result.accountDetails);
+					}					
 					
-					
-					BankBalance bankBalance = new BankBalance();
-					for(Account account :acc){
-						bankBalance.setBankName(token.getUserBank());
-						if(null != account.getBalance()){
-							bankBalance.setAvailableBalance(bankBalance.getAvailableBalance() + account.getBalance().getAvailable());
-							bankBalance.setCurrentBalance(bankBalance.getCurrentBalance() + account.getBalance().getCurrent());
-						}						
-					}
-					balance.add(bankBalance);
-				
+					BankBalance bankBalance = getBankBalanceFromAccounts(token.getUserBank(), result.accountDetails);
+					balance.add(bankBalance);				
 					
 					if (type == EnvestConstants.GET_TRANSACTIONS || type == EnvestConstants.GET_ACCOUNT_TRANSACTIONS){						
-						transactionsList.addAll(CommonUtil.parseTransaction(tResponse.getTransactions(),summaryMap,serviceUtil.getCategories()));
+						transactionsList.addAll(result.transactionDetails);
+						summaryMap.putAll(result.summaryMap);
 					}
 									
 				}catch(PlaidMfaException e){
@@ -134,12 +107,24 @@ public class UserAccountServiceUtil {
 	
 		
 	}
+
+
+	private BankBalance getBankBalanceFromAccounts(String bankName, List<AccountDetail> acc) {
+		BankBalance bankBalance = new BankBalance();
+		bankBalance.setBankName(bankName);
+		for(AccountDetail account :acc){
+			if(null != account.getBalance()){
+				bankBalance.setAvailableBalance(bankBalance.getAvailableBalance() + account.getBalance().getAvailable());
+				bankBalance.setCurrentBalance(bankBalance.getCurrentBalance() + account.getBalance().getCurrent());
+			}						
+		}
+		return bankBalance;
+	}
 	
 
 	public EnvestResponse getAccountAndTransaction(Long userKey, int type){
 		UserInfo response = null;
 		PlaidUserClient plaidUserClient = null;
-		TransactionsResponse tResponse = null;
 		try{
 			List<UserAccessTokenDTO> list = UserInfoDao.getAccesTokens(userKey);
 			
@@ -158,18 +143,15 @@ public class UserAccountServiceUtil {
 					
 					GetOptions option = new GetOptions();
 					option.setGte("04/01/2016");
-					tResponse = plaidUserClient.updateTransactions();
-					List<Account> acc = null;
-					if(null !=tResponse.getAccounts()){
-						acc = tResponse.getAccounts();
-					}
+					UpdateTransactionResult result = plaidGateway.updateTransactions(token.getAccessToken(),token.getUserBank());
 					
 					if (type == EnvestConstants.GET_ACCOUNTS|| type == EnvestConstants.GET_ACCOUNT_TRANSACTIONS){						
-						accDetails.addAll(CommonUtil.parseAccounts(acc, token.getUserBank()));
+						accDetails.addAll(result.accountDetails);
 					}
 						
 					if (type == EnvestConstants.GET_TRANSACTIONS || type == EnvestConstants.GET_ACCOUNT_TRANSACTIONS){						
-						transactionsList.addAll(CommonUtil.parseTransaction(tResponse.getTransactions(),summaryMap,serviceUtil.getCategories()));
+						transactionsList.addAll(result.transactionDetails);
+						summaryMap.putAll(result.summaryMap);
 					}
 									
 				}catch(PlaidMfaException e){
