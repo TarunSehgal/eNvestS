@@ -29,7 +29,7 @@ public class PlaidGateway implements IPlaidGateway {
 
 	ApacheHttpClientHttpDelegate httpDelegate = null;	
 	@Autowired
-private PlaidClient plaidClient;
+	private PlaidClient plaidClient;
 	@Autowired
 	IPlaidToEnvestConverter plaidToEnvestConverter;
 	@Autowired
@@ -75,35 +75,39 @@ public PlaidGateway()
 	public void Initialize()
 	{
 		httpDelegate =  new ApacheHttpClientHttpDelegate
-				 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());
-		plaidUserClient = plaidClient.getPlaidClient();
+				 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());		
 	}
 
 	@Override
 	public UpdateTransactionResult updateTransactions(String accessToken, GetOptions options, String bank) {
+		plaidUserClient = plaidClient.getPlaidClient();
 		plaidUserClient.setAccessToken(accessToken);
 		return plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions(options), bank, getCategories());
 	}
 	
 	@Override
 	public UpdateTransactionResult updateTransactions(String accessToken, String bank) {
+		plaidUserClient = plaidClient.getPlaidClient();
 		plaidUserClient.setAccessToken(accessToken);	
 		return plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions(), bank, getCategories());
 	}
 
 	@Override
 	public TransactionsResponse addConnectProduct(ConnectOptions options, String accessToken) {
+		plaidUserClient = plaidClient.getPlaidClient();
 	    plaidUserClient.setAccessToken(accessToken);
-	    return addConnectProduct(options);
+	    return plaidUserClient.addProduct("connect", options);
 	}
 	
 	@Override
 	public TransactionsResponse addConnectProduct(ConnectOptions options) {
+		plaidUserClient = plaidClient.getPlaidClient();
 	    return plaidUserClient.addProduct("connect", options);
 	}
 
 	@Override
 	public UserInfo getInfoResponse(String userId, String password, String bankName, InfoOptions options) {
+		plaidUserClient = plaidClient.getPlaidClient();
 		Credentials testCredentials = new Credentials(userId, password);
 		InfoResponse response =  plaidUserClient.info(testCredentials, bankName,	options);
 		return plaidToEnvestConverter.convertInforesponseToUserinfo(response, bankName, userId);
@@ -112,12 +116,13 @@ public PlaidGateway()
 
 	@Override
 	public PlaidUserClient getPlaidClient() {
-		return plaidUserClient;
+		return plaidClient.getPlaidClient();
 	}
 
 
 	@Override
 	public void deleteAccount(String accessToken) {
+		plaidUserClient = plaidClient.getPlaidClient();
 		plaidUserClient.setAccessToken(accessToken);
 		plaidUserClient.deleteUser();		
 	}

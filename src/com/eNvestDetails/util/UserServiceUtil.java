@@ -91,7 +91,7 @@ public class UserServiceUtil {
 		UserInfo userInfo;
 		try{
 		userInfo = plaidGateway.getInfoResponse(userId, password, bank, null);
-		plaidGateway.addConnectProduct(null);
+		plaidGateway.addConnectProduct(null, userInfo.getAccessToken());
 		}catch(PlaidMfaException e){
 			logger.info("MFA required");
 			return CommonUtil.handleMfaException(e.getMfaResponse(), bank);

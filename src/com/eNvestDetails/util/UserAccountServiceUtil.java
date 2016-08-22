@@ -18,7 +18,6 @@ import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.ProfileResponse;
 import com.eNvestDetails.Response.TransactionDetail;
 import com.eNvestDetails.Response.UserInfo;
-import com.eNvestDetails.Response.UserInfo.Summary;
 import com.eNvestDetails.TransferService.PlaidGateway;
 import com.eNvestDetails.TransferService.UpdateTransactionResult;
 import com.eNvestDetails.constant.EnvestConstants;
@@ -29,7 +28,6 @@ import com.plaid.client.PlaidUserClient;
 import com.plaid.client.exception.PlaidMfaException;
 import com.plaid.client.exception.PlaidServersideException;
 import com.plaid.client.request.GetOptions;
-import com.plaid.client.response.Account;
 import com.plaid.client.response.MfaResponse;
 import com.plaid.client.response.TransactionsResponse;
 
