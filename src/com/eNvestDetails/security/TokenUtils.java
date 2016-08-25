@@ -16,7 +16,7 @@ public class TokenUtils
 	public static String createToken(UserDetails userDetails)
 	{
 		/* Expires in 5 mins */
-		long expires = System.currentTimeMillis() + 1000L * 5 * 60;
+		long expires = System.currentTimeMillis() + 1000L * 30 * 60;
 
 		StringBuilder tokenBuilder = new StringBuilder();
 		tokenBuilder.append(userDetails.getUsername());

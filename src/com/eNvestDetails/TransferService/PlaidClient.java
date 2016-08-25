@@ -9,7 +9,7 @@ import com.plaid.client.PlaidClients;
 import com.plaid.client.PlaidPublicClient;
 import com.plaid.client.PlaidUserClient;
 
-@Component
+@Component("tplaidClient")
 @Scope("singleton")
 class PlaidClient {
 	

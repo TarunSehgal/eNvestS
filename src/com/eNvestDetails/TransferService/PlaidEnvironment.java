@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.ConfigFactory;
 
-@Component
+@Component("tplaidEnvironment")
 @Scope("singleton")
 class PlaidEnvironment implements IPlaidEnvironment {
 	String environment;

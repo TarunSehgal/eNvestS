@@ -128,4 +128,9 @@ public class UserService implements eNvestService {
 	public EnvestResponse deleteUser(@RequestParam("userKey") Long userKey){
 		return plaidUtil.deleteUser(userKey);
 	}
+	
+	@RequestMapping(value="/UserService/users/getUserInfo",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
+	public EnvestResponse getUserInfo(@RequestParam("userKey") Long userKey){
+		return plaidUtil.getUserInfo(userKey);	
+	}
 }

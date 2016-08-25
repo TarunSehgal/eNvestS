@@ -50,8 +50,8 @@ public class UserProfile extends AbstractRule {
 	@Autowired
 	private MessageFactory message = null;
 	
-	@Autowired
-	UserProfileDataMapping profileMapping;
+	/*@Autowired
+	UserProfileDataMapping profileMapping;*/
 	
 	protected Map<String,Object> doWork(Map<String,Object> arg) throws Exception {
 		log.info("inside doWork method in UserProfile");
@@ -76,6 +76,7 @@ public class UserProfile extends AbstractRule {
 			saveProfileDataList = new ArrayList<UserProfileDataDTO>();
 			profileFactory = new UserProfileFactory();
 			//UserProfileDataElement.initializeProfileMap();
+			UserProfileDataMapping profileMapping = new UserProfileDataMapping();			
 			for(TransactionDetail transaction : transactionList){
 				
 				String categoryID = transaction.getCategoryId();

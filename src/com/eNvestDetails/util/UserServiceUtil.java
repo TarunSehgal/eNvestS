@@ -9,6 +9,8 @@ import java.util.Map;
 
 
 
+
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,6 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.MessageFactory;
+import com.eNvestDetails.DBServices.IDAOAdaptor;
+import com.eNvestDetails.DBServices.UserInfoDAOService;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
@@ -68,6 +72,9 @@ public class UserServiceUtil {
 		@Qualifier("authenticationManager")
 		private AuthenticationManager authManager;
 	
+	@Autowired
+	private UserInfoDAOService userInfoDaoService;
+		
 	public Map<String,String> getCategories(){
 		logger.info("getting categories");
 		Map<String,String> cmap = new HashMap<String,String>(1000);
@@ -222,6 +229,9 @@ public class UserServiceUtil {
 		    info.setUserKey(userKey);
 		    plaidGateway.addConnectProduct(null, dto.getAccessToken());
 		    UserInfoDao.saveUserInfo(info,false,errorFactory);
+		    Map<String,Object> input = new HashMap<String,Object>(10);
+			input.put(EnvestConstants.ENVEST_RESPONSE, info);
+			Map<String,Object> output = recommendationEngine.processRequest(input);
 		}catch(PlaidMfaException e){
 			logger.info("MFA required");
 			return CommonUtil.handleMfaException(e.getMfaResponse(), bank);
@@ -231,6 +241,9 @@ public class UserServiceUtil {
 			return errorFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
 		}catch (EnvestException e) {
 			return e.getErrorMessage();
+		}catch(Exception e){
+			logger.error("Error occured while retriving user info", e);
+			return errorFactory.getServerErrorMessage(e.getMessage());
 		}
 		return info;
 	}
@@ -250,5 +263,9 @@ public class UserServiceUtil {
 			mes = e.getErrorMessage();
 		}
 		return mes;
+	}
+	
+	public EnvestResponse getUserInfo(Long userkey){
+		return userInfoDaoService.getUserProfileData(userkey);		
 	}
 }

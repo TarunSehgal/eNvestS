@@ -1,5 +1,6 @@
 package com.eNvestDetails.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -76,7 +78,12 @@ public class UserInfoDao {
 			UserAccessTokenDTO accessToken = (UserAccessTokenDTO)data.get(ConvertBeanToDTO.USERACCESSTOKEN);
 			if(null != accessToken && saveAccesToken){
 				accessToken.setUserKey(userInfoDTO.getUserkey());
-				session.saveOrUpdate(accessToken);
+				List<UserAccessTokenDTO> alreadyExistAccessToken = getAccessTokensList(accessToken.getUserKey(), accessToken.getUserBank());
+				if(!(alreadyExistAccessToken != null && alreadyExistAccessToken.size() > 0)){
+					
+					session.saveOrUpdate(accessToken);
+				}
+				
 			}
 			List<AccountsDTO> accList = (List)data.get(ConvertBeanToDTO.ACCOUNTDTO);
 			for(AccountsDTO acc : accList){
@@ -216,6 +223,10 @@ public class UserInfoDao {
 	public static void saveAccessToken(UserAccessTokenDTO accessToken){
 		Session session = null;
 		try{
+			List<UserAccessTokenDTO> alreadyExistAccessToken = getAccessTokensList(accessToken.getUserKey(), accessToken.getUserBank());
+			if(alreadyExistAccessToken != null && alreadyExistAccessToken.size() > 0){
+				return;
+			}
 			
 			session = HibernateUtils.getSessionFactory().openSession();
 			session.beginTransaction();
@@ -249,6 +260,8 @@ public class UserInfoDao {
 			session = HibernateUtils.getSessionFactory().openSession();
 			//need to add active flag condition
 			Criteria criteria = session.createCriteria(UserAccessTokenDTO.class);
+			/*criteria.setProjection(Projections.distinct(Projections.projectionList()
+				    .add(Projections.property("userBank"), "userBank")));*/
 			criteria.add(Restrictions.eq("userKey", id));
 			if(null != bank){
 				criteria.add(Restrictions.eq("userBank", bank));
@@ -275,14 +288,14 @@ public class UserInfoDao {
 			session = HibernateUtils.getSessionFactory().openSession();
 			session.beginTransaction();
 			for(UserProfileDataDTO adto : userProfile){
-				session.saveOrUpdate(adto);
+				session.save(adto);
 			}
 			session.getTransaction().commit();
 		}catch (HibernateException e) {
 			log.error("Error occured while getting user info",e);
 			throw new EnvestException(errorFactory.getServerErrorMessage(e.getMessage())) ;	
 					
-		}finally{
+		}finally{			
 			session.close();
 		}			
 	}
@@ -298,7 +311,7 @@ public class UserInfoDao {
 		}catch (HibernateException e) {
 			log.error("Error occured while getting access token",e);
 			throw new EnvestException(errorFactory.getServerErrorMessage(e.getMessage())) ;			
-		}finally{
+		}finally{			
 			session.close();
 		}
 		return list;	
@@ -344,6 +357,8 @@ public class UserInfoDao {
 		}catch(HibernateException e){
 			log.error("error deleting user",e);
 			throw new EnvestException(errorFactory.getServerErrorMessage(e.getMessage())) ;	
+		}finally{
+			session.close();
 		}
 	}
 	
@@ -359,6 +374,36 @@ public class UserInfoDao {
 		}catch(HibernateException e){
 			log.error("error deleting user",e);
 			throw new EnvestException(errorFactory.getServerErrorMessage(e.getMessage())) ;	
+		}finally{
+			session.clear();
+			session.close();
 		}
+	}
+	
+	public static Map<String,List<Object>> getProfileData(Long userKey) throws HibernateException{
+		Session session = null;
+		Map<String,List<Object>> returnData = new HashMap<String,List<Object>>(10);
+		List<Object> list = null;
+		try{
+			session = HibernateUtils.getSessionFactory().openSession();
+			list = session.createCriteria(UserInfoDTO.class).add(Restrictions.eq("userkey", userKey)).list();
+			returnData.put("UserInfoDTO", list);
+			list = session.createCriteria(AddressDTO.class).add(Restrictions.eq("userKey", userKey)).list();
+			returnData.put("AddressDTO", list);
+			list = session.createCriteria(UserEmailDTO.class).add(Restrictions.eq("userKey", userKey)).list();
+			returnData.put("UserEmailDTO", list);
+			list = session.createCriteria(UserPhoneDTO.class).add(Restrictions.eq("userKey", userKey)).list();
+			returnData.put("UserPhoneDTO", list);
+			
+			/*returnData = session.createQuery("from UserInfoDTO i,AddressDTO a,UserEmailDTO e,UserPhoneDTO p where"
+					+ " i.userkey =a.userKey and i.userkey = e.userKey and i.userkey = p.userKey and i.userkey= :userKey")
+					.setLong("userKey", userKey).list();*/
+		}catch(HibernateException e){
+			log.error("error getting getProfileData",e);
+			throw e;
+		}finally{
+			session.close();
+		}
+		return returnData;
 	}
 }

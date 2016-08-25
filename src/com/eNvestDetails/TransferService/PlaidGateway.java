@@ -23,7 +23,7 @@ import com.plaid.client.request.InfoOptions;
 import com.plaid.client.response.InfoResponse;
 import com.plaid.client.response.TransactionsResponse;
 
-@Component
+@Component("tplaidGateway")
 @Scope("singleton")
 public class PlaidGateway implements IPlaidGateway {
 
