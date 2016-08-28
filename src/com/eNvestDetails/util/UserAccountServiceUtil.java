@@ -18,7 +18,7 @@ import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.ProfileResponse;
 import com.eNvestDetails.Response.TransactionDetail;
 import com.eNvestDetails.Response.UserInfo;
-import com.eNvestDetails.TransferService.PlaidGateway;
+import com.eNvestDetails.TransferService.PlaidConnector;
 import com.eNvestDetails.TransferService.UpdateTransactionResult;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
@@ -35,7 +35,7 @@ import com.plaid.client.response.TransactionsResponse;
 public class UserAccountServiceUtil {
 	
 	@Autowired
-	private PlaidGateway plaidGateway = null;
+	private PlaidConnector plaidGateway = null;
 	
 	@Autowired
 	private ErrorMessageFactory errorFactory = null;
@@ -64,17 +64,10 @@ public class UserAccountServiceUtil {
 					option.setGte("04/01/2016");
 					UpdateTransactionResult result = plaidGateway.updateTransactions(token.getAccessToken(),token.getUserBank());					
 
-					if (type == EnvestConstants.GET_ACCOUNTS|| type == EnvestConstants.GET_ACCOUNT_TRANSACTIONS){						
-						accDetails.addAll(result.accountDetails);
-					}					
+					extractDetails(type, accDetails, transactionsList, summaryMap, result);
 					
 					BankBalance bankBalance = getBankBalanceFromAccounts(token.getUserBank(), result.accountDetails);
 					balance.add(bankBalance);				
-					
-					if (type == EnvestConstants.GET_TRANSACTIONS || type == EnvestConstants.GET_ACCOUNT_TRANSACTIONS){						
-						transactionsList.addAll(result.transactionDetails);
-						summaryMap.putAll(result.summaryMap);
-					}
 									
 				}catch(PlaidMfaException e){
 					MfaResponse mfa = e.getMfaResponse();
@@ -104,6 +97,19 @@ public class UserAccountServiceUtil {
 		return response;
 	
 		
+	}
+
+
+	private void extractDetails(int type, List<AccountDetail> accDetails, List<TransactionDetail> transactionsList,
+			Map<String, UserInfo.Summary> summaryMap, UpdateTransactionResult result) {
+		if (type == EnvestConstants.GET_ACCOUNTS|| type == EnvestConstants.GET_ACCOUNT_TRANSACTIONS){						
+			accDetails.addAll(result.accountDetails);
+		}					
+		
+		if (type == EnvestConstants.GET_TRANSACTIONS || type == EnvestConstants.GET_ACCOUNT_TRANSACTIONS){						
+			transactionsList.addAll(result.transactionDetails);
+			summaryMap.putAll(result.summaryMap);
+		}
 	}
 
 
@@ -143,14 +149,7 @@ public class UserAccountServiceUtil {
 					option.setGte("04/01/2016");
 					UpdateTransactionResult result = plaidGateway.updateTransactions(token.getAccessToken(),token.getUserBank());
 					
-					if (type == EnvestConstants.GET_ACCOUNTS|| type == EnvestConstants.GET_ACCOUNT_TRANSACTIONS){						
-						accDetails.addAll(result.accountDetails);
-					}
-						
-					if (type == EnvestConstants.GET_TRANSACTIONS || type == EnvestConstants.GET_ACCOUNT_TRANSACTIONS){						
-						transactionsList.addAll(result.transactionDetails);
-						summaryMap.putAll(result.summaryMap);
-					}
+					extractDetails(type, accDetails, transactionsList, summaryMap, result);
 									
 				}catch(PlaidMfaException e){
 					MfaResponse mfa = e.getMfaResponse();
@@ -172,64 +171,7 @@ public class UserAccountServiceUtil {
 		}		
 		return response;
 	}
-	
-	/*public UserProfileResponse getUserProfile(Long userKey){
-		List<UserProfileResponse> list = new ArrayList<UserProfileResponse>(10);
-		UserProfileResponse summary = null;
-		try{
-			
-			List<UserProfileDTO> dto = UserInfoDao.getUserProfile(userKey);
-			UserProfileResponse response = null;
-			summary = new UserProfileResponse();
-			for(UserProfileDTO r :dto){
-				response = new UserProfileResponse();
-				response.setAccountId(r.getAccountId());
-				response.setCreditBills(r.getCreditBills());
-				summary.setCreditBills(summary.getCreditBills() + r.getCreditBills());
-				if(null != r.getEmployer()){
-					summary.setEmployer(r.getEmployer());
-				}
-				response.setEmployer(r.getEmployer());
-				response.setInflow(r.getInflow());
-				summary.setInflow(summary.getInflow() + r.getInflow());
-				response.setLoanPayment(r.getLoanPayment());
-				summary.setLoanPayment(summary.getLoanPayment() + r.getLoanPayment());
-				response.setMonth(r.getMonth());
-				response.setFee(r.getMonthlyFee());
-				summary.setFee(summary.getFee() + r.getMonthlyFee());
-				response.setInterest(r.getMonthlyInterest());
-				summary.setInterest(summary.getInterest() + r.getMonthlyInterest());
-				response.setOutflow(r.getOutflow());
-				summary.setOutflow(summary.getOutflow() + r.getOutflow());
-				response.setSalary(r.getSalary());
-				summary.setSalary(summary.getSalary() + r.getSalary());
-				response.setUtilityBills(r.getUtilityBills());
-				summary.setUtilityBills(summary.getUtilityBills() + r.getUtilityBills());
-				
-				response.setOtherInflow(r.getOtherInflow());
-				summary.setOtherInflow(summary.getOtherInflow() + r.getOtherInflow());
-				
-				response.setOtherOutflow(r.getOtherOutflow());
-				summary.setOtherOutflow(summary.getOtherOutflow() + r.getOtherOutflow());;
-				
-				list.add(response);
-			}
-			int size = dto.size();
-			summary.setCreditBills(summary.getCreditBills()/size);
-			summary.setInflow(summary.getInflow()/size);
-			summary.setOutflow(summary.getOutflow()/size);
-			summary.setLoanPayment(summary.getLoanPayment()/size);
-			summary.setSalary(summary.getSalary()/size);
-			summary.setUtilityBills(summary.getUtilityBills()/size);
-			summary.setOtherInflow(summary.getOtherInflow()/size);
-			summary.setOtherOutflow(summary.getOtherOutflow()/size);
-			summary.setProfileData(list);
-		}catch(EnvestException e){
-			logger.error("error occured while getting user profile",e);
-		}
-		return summary;
-	}*/
-	
+		
 	public EnvestResponse getProfileData(Long userKey){
 		List<UserProfileDataDTO> list = null;
 		ProfileResponse response = null;

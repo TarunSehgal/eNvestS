@@ -25,7 +25,7 @@ import com.plaid.client.response.TransactionsResponse;
 
 @Component("tplaidGateway")
 @Scope("singleton")
-public class PlaidGateway implements IPlaidGateway {
+public class PlaidConnector implements IPlaidConnector {
 
 	ApacheHttpClientHttpDelegate httpDelegate = null;	
 	@Autowired
@@ -37,7 +37,7 @@ public class PlaidGateway implements IPlaidGateway {
 
 private PlaidUserClient plaidUserClient;
 
-public PlaidGateway()
+public PlaidConnector()
 {
 	
 }

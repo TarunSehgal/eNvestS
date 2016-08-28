@@ -35,7 +35,7 @@ import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.MfaResponseDetail;
 import com.eNvestDetails.Response.PlaidCategory;
 import com.eNvestDetails.Response.UserInfo;
-import com.eNvestDetails.TransferService.PlaidGateway;
+import com.eNvestDetails.TransferService.PlaidConnector;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
@@ -55,7 +55,7 @@ public class UserServiceUtil {
 	private ErrorMessageFactory errorFactory = null;
 	
 	@Autowired
-	private PlaidGateway plaidGateway = null;
+	private PlaidConnector plaidGateway = null;
 	
 	private Logger logger = Logger.getLogger(UserServiceUtil.class.getName());
 	
