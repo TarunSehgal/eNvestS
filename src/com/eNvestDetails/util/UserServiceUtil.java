@@ -77,20 +77,7 @@ public class UserServiceUtil {
 		
 	public Map<String,String> getCategories(){
 		logger.info("getting categories");
-		Map<String,String> cmap = new HashMap<String,String>(1000);
-		try{
-		    HttpResponseWrapper<PlaidCategory[]> response = plaidGateway.createExecuteGetRequest("/categories", PlaidCategory[].class);
-			for(PlaidCategory category : response.getResponseBody()){
-				String path = "";
-				for(String hierarchy: category.getHierarchy()){
-					path = path +hierarchy +",";
-				}
-				cmap.put(category.getId(), path);	
-			}
-		}catch (Exception e){
-			logger.error("error occured while getting categories",e);
-		}
-		return cmap;
+		return plaidGateway.getCategories();			
 	}
 	
 	public EnvestResponse getInfo(String userId, String password, String bank){
@@ -185,13 +172,15 @@ public class UserServiceUtil {
 		if(!(d instanceof ErrorMessage)){
 			UserAccessTokenDTO token = new UserAccessTokenDTO();
 			token.setAccessToken(d.getAccessToken());
-			if(d instanceof UserInfo){
+			token.setIsActive("Y");
+			token.setIsdeleted("Y");
+/*			if(d instanceof UserInfo){
 				token.setIsActive("Y");
 				token.setIsdeleted("Y");
 			}else if(d instanceof MfaResponseDetail){
 				token.setIsActive("Y");
 				token.setIsdeleted("Y");
-			}		
+			}*/		
 			token.setUserBank(d.getResponseFor());
 			token.setUserKey(userKey);
 			if(d instanceof UserInfo){
@@ -225,7 +214,7 @@ public class UserServiceUtil {
 				return errorFactory.getServerErrorMessage("Access token not found");
 			}
 			
-		    info = plaidGateway.createExecuteMFARequest(mfa, dto.getAccessToken());
+		    info = plaidGateway.executeMFARequest(mfa, dto.getAccessToken());
 		    info.setUserKey(userKey);
 		    plaidGateway.addConnectProduct(null, dto.getAccessToken());
 		    UserInfoDao.saveUserInfo(info,false,errorFactory);

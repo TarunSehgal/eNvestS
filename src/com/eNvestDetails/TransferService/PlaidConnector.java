@@ -43,17 +43,15 @@ public PlaidConnector()
 }
 
 		
-	@Override
-	public <R> HttpResponseWrapper<R> createExecutePostRequest(String path, Class<R> inputClass)
+	@PostConstruct
+	public void Initialize()
 	{
-		PlaidHttpRequest request = plaidRequestFactory.getPlaidRequest(path);
-		 httpDelegate =  new ApacheHttpClientHttpDelegate
-				 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
-	    return (HttpResponseWrapper<R>) httpDelegate.doPost(request, inputClass);
+		httpDelegate =  new ApacheHttpClientHttpDelegate
+				 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());		
 	}
-	
+
 	@Override
-	public UserInfo createExecuteMFARequest(String mfa, String accessToken)
+	public UserInfo executeMFARequest(String mfa, String accessToken)
 	{
 		PlaidHttpRequest request = plaidRequestFactory.GetPlaidMFARequest(mfa, accessToken);
 		 httpDelegate =  new ApacheHttpClientHttpDelegate
@@ -62,22 +60,6 @@ public PlaidConnector()
 	    return plaidToEnvestConverter.convertInforesponseToUserinfo(response.getResponseBody(), null, null);
 	}
 	
-	@Override
-	public <R> HttpResponseWrapper<R> createExecuteGetRequest(String path, Class<R> inputClass)
-	{
-		PlaidHttpRequest request = plaidRequestFactory.getPlaidRequest(path);
-		 httpDelegate =  new ApacheHttpClientHttpDelegate
-				 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());
-	    return (HttpResponseWrapper<R>) httpDelegate.doGet(request, inputClass);
-	}
-	
-	@PostConstruct
-	public void Initialize()
-	{
-		httpDelegate =  new ApacheHttpClientHttpDelegate
-				 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());		
-	}
-
 	@Override
 	public UpdateTransactionResult updateTransactions(String accessToken, GetOptions options, String bank) {
 		plaidUserClient = plaidClient.getPlaidClient();
@@ -127,6 +109,7 @@ public PlaidConnector()
 		plaidUserClient.deleteUser();		
 	}
 	
+	@Override	
 	public Map<String,String> getCategories(){
 		Map<String,String> cmap = new HashMap<String,String>(1000);
 		try{
@@ -141,5 +124,21 @@ public PlaidConnector()
 		}catch (Exception e){
 		}
 		return cmap;
+	}
+	
+	private <R> HttpResponseWrapper<R> createExecutePostRequest(String path, Class<R> inputClass)
+	{
+		PlaidHttpRequest request = plaidRequestFactory.getPlaidRequest(path);
+		 httpDelegate =  new ApacheHttpClientHttpDelegate
+				 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
+	    return (HttpResponseWrapper<R>) httpDelegate.doPost(request, inputClass);
+	}
+	
+	private <R> HttpResponseWrapper<R> createExecuteGetRequest(String path, Class<R> inputClass)
+	{
+		PlaidHttpRequest request = plaidRequestFactory.getPlaidRequest(path);
+		 httpDelegate =  new ApacheHttpClientHttpDelegate
+				 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());
+	    return (HttpResponseWrapper<R>) httpDelegate.doGet(request, inputClass);
 	}
 }
