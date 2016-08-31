@@ -10,9 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.eNvestDetails.Response.MfaResponseDetail;
 import com.eNvestDetails.Response.PlaidCategory;
 import com.eNvestDetails.Response.UserInfo;
 import com.plaid.client.PlaidUserClient;
+import com.plaid.client.exception.PlaidMfaException;
+import com.plaid.client.exception.PlaidServersideException;
 import com.plaid.client.http.ApacheHttpClientHttpDelegate;
 import com.plaid.client.http.HttpResponseWrapper;
 import com.plaid.client.http.PlaidHttpRequest;
@@ -21,6 +24,7 @@ import com.plaid.client.request.Credentials;
 import com.plaid.client.request.GetOptions;
 import com.plaid.client.request.InfoOptions;
 import com.plaid.client.response.InfoResponse;
+import com.plaid.client.response.MfaResponse;
 import com.plaid.client.response.TransactionsResponse;
 
 @Component("tplaidGateway")
@@ -62,16 +66,31 @@ public PlaidConnector()
 	
 	@Override
 	public UpdateTransactionResult updateTransactions(String accessToken, GetOptions options, String bank) {
+		UpdateTransactionResult result = null;
+		try{
 		plaidUserClient = plaidClient.getPlaidClient();
 		plaidUserClient.setAccessToken(accessToken);
-		return plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions(options), bank, getCategories());
+		result = plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions(options), bank, getCategories());
+		}catch(PlaidMfaException e){
+			MfaResponse mfa = e.getMfaResponse();
+			handleMfaException(mfa, bank);
+		}
+		
+		return result;
 	}
 	
 	@Override
 	public UpdateTransactionResult updateTransactions(String accessToken, String bank) {
+		UpdateTransactionResult result = null;
+		try{
 		plaidUserClient = plaidClient.getPlaidClient();
 		plaidUserClient.setAccessToken(accessToken);	
-		return plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions(), bank, getCategories());
+		result = plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions(), bank, getCategories());
+		}catch(PlaidMfaException e){
+			MfaResponse mfa = e.getMfaResponse();
+			handleMfaException(mfa, bank);
+		}
+		return result;
 	}
 
 	@Override
@@ -95,13 +114,6 @@ public PlaidConnector()
 		return plaidToEnvestConverter.convertInforesponseToUserinfo(response, bankName, userId);
 	}
 
-
-	@Override
-	public PlaidUserClient getPlaidClient() {
-		return plaidClient.getPlaidClient();
-	}
-
-
 	@Override
 	public void deleteAccount(String accessToken) {
 		plaidUserClient = plaidClient.getPlaidClient();
@@ -124,6 +136,11 @@ public PlaidConnector()
 		}catch (Exception e){
 		}
 		return cmap;
+	}
+	
+	@Override
+	public MfaResponseDetail handleMfaException(MfaResponse mfa, String bank) {
+		return MFAHandler.handleMfaException(mfa, bank);
 	}
 	
 	private <R> HttpResponseWrapper<R> createExecutePostRequest(String path, Class<R> inputClass)

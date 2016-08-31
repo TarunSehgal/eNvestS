@@ -68,12 +68,8 @@ public class UserAccountServiceUtil {
 					
 					BankBalance bankBalance = getBankBalanceFromAccounts(token.getUserBank(), result.accountDetails);
 					balance.add(bankBalance);				
-									
-				}catch(PlaidMfaException e){
-					MfaResponse mfa = e.getMfaResponse();
-					CommonUtil.handleMfaException(mfa, token.getUserBank());
-				}catch(PlaidServersideException e){
-					return errorFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
+				}catch(Exception e){
+					return errorFactory.getServerErrorMessage(e.getMessage());
 				}
 				
 			}
@@ -128,11 +124,8 @@ public class UserAccountServiceUtil {
 
 	public EnvestResponse getAccountAndTransaction(Long userKey, int type){
 		UserInfo response = null;
-		PlaidUserClient plaidUserClient = null;
 		try{
 			List<UserAccessTokenDTO> list = UserInfoDao.getAccesTokens(userKey);
-			
-			plaidUserClient = plaidGateway.getPlaidClient();
 			response = new UserInfo();
 			List<AccountDetail> accDetails = new ArrayList<AccountDetail>(10);
 			List<TransactionDetail> transactionsList = new ArrayList<TransactionDetail>();
@@ -141,8 +134,6 @@ public class UserAccountServiceUtil {
 			//list = new ArrayList<UserAccessTokenDTO>(1);
 			for(UserAccessTokenDTO token : list){				
 				try{
-					plaidUserClient.setAccessToken(token.getAccessToken());		
-					//response = new UserDetails();
 					response.setUserKey(userKey);
 					
 					GetOptions option = new GetOptions();
@@ -151,13 +142,9 @@ public class UserAccountServiceUtil {
 					
 					extractDetails(type, accDetails, transactionsList, summaryMap, result);
 									
-				}catch(PlaidMfaException e){
-					MfaResponse mfa = e.getMfaResponse();
-					CommonUtil.handleMfaException(mfa, token.getUserBank());
-				}catch(PlaidServersideException e){
-					return errorFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
-				}
-				
+				}catch(Exception e){
+					return errorFactory.getServerErrorMessage(e.getMessage());
+				}			
 			}
 			Collection<UserInfo.Summary> coll = summaryMap.values();
 			for(UserInfo.Summary sum : coll){

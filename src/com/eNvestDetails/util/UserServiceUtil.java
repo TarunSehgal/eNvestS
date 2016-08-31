@@ -88,12 +88,11 @@ public class UserServiceUtil {
 		plaidGateway.addConnectProduct(null, userInfo.getAccessToken());
 		}catch(PlaidMfaException e){
 			logger.info("MFA required");
-			return CommonUtil.handleMfaException(e.getMfaResponse(), bank);
-					
-		}catch(PlaidServersideException e){
-			logger.error("Error occured while retriving user info", e);
-			return errorFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
-		}
+			return plaidGateway.handleMfaException(e.getMfaResponse(), bank);
+	}catch(Exception e){
+		logger.error("Error occured while retriving user info", e);
+		return errorFactory.getServerErrorMessage(e.getMessage());
+	}
 
 		logger.info("Exiting user info method");
 		return userInfo;
@@ -223,15 +222,9 @@ public class UserServiceUtil {
 			Map<String,Object> output = recommendationEngine.processRequest(input);
 		}catch(PlaidMfaException e){
 			logger.info("MFA required");
-			return CommonUtil.handleMfaException(e.getMfaResponse(), bank);
+			return plaidGateway.handleMfaException(e.getMfaResponse(), bank);
 					
-		}catch(PlaidServersideException e){
-			logger.error("Error occured while retriving user info", e);
-			return errorFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
-		}catch (EnvestException e) {
-			return e.getErrorMessage();
 		}catch(Exception e){
-			logger.error("Error occured while retriving user info", e);
 			return errorFactory.getServerErrorMessage(e.getMessage());
 		}
 		return info;

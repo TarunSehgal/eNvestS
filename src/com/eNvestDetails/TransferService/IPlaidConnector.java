@@ -2,13 +2,12 @@ package com.eNvestDetails.TransferService;
 
 import java.util.Map;
 
+import com.eNvestDetails.Response.MfaResponseDetail;
 import com.eNvestDetails.Response.UserInfo;
-import com.plaid.client.PlaidUserClient;
-import com.plaid.client.http.HttpResponseWrapper;
 import com.plaid.client.request.ConnectOptions;
 import com.plaid.client.request.GetOptions;
 import com.plaid.client.request.InfoOptions;
-import com.plaid.client.response.InfoResponse;
+import com.plaid.client.response.MfaResponse;
 import com.plaid.client.response.TransactionsResponse;
 
 public interface IPlaidConnector {
@@ -21,6 +20,6 @@ public interface IPlaidConnector {
 	public TransactionsResponse addConnectProduct(ConnectOptions options, String accesToken);
 	public TransactionsResponse addConnectProduct(ConnectOptions options);
 	public UserInfo getInfoResponse(String userName, String password, String bankName, InfoOptions options);
-	public PlaidUserClient getPlaidClient();
 	public void deleteAccount(String accessToken);
+	public MfaResponseDetail handleMfaException(MfaResponse mfa,String bank);
 }
