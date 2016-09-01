@@ -35,7 +35,7 @@ import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.MfaResponseDetail;
 import com.eNvestDetails.Response.PlaidCategory;
 import com.eNvestDetails.Response.UserInfo;
-import com.eNvestDetails.TransferService.PlaidGateway;
+import com.eNvestDetails.TransferService.PlaidConnector;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
@@ -55,7 +55,7 @@ public class UserServiceUtil {
 	private ErrorMessageFactory errorFactory = null;
 	
 	@Autowired
-	private PlaidGateway plaidGateway = null;
+	private PlaidConnector plaidGateway = null;
 	
 	private Logger logger = Logger.getLogger(UserServiceUtil.class.getName());
 	
@@ -77,20 +77,7 @@ public class UserServiceUtil {
 		
 	public Map<String,String> getCategories(){
 		logger.info("getting categories");
-		Map<String,String> cmap = new HashMap<String,String>(1000);
-		try{
-		    HttpResponseWrapper<PlaidCategory[]> response = plaidGateway.createExecuteGetRequest("/categories", PlaidCategory[].class);
-			for(PlaidCategory category : response.getResponseBody()){
-				String path = "";
-				for(String hierarchy: category.getHierarchy()){
-					path = path +hierarchy +",";
-				}
-				cmap.put(category.getId(), path);	
-			}
-		}catch (Exception e){
-			logger.error("error occured while getting categories",e);
-		}
-		return cmap;
+		return plaidGateway.getCategories();			
 	}
 	
 	public EnvestResponse getInfo(String userId, String password, String bank){
@@ -101,12 +88,11 @@ public class UserServiceUtil {
 		plaidGateway.addConnectProduct(null, userInfo.getAccessToken());
 		}catch(PlaidMfaException e){
 			logger.info("MFA required");
-			return CommonUtil.handleMfaException(e.getMfaResponse(), bank);
-					
-		}catch(PlaidServersideException e){
-			logger.error("Error occured while retriving user info", e);
-			return errorFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
-		}
+			return plaidGateway.handleMfaException(e.getMfaResponse(), bank);
+	}catch(Exception e){
+		logger.error("Error occured while retriving user info", e);
+		return errorFactory.getServerErrorMessage(e.getMessage());
+	}
 
 		logger.info("Exiting user info method");
 		return userInfo;
@@ -185,13 +171,15 @@ public class UserServiceUtil {
 		if(!(d instanceof ErrorMessage)){
 			UserAccessTokenDTO token = new UserAccessTokenDTO();
 			token.setAccessToken(d.getAccessToken());
-			if(d instanceof UserInfo){
+			token.setIsActive("Y");
+			token.setIsdeleted("Y");
+/*			if(d instanceof UserInfo){
 				token.setIsActive("Y");
 				token.setIsdeleted("Y");
 			}else if(d instanceof MfaResponseDetail){
 				token.setIsActive("Y");
 				token.setIsdeleted("Y");
-			}		
+			}*/		
 			token.setUserBank(d.getResponseFor());
 			token.setUserKey(userKey);
 			if(d instanceof UserInfo){
@@ -225,7 +213,7 @@ public class UserServiceUtil {
 				return errorFactory.getServerErrorMessage("Access token not found");
 			}
 			
-		    info = plaidGateway.createExecuteMFARequest(mfa, dto.getAccessToken());
+		    info = plaidGateway.executeMFARequest(mfa, dto.getAccessToken());
 		    info.setUserKey(userKey);
 		    plaidGateway.addConnectProduct(null, dto.getAccessToken());
 		    UserInfoDao.saveUserInfo(info,false,errorFactory);
@@ -234,15 +222,9 @@ public class UserServiceUtil {
 			Map<String,Object> output = recommendationEngine.processRequest(input);
 		}catch(PlaidMfaException e){
 			logger.info("MFA required");
-			return CommonUtil.handleMfaException(e.getMfaResponse(), bank);
+			return plaidGateway.handleMfaException(e.getMfaResponse(), bank);
 					
-		}catch(PlaidServersideException e){
-			logger.error("Error occured while retriving user info", e);
-			return errorFactory.getServerErrorMessage(e.getErrorResponse().getResolve());
-		}catch (EnvestException e) {
-			return e.getErrorMessage();
 		}catch(Exception e){
-			logger.error("Error occured while retriving user info", e);
 			return errorFactory.getServerErrorMessage(e.getMessage());
 		}
 		return info;

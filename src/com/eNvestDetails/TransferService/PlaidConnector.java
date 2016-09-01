@@ -10,9 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.eNvestDetails.Response.MfaResponseDetail;
 import com.eNvestDetails.Response.PlaidCategory;
 import com.eNvestDetails.Response.UserInfo;
 import com.plaid.client.PlaidUserClient;
+import com.plaid.client.exception.PlaidMfaException;
+import com.plaid.client.exception.PlaidServersideException;
 import com.plaid.client.http.ApacheHttpClientHttpDelegate;
 import com.plaid.client.http.HttpResponseWrapper;
 import com.plaid.client.http.PlaidHttpRequest;
@@ -21,11 +24,12 @@ import com.plaid.client.request.Credentials;
 import com.plaid.client.request.GetOptions;
 import com.plaid.client.request.InfoOptions;
 import com.plaid.client.response.InfoResponse;
+import com.plaid.client.response.MfaResponse;
 import com.plaid.client.response.TransactionsResponse;
 
 @Component("tplaidGateway")
 @Scope("singleton")
-public class PlaidGateway implements IPlaidGateway {
+public class PlaidConnector implements IPlaidConnector {
 
 	ApacheHttpClientHttpDelegate httpDelegate = null;	
 	@Autowired
@@ -37,23 +41,21 @@ public class PlaidGateway implements IPlaidGateway {
 
 private PlaidUserClient plaidUserClient;
 
-public PlaidGateway()
+public PlaidConnector()
 {
 	
 }
 
 		
-	@Override
-	public <R> HttpResponseWrapper<R> createExecutePostRequest(String path, Class<R> inputClass)
+	@PostConstruct
+	public void Initialize()
 	{
-		PlaidHttpRequest request = plaidRequestFactory.getPlaidRequest(path);
-		 httpDelegate =  new ApacheHttpClientHttpDelegate
-				 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
-	    return (HttpResponseWrapper<R>) httpDelegate.doPost(request, inputClass);
+		httpDelegate =  new ApacheHttpClientHttpDelegate
+				 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());		
 	}
-	
+
 	@Override
-	public UserInfo createExecuteMFARequest(String mfa, String accessToken)
+	public UserInfo executeMFARequest(String mfa, String accessToken)
 	{
 		PlaidHttpRequest request = plaidRequestFactory.GetPlaidMFARequest(mfa, accessToken);
 		 httpDelegate =  new ApacheHttpClientHttpDelegate
@@ -63,33 +65,32 @@ public PlaidGateway()
 	}
 	
 	@Override
-	public <R> HttpResponseWrapper<R> createExecuteGetRequest(String path, Class<R> inputClass)
-	{
-		PlaidHttpRequest request = plaidRequestFactory.getPlaidRequest(path);
-		 httpDelegate =  new ApacheHttpClientHttpDelegate
-				 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());
-	    return (HttpResponseWrapper<R>) httpDelegate.doGet(request, inputClass);
-	}
-	
-	@PostConstruct
-	public void Initialize()
-	{
-		httpDelegate =  new ApacheHttpClientHttpDelegate
-				 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());		
-	}
-
-	@Override
 	public UpdateTransactionResult updateTransactions(String accessToken, GetOptions options, String bank) {
+		UpdateTransactionResult result = null;
+		try{
 		plaidUserClient = plaidClient.getPlaidClient();
 		plaidUserClient.setAccessToken(accessToken);
-		return plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions(options), bank, getCategories());
+		result = plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions(options), bank, getCategories());
+		}catch(PlaidMfaException e){
+			MfaResponse mfa = e.getMfaResponse();
+			handleMfaException(mfa, bank);
+		}
+		
+		return result;
 	}
 	
 	@Override
 	public UpdateTransactionResult updateTransactions(String accessToken, String bank) {
+		UpdateTransactionResult result = null;
+		try{
 		plaidUserClient = plaidClient.getPlaidClient();
 		plaidUserClient.setAccessToken(accessToken);	
-		return plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions(), bank, getCategories());
+		result = plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions(), bank, getCategories());
+		}catch(PlaidMfaException e){
+			MfaResponse mfa = e.getMfaResponse();
+			handleMfaException(mfa, bank);
+		}
+		return result;
 	}
 
 	@Override
@@ -113,13 +114,6 @@ public PlaidGateway()
 		return plaidToEnvestConverter.convertInforesponseToUserinfo(response, bankName, userId);
 	}
 
-
-	@Override
-	public PlaidUserClient getPlaidClient() {
-		return plaidClient.getPlaidClient();
-	}
-
-
 	@Override
 	public void deleteAccount(String accessToken) {
 		plaidUserClient = plaidClient.getPlaidClient();
@@ -127,6 +121,7 @@ public PlaidGateway()
 		plaidUserClient.deleteUser();		
 	}
 	
+	@Override	
 	public Map<String,String> getCategories(){
 		Map<String,String> cmap = new HashMap<String,String>(1000);
 		try{
@@ -141,5 +136,26 @@ public PlaidGateway()
 		}catch (Exception e){
 		}
 		return cmap;
+	}
+	
+	@Override
+	public MfaResponseDetail handleMfaException(MfaResponse mfa, String bank) {
+		return MFAHandler.handleMfaException(mfa, bank);
+	}
+	
+	private <R> HttpResponseWrapper<R> createExecutePostRequest(String path, Class<R> inputClass)
+	{
+		PlaidHttpRequest request = plaidRequestFactory.getPlaidRequest(path);
+		 httpDelegate =  new ApacheHttpClientHttpDelegate
+				 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
+	    return (HttpResponseWrapper<R>) httpDelegate.doPost(request, inputClass);
+	}
+	
+	private <R> HttpResponseWrapper<R> createExecuteGetRequest(String path, Class<R> inputClass)
+	{
+		PlaidHttpRequest request = plaidRequestFactory.getPlaidRequest(path);
+		 httpDelegate =  new ApacheHttpClientHttpDelegate
+				 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());
+	    return (HttpResponseWrapper<R>) httpDelegate.doGet(request, inputClass);
 	}
 }

@@ -1,7 +1,5 @@
 package com.eNvestDetails.UserService;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,7 +17,6 @@ import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Service.eNvestService;
 import com.eNvestDetails.constant.EnvestConstants;
-import com.eNvestDetails.dto.UserProfileDataDTO;
 import com.eNvestDetails.util.UserAccountServiceUtil;
 
 @CrossOrigin(origins= "*")

@@ -1,6 +1,7 @@
 package com.eNvestDetails.util;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
@@ -36,37 +37,13 @@ public class HibernateUtils {
 	public static SessionFactory getSessionFactory(){
 		try{
 			if(sessionFactory == null){
-				log.info("starting to buiod session factory");
+				log.info("starting to build session factory");
 				if("Y".equals(config.getResultString("localrun"))){
-					configuration.setProperty("hibernate.connection.driver_class", config.getResultString("jdbc.driverClassName"));
-	                configuration.setProperty("hibernate.connection.url", config.getResultString("jdbc.url"));
-	                configuration.setProperty("hibernate.connection.username",config.getResultString("jdbc.username"));
-	                configuration.setProperty("hibernate.connection.password", config.getResultString("jdbc.password"));
+					configureLocalRun();
 				}else{
-					URI dbUri = new URI(System.getenv(config.getResultString("dbProperty")));
-			        String username = dbUri.getUserInfo().split(":")[0];
-			        String password = dbUri.getUserInfo().split(":")[1];
-			        String dbUrl = "jdbc:mysql://" + dbUri.getHost() + dbUri.getPath();
-					configuration.setProperty("hibernate.connection.driver_class", config.getResultString("jdbc.driverClassName"));
-	                configuration.setProperty("hibernate.connection.url", dbUrl);
-	                configuration.setProperty("hibernate.connection.username",username);
-	                configuration.setProperty("hibernate.connection.password", password);
+					configureServerRun();
 				}							
-                configuration.setProperty("show_sql", config.getResultString("hibernate.show_sql"));
-                configuration.setProperty("dateTime", "org.joda.time.contrib.hibernate.PersistentDateTime");
-                //configuration.addPackage("com.eNvestDetails.dto");
-                configuration.addAnnotatedClass(UserInfoDTO.class);
-                configuration.addAnnotatedClass(AddressDTO.class);
-                configuration.addAnnotatedClass(AccountsDTO.class);
-                configuration.addAnnotatedClass(UserEmailDTO.class);
-                configuration.addAnnotatedClass(UserPhoneDTO.class);
-                configuration.addAnnotatedClass(UserAccessTokenDTO.class);
-                configuration.addAnnotatedClass(ProductDTO.class);
-                configuration.addAnnotatedClass(UserProductDTO.class);
-                configuration.addAnnotatedClass(BankDTO.class);
-               // configuration.addAnnotatedClass(UserProfileDTO.class);
-                configuration.addAnnotatedClass(UserProfileDataDTO.class);
-                sessionFactory = configuration.configure().buildSessionFactory();
+                configureCommonProperties();
                 log.info("successfully build the session");
 			}else{
 				log.info("session not null returning exsiting session object");
@@ -76,6 +53,42 @@ public class HibernateUtils {
 			log.error("Error occurred while initializing session", e);
 		}
 		return sessionFactory;
+	}
+
+	private static void configureCommonProperties() {
+		configuration.setProperty("show_sql", config.getResultString("hibernate.show_sql"));
+		configuration.setProperty("dateTime", "org.joda.time.contrib.hibernate.PersistentDateTime");
+		//configuration.addPackage("com.eNvestDetails.dto");
+		configuration.addAnnotatedClass(UserInfoDTO.class);
+		configuration.addAnnotatedClass(AddressDTO.class);
+		configuration.addAnnotatedClass(AccountsDTO.class);
+		configuration.addAnnotatedClass(UserEmailDTO.class);
+		configuration.addAnnotatedClass(UserPhoneDTO.class);
+		configuration.addAnnotatedClass(UserAccessTokenDTO.class);
+		configuration.addAnnotatedClass(ProductDTO.class);
+		configuration.addAnnotatedClass(UserProductDTO.class);
+		configuration.addAnnotatedClass(BankDTO.class);
+            // configuration.addAnnotatedClass(UserProfileDTO.class);
+		configuration.addAnnotatedClass(UserProfileDataDTO.class);
+		sessionFactory = configuration.configure().buildSessionFactory();
+	}
+
+	private static void configureServerRun() throws URISyntaxException {
+		URI dbUri = new URI(System.getenv(config.getResultString("dbProperty")));
+		String username = dbUri.getUserInfo().split(":")[0];
+		String password = dbUri.getUserInfo().split(":")[1];
+		String dbUrl = "jdbc:mysql://" + dbUri.getHost() + dbUri.getPath();
+		configuration.setProperty("hibernate.connection.driver_class", config.getResultString("jdbc.driverClassName"));
+		configuration.setProperty("hibernate.connection.url", dbUrl);
+		configuration.setProperty("hibernate.connection.username",username);
+		configuration.setProperty("hibernate.connection.password", password);
+	}
+
+	private static void configureLocalRun() {
+		configuration.setProperty("hibernate.connection.driver_class", config.getResultString("jdbc.driverClassName"));
+		configuration.setProperty("hibernate.connection.url", config.getResultString("jdbc.url"));
+		configuration.setProperty("hibernate.connection.username",config.getResultString("jdbc.username"));
+		configuration.setProperty("hibernate.connection.password", config.getResultString("jdbc.password"));
 	}
 	
 	/**
