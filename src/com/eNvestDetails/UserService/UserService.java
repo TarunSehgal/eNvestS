@@ -3,14 +3,7 @@ package com.eNvestDetails.UserService;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -99,7 +92,6 @@ public class UserService implements eNvestService {
 	public @ResponseBody EnvestResponse registerUser(@RequestParam("userID") String userID,
 			@RequestParam("password") String password
 			,@RequestParam("firstName") String firstName,@RequestParam("lastName") String lastName) {
-		
 		return plaidUtil.createUser(userID, password);
 	}
 	

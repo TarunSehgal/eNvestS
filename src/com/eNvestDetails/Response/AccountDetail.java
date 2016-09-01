@@ -1,8 +1,6 @@
 package com.eNvestDetails.Response;
 
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -29,14 +27,7 @@ public class AccountDetail extends EnvestResponse {
 	private double totalInterestIncurred = 0.0;
 	private double totalFeeIncurred = 0.0;
 	
-	private List<UserProfileResponse> accProfile = null;
-        
-    public List<UserProfileResponse> getAccProfile() {
-		return accProfile;
-	}
-	public void setAccProfile(List<UserProfileResponse> accProfile) {
-		this.accProfile = accProfile;
-	}
+	
 	public boolean isPrimary() {
 		return isPrimary;
 	}

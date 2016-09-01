@@ -35,6 +35,9 @@
 							<property name="captureElement">
         						<list>
         						<value>Service,Utilities</value>
+        						<value>Service,Telecommunication Services</value>
+        						<value>Service,Financial,Stock Brokers</value>
+        						<value>Service,Financial,Financial Planning and Investments</value>
         						</list>
         					</property>
 						</bean> 
@@ -65,7 +68,7 @@
         						<list>
         						<value>Payment,Credit Card</value>
         						<value>Payment,Loan</value>
-        						<value>Payment,Rent</value>
+        						<value>Payment,Rent</value>        						
         						</list>
         					</property>
 						</bean> 

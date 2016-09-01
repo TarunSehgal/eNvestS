@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
@@ -55,7 +56,23 @@ public class UserProfileDataDTO {
 	
 	@Transient
 	private Date inflowOutflowStartDate = null;
+
+
+	@Column
+	private Date interestAsOf;
 	
+	@Column
+	@JsonFormat(pattern="MM-dd-yyyy")
+	private Date startDate;
+	
+	@Column
+	@JsonFormat(pattern="MM-dd-yyyy")
+	private Date endDate;
+	
+	public Date getStartDate() {
+		return startDate;
+	}
+
 	public Date getInflowOutflowStartDate() {
 		return inflowOutflowStartDate;
 	}
@@ -63,10 +80,19 @@ public class UserProfileDataDTO {
 	public void setInflowOutflowStartDate(Date inflowOutflowStartDate) {
 		this.inflowOutflowStartDate = inflowOutflowStartDate;
 	}
-
-	@Column
-	private Date interestAsOf;
 	
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
+	}
+
 	
 	public Date getInterestAsOf() {
 		return interestAsOf;

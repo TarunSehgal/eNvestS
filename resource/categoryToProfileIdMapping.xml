@@ -229,6 +229,42 @@
 						</property> 
 					</bean> 	
 				</entry>
+				<entry key="Service,Telecommunication Services"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+						<property name="id" value="19" />
+						<property name="type" value="Cell Phone" />
+						<property name="subType" value="Total Cell Phone Bill Payment" />
+						<property name="addAlways" value="Y" />
+						<property name= "plaidCategory">
+							<list>
+								<value>18063000</value>	
+							</list>
+						</property> 
+					</bean> 	
+				</entry>
+				<entry key="Service,Financial,Stock Brokers"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+						<property name="id" value="20" />
+						<property name="type" value="Financial" />
+						<property name="subType" value="Stock Brokers" />
+						<property name="addAlways" value="Y" />
+						<property name= "plaidCategory">
+							<list>
+								<value>18020003</value>	
+							</list>
+						</property> 
+					</bean> 	
+				</entry>
+				<entry key="Service,Financial,Financial Planning and Investments"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+						<property name="id" value="21" />
+						<property name="type" value="Financial" />
+						<property name="subType" value="Financial Planning and Investments" />
+						<property name="addAlways" value="Y" />
+						<property name= "plaidCategory">
+							<list>
+								<value>18020007</value>	
+							</list>
+						</property> 
+					</bean> 	
+				</entry>
 			</map>
 		</constructor-arg>	
 	</bean>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="userProfileDataMapping" class="java.util.HashMap">
+		<constructor-arg>
+			<map>					
+				<entry key="Interest"> 
+					<list>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.Interest">
+							<property name="id" value="1" />
+							<property name="type" value="Interest" />
+							<property name="subType" value="Total Interest Earned" />
+							<property name="allowedCategory">
+							<list>
+        						<value>15000000</value>
+        						<value>15001000</value>
+        					</list>	
+        					</property>						
+						</bean> 
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.Interest">
+							<property name="id" value="2" />
+							<property name="type" value="Interest" />
+							<property name="subType" value="Interest Charged" />
+							<property name="allowedCategory">
+							<list>
+        						<value>15002000</value>
+        					</list>	
+        					</property>						
+						</bean> 
+					</list>		
+				</entry>				
+				<entry key="Bank Fees">
+					<list>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.BankFee">
+							<property name="id" value="3" />
+							<property name="type" value="Bank Fee" />
+							<property name="subType" value="Total Bank Fee" />
+							<property name="allowedCategory">
+							<list>
+        						<value>100*</value>
+        					</list>	
+        					</property>	
+						</bean>
+					</list>
+ 
+				</entry>
+				<entry key="InflowOutflow">
+					<list>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.InflowOutflow">
+							<property name="id" value="4" />
+							<property name="type" value="Inflow" />
+							<property name="subType" value="Total Inflow" />
+							<property name="allowedCategory">
+							<list>
+        						<value>All</value>
+        					</list>	
+        					</property>	
+						</bean>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.InflowOutflow">
+							<property name="id" value="5" />
+							<property name="type" value="Inflow" />
+							<property name="subType" value="30 Days Inflow" />
+							<property name="allowedCategory">
+							<list>
+        						<value>All</value>
+        					</list>	
+        					</property>	
+						</bean>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.InflowOutflow">
+							<property name="id" value="6" />
+							<property name="type" value="Inflow" />
+							<property name="subType" value="90 Days Inflow" />
+							<property name="allowedCategory">
+							<list>
+        						<value>All</value>
+        					</list>	
+        					</property>	
+						</bean>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.InflowOutflow">
+							<property name="id" value="7" />
+							<property name="type" value="Outflow" />
+							<property name="subType" value="Total Outflow" />
+							<property name="allowedCategory">
+							<list>
+        						<value>All</value>
+        					</list>	
+        					</property>	
+						</bean>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.InflowOutflow">
+							<property name="id" value="8" />
+							<property name="type" value="Outflow" />
+							<property name="subType" value="30 Days Outflow" />
+							<property name="allowedCategory">
+							<list>
+        						<value>All</value>
+        					</list>	
+        					</property>	
+						</bean>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.InflowOutflow">
+							<property name="id" value="9" />
+							<property name="type" value="Outflow" />
+							<property name="subType" value="90 Days Outflow" />
+							<property name="allowedCategory">
+							<list>
+        						<value>All</value>
+        					</list>	
+        					</property>	
+						</bean>
+					</list> 
+				</entry>
+				<entry key="Transfer">
+					<list>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.Salary">
+							<property name="id" value="10" />
+							<property name="type" value="Salary" />
+							<property name="subType" value="Salary" />
+							<property name="allowedCategory">
+							<list>
+        						<value>21009000</value>
+        					</list>	
+        					</property>	
+						</bean>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.Payment">
+							<property name="id" value="17" />
+							<property name="type" value="Payment" />
+							<property name="subType" value="Bill Pay" />
+							<property name="allowedCategory">
+							<list>
+        						<value>21003000</value>
+        					</list>	
+        					</property>	
+						</bean>
+					</list> 
+				</entry>
+				<entry key="Payment">
+					<list>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.Payment">
+							<property name="id" value="11" />
+							<property name="type" value="Payment" />
+							<property name="subType" value="Rent" />
+							<property name="allowedCategory">
+							<list>
+        						<value>16002000</value>
+        					</list>	
+        					</property>	
+						</bean>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.Loan">
+							<property name="id" value="12" />	
+							<property name="type" value="Payment" />
+							<property name="subType" value="Loan" />
+							<property name="allowedCategory">
+							<list>
+        						<value>16003000</value>
+        					</list>	
+        					</property>	
+						</bean>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.CreditCardPayment">
+							<property name="id" value="13" />
+							<property name="type" value="Payment" />
+							<property name="subType" value="CreditCard" />
+							<property name="allowedCategory">
+							<list>
+        						<value>16001000</value>
+        					</list>	
+        					</property>	
+						</bean>
+					</list> 
+				</entry>	
+				<entry key="Service">
+					<list>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.Payment">
+							<property name="id" value="14" />
+							<property name="type" value="Payment" />
+							<property name="subType" value="Utility Bill Payment" />
+							<property name="allowedCategory">
+							<list>
+								<value>18068000</value>	
+								<value>18068001</value>	
+								<value>18068002</value>
+								<value>18068003</value>
+								<value>18068004</value>
+								<value>18068005</value>
+							</list>
+        					</property>	
+						</bean>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.Payment">
+							<property name="id" value="18" />
+							<property name="type" value="Payment" />
+							<property name="subType" value="Cell Phone" />
+							<property name="allowedCategory">
+							<list>
+								<value>18063000</value>	
+							</list>
+        					</property>	
+						</bean>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.Payment">
+							<property name="id" value="19" />
+							<property name="type" value="Financial" />
+							<property name="subType" value="Stock Brokers" />
+							<property name="allowedCategory">
+							<list>
+								<value>18020003</value>	
+							</list>
+        					</property>	
+						</bean>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.Payment">
+							<property name="id" value="20" />
+							<property name="type" value="Financial" />
+							<property name="subType" value="Financial Planning and Investments" />
+							<property name="allowedCategory">
+							<list>
+								<value>18020007</value>	
+							</list>
+        					</property>	
+						</bean>
+					</list> 
+				</entry>	
+				<entry key="Tax">
+					<list>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.Tax">
+							<property name="id" value="15" />
+							<property name="type" value="Tax" />
+							<property name="subType" value="Refund" />
+							<property name="allowedCategory">
+							<list>
+								<value>20001000</value>	
+							</list>
+        					</property>	
+						</bean>
+						<bean class="com.eNvestDetails.UserProfileData.DataElement.Tax">
+							<property name="id" value="16" />
+							<property name="type" value="Tax" />
+							<property name="subType" value="Payment" />
+							<property name="allowedCategory">
+							<list>
+								<value>20002000</value>	
+							</list>
+        					</property>	
+						</bean>
+					</list> 
+				</entry>
+							
+			</map>
+		</constructor-arg>	
+	</bean>
+</beans>			

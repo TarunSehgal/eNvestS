@@ -41,6 +41,7 @@ public class Income extends UserProfileDataElement{
 		default:						
 			break;
 		}	
+		setDates(userProfile,getTransactionDate(transaction));
 	}
 
 	private void addIfNegative(UserProfileDataDTO userProfileDto, double amount){
@@ -63,9 +64,7 @@ public class Income extends UserProfileDataElement{
 		return getAmount(transaction) > 0.0;
 	}
 	
-	private Date getTransactionDate(TransactionDetail transaction) {
-		return transaction.getDate().toDate();
-	}
+	
 	
 	private Date setAndGetInflowOutflowStartDate(UserProfileDataDTO userProfileDto, TransactionDetail transaction){
 		if(userProfileDto.getInflowOutflowStartDate() != null)

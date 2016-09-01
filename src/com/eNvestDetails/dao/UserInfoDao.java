@@ -287,6 +287,7 @@ public class UserInfoDao {
 		try{
 			session = HibernateUtils.getSessionFactory().openSession();
 			session.beginTransaction();
+			
 			for(UserProfileDataDTO adto : userProfile){
 				session.save(adto);
 			}

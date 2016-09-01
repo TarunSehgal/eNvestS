@@ -1,6 +1,7 @@
 package com.eNvestDetails.UserProfile;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,6 +88,7 @@ public abstract class UserProfileDataElement {
 	
 	protected void extractPrimaryInformation(UserProfileDataDTO userProfileDto, TransactionDetail transaction){
 		addAmount(userProfileDto, getAmount(transaction));
+		setDates(userProfileDto,getTransactionDate(transaction));
 	}
 	
 	protected void extractAdditionalInformation(UserProfileDataDTO userProfileDto, TransactionDetail transaction) {		
@@ -94,6 +96,17 @@ public abstract class UserProfileDataElement {
 	
 	protected void addAmount(UserProfileDataDTO userProfileDto, double amount){
 		userProfileDto.setAmount(userProfileDto.getAmount() + amount);
+	}
+	
+	public void setDates(UserProfileDataDTO userProfileDto, Date transactionDate){
+		userProfileDto.setEndDate(transactionDate);
+		if(null == userProfileDto.getStartDate()){
+			userProfileDto.setStartDate(transactionDate);
+		}
+	}
+	
+	public Date getTransactionDate(TransactionDetail transaction) {
+		return transaction.getDate().toDate();
 	}
 	
 	protected double getAmount(TransactionDetail transaction){

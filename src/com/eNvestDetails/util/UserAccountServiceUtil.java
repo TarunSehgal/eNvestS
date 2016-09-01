@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
+import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
 import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.BankBalance;
 import com.eNvestDetails.Response.EnvestResponse;
@@ -20,6 +21,7 @@ import com.eNvestDetails.Response.TransactionDetail;
 import com.eNvestDetails.Response.UserInfo;
 import com.eNvestDetails.TransferService.PlaidGateway;
 import com.eNvestDetails.TransferService.UpdateTransactionResult;
+import com.eNvestDetails.UserProfileData.DataElement.DataElement;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.dto.UserAccessTokenDTO;
@@ -230,7 +232,7 @@ public class UserAccountServiceUtil {
 		return summary;
 	}*/
 	
-	public EnvestResponse getProfileData(Long userKey){
+	/*public EnvestResponse getProfileData(Long userKey){
 		List<UserProfileDataDTO> list = null;
 		ProfileResponse response = null;
 		try{
@@ -243,6 +245,31 @@ public class UserAccountServiceUtil {
 			logger.error("error occured while getting user profile",e);
 		}
 		return response;
+	}*/
+	@Autowired
+	private InitiateRecommendation recommendationEngine = null;
+	
+	public EnvestResponse getProfileData(Long userKey){
+		List<UserProfileDataDTO> list = null;
+		ProfileResponse response = null;
+		try {
+			UserInfo info = new UserInfo();
+			response = new ProfileResponse();
+			info.setUserKey(userKey);
+			Map<String,Object> input = new HashMap<String,Object>(10);
+			input.put(EnvestConstants.ENVEST_RESPONSE, info);
+			Map<String,Object> output = recommendationEngine.processRequest(input);
+			response.setProfile((List<DataElement>)input.get(
+					EnvestConstants.USER_PROFILE));
+			response.setUserKey(userKey);
+		} catch (EnvestException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			
+			logger.error("Error occurred during recomendationsengine" ,e);
+		}		
+		return response;
 	}
+	
 
 }
