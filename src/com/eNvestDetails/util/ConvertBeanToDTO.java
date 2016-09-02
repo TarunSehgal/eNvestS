@@ -9,6 +9,13 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import com.eNvestDetails.DAL.Dao.UserInfoDao;
+import com.eNvestDetails.DAL.Dto.AccountsDTO;
+import com.eNvestDetails.DAL.Dto.AddressDTO;
+import com.eNvestDetails.DAL.Dto.UserAccessTokenDTO;
+import com.eNvestDetails.DAL.Dto.UserEmailDTO;
+import com.eNvestDetails.DAL.Dto.UserInfoDTO;
+import com.eNvestDetails.DAL.Dto.UserPhoneDTO;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.Response.AccountDetail;
@@ -18,13 +25,6 @@ import com.eNvestDetails.Response.UserInfo.Address;
 import com.eNvestDetails.Response.UserInfo.Email;
 import com.eNvestDetails.Response.UserInfo.Info;
 import com.eNvestDetails.Response.UserInfo.PhoneNumber;
-import com.eNvestDetails.dao.UserInfoDao;
-import com.eNvestDetails.dto.AccountsDTO;
-import com.eNvestDetails.dto.AddressDTO;
-import com.eNvestDetails.dto.UserAccessTokenDTO;
-import com.eNvestDetails.dto.UserEmailDTO;
-import com.eNvestDetails.dto.UserInfoDTO;
-import com.eNvestDetails.dto.UserPhoneDTO;
 
 public class ConvertBeanToDTO {
 	

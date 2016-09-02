@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
+import com.eNvestDetails.DAL.Dao.UserInfoDao;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
@@ -21,7 +22,6 @@ import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.UserInfo;
 import com.eNvestDetails.Service.eNvestService;
 import com.eNvestDetails.constant.EnvestConstants;
-import com.eNvestDetails.dao.UserInfoDao;
 import com.eNvestDetails.util.UserAccountServiceUtil;
 import com.eNvestDetails.util.UserServiceUtil;
 

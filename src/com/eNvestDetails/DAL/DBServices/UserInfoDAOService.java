@@ -1,4 +1,4 @@
-package com.eNvestDetails.DBServices;
+package com.eNvestDetails.DAL.DBServices;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,14 +9,14 @@ import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.eNvestDetails.DAL.Dao.UserInfoDao;
+import com.eNvestDetails.DAL.Dto.AddressDTO;
+import com.eNvestDetails.DAL.Dto.UserEmailDTO;
+import com.eNvestDetails.DAL.Dto.UserInfoDTO;
+import com.eNvestDetails.DAL.Dto.UserPhoneDTO;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.UserInfo;
-import com.eNvestDetails.dao.UserInfoDao;
-import com.eNvestDetails.dto.AddressDTO;
-import com.eNvestDetails.dto.UserEmailDTO;
-import com.eNvestDetails.dto.UserInfoDTO;
-import com.eNvestDetails.dto.UserPhoneDTO;
 import com.plaid.client.response.InfoResponse;
 
 @Component

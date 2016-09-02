@@ -4,7 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 
-import com.eNvestDetails.dto.UserProductDTO;
+import com.eNvestDetails.DAL.Dto.UserProductDTO;
 
 public class ProductToDTOConverter {
 

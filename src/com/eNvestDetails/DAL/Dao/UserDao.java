@@ -1,10 +1,10 @@
-package com.eNvestDetails.dao;
+package com.eNvestDetails.DAL.Dao;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.eNvestDetails.dto.UserInfoDTO;
+import com.eNvestDetails.DAL.Dto.UserInfoDTO;
 import com.eNvestDetails.security.User;
 
 public class UserDao implements UserDetailsService  {

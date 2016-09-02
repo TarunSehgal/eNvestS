@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.apache.commons.lang.time.DateUtils;
 
+import com.eNvestDetails.DAL.Dto.UserProfileDataDTO;
 import com.eNvestDetails.Response.TransactionDetail;
-import com.eNvestDetails.dto.UserProfileDataDTO;
 
 public class Income extends UserProfileDataElement{
 

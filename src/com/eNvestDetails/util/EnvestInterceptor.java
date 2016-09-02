@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.eNvestDetails.dao.UserInfoDao;
+import com.eNvestDetails.DAL.Dao.UserInfoDao;
 
 public class EnvestInterceptor extends HandlerInterceptorAdapter {
 	

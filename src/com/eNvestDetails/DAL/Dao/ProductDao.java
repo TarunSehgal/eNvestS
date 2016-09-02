@@ -1,4 +1,4 @@
-package com.eNvestDetails.dao;
+package com.eNvestDetails.DAL.Dao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,17 +17,17 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.eNvestDetails.Config.MessageFactory;
+import com.eNvestDetails.DAL.Dto.AccountsDTO;
+import com.eNvestDetails.DAL.Dto.AddressDTO;
+import com.eNvestDetails.DAL.Dto.ProductDTO;
+import com.eNvestDetails.DAL.Dto.UserAccessTokenDTO;
+import com.eNvestDetails.DAL.Dto.UserEmailDTO;
+import com.eNvestDetails.DAL.Dto.UserInfoDTO;
+import com.eNvestDetails.DAL.Dto.UserPhoneDTO;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.constant.EnvestConstants;
-import com.eNvestDetails.dto.AccountsDTO;
-import com.eNvestDetails.dto.AddressDTO;
-import com.eNvestDetails.dto.ProductDTO;
-import com.eNvestDetails.dto.UserAccessTokenDTO;
-import com.eNvestDetails.dto.UserEmailDTO;
-import com.eNvestDetails.dto.UserInfoDTO;
-import com.eNvestDetails.dto.UserPhoneDTO;
 import com.eNvestDetails.util.ConvertBeanToDTO;
 import com.eNvestDetails.util.HibernateUtils;
 

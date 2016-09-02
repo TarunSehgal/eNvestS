@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.eNvestDetails.Config.MessageFactory;
+import com.eNvestDetails.DAL.Dao.UserInfoDao;
+import com.eNvestDetails.DAL.Dto.UserProfileDataDTO;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.RecommendationEngine.AbstractRule;
 import com.eNvestDetails.Response.EnvestResponse;
@@ -21,9 +23,6 @@ import com.eNvestDetails.UserProfile.UserProfileDataMapping;
 import com.eNvestDetails.UserProfile.UserProfileFactory;
 import com.eNvestDetails.UserProfileData.UserProfileDataCaptureService;
 import com.eNvestDetails.constant.EnvestConstants;
-import com.eNvestDetails.dao.UserInfoDao;
-//import com.eNvestDetails.dto.UserProfileDTO;
-import com.eNvestDetails.dto.UserProfileDataDTO;
 import com.eNvestDetails.util.UserAccountServiceUtil;
 import com.eNvestDetails.util.UserServiceUtil;
 

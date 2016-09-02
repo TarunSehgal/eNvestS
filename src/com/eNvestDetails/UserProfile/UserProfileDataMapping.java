@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.eNvestDetails.dto.UserProfileDataDTO;
+import com.eNvestDetails.DAL.Dto.UserProfileDataDTO;
 
 @Component
 public class UserProfileDataMapping {

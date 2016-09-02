@@ -2,8 +2,8 @@ package com.eNvestDetails.UserProfile;
 
 import java.util.List;
 
+import com.eNvestDetails.DAL.Dto.UserProfileDataDTO;
 import com.eNvestDetails.Response.TransactionDetail;
-import com.eNvestDetails.dto.UserProfileDataDTO;
 
 public class Interest extends UserProfileDataElement {
 	

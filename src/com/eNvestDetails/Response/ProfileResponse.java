@@ -2,8 +2,8 @@ package com.eNvestDetails.Response;
 
 import java.util.List;
 
+import com.eNvestDetails.DAL.Dto.UserProfileDataDTO;
 import com.eNvestDetails.UserProfileData.DataElement.DataElement;
-import com.eNvestDetails.dto.UserProfileDataDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown=true)

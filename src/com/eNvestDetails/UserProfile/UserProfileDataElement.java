@@ -8,8 +8,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.eNvestDetails.DAL.Dto.UserProfileDataDTO;
 import com.eNvestDetails.Response.TransactionDetail;
-import com.eNvestDetails.dto.UserProfileDataDTO;
 
 public abstract class UserProfileDataElement {
 	

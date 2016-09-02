@@ -9,8 +9,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
+import com.eNvestDetails.DAL.Dto.UserProfileDataDTO;
 import com.eNvestDetails.Response.TransactionDetail;
-import com.eNvestDetails.dto.UserProfileDataDTO;
 
 @Component
 public class UserProfileFactory {
