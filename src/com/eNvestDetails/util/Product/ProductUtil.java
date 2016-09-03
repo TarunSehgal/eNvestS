@@ -9,12 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.MessageFactory;
-import com.eNvestDetails.DAL.Dao.BankDao;
-import com.eNvestDetails.DAL.Dao.ProductDao;
-import com.eNvestDetails.DAL.Dao.UserProductDao;
-import com.eNvestDetails.DAL.Dto.BankDTO;
-import com.eNvestDetails.DAL.Dto.ProductDTO;
-import com.eNvestDetails.DAL.Dto.UserProductDTO;
+import com.eNvestDetails.DAL.BankDTO;
+import com.eNvestDetails.DAL.IBankDaoService;
+import com.eNvestDetails.DAL.IProductDaoService;
+import com.eNvestDetails.DAL.IUserInfoDAOService;
+import com.eNvestDetails.DAL.ProductDTO;
+import com.eNvestDetails.DAL.UserProductDTO;
+import com.eNvestDetails.DAL.UserProductDao;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
@@ -29,10 +30,15 @@ public class ProductUtil {
 
 	private List<Product> availableProducts = null;
 	private UserProductDao userProductDAO = new UserProductDao();
-	private BankDao bankDAO = new BankDao();
 	
 	@Autowired
 	private InitiateRecommendation recommendationEngine = null;
+	
+	@Autowired
+	private IBankDaoService bankDaoService;
+	
+	@Autowired
+	private IProductDaoService productDaoService;
 	
 	@Autowired
 	private ErrorMessageFactory errorFactory = null;
@@ -143,8 +149,8 @@ public class ProductUtil {
 		{
 			for(UserProductDTO dto:userProductDTO)
 			{
-				ProductDTO productDTO = ProductDao.getProducts(dto.getProductId());
-				BankDTO bankDTO = bankDAO.getBankInfo(productDTO.getBankId(), errorFactory);
+				ProductDTO productDTO = productDaoService.getProducts(dto.getProductId());
+				BankDTO bankDTO = bankDaoService.getBankInfo(productDTO.getBankId(), errorFactory);
 				availableUserProducts.add(UserProductDTOtoProductConverter.getProductFromDTO(dto, bankDTO, productDTO));
 			}
 		}
@@ -154,12 +160,12 @@ public class ProductUtil {
 	
 	public List<Product> GetAvailableProducts() throws EnvestException
 	{
-		List<ProductDTO> productDTO = ProductDao.getAllProducts();
+		List<ProductDTO> productDTO = productDaoService.getAllProducts();
 		
 		List<Product> products = new ArrayList<Product>();
 		for(ProductDTO prdDto:productDTO)
 		{
-			BankDTO bankDTO = bankDAO.getBankInfo(prdDto.getBankId(), errorFactory);
+			BankDTO bankDTO = bankDaoService.getBankInfo(prdDto.getBankId(), errorFactory);
 			products.add(ProductDTOtoProductConverter.getProductFromDTO(prdDto, bankDTO));
 		}
 		

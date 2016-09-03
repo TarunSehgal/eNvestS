@@ -1,37 +1,14 @@
-package com.eNvestDetails.DAL.Dao;
+package com.eNvestDetails.DAL;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-
-
-
-
-
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.eNvestDetails.Config.MessageFactory;
-import com.eNvestDetails.DAL.Dto.AccountsDTO;
-import com.eNvestDetails.DAL.Dto.AddressDTO;
-import com.eNvestDetails.DAL.Dto.ProductDTO;
-import com.eNvestDetails.DAL.Dto.UserAccessTokenDTO;
-import com.eNvestDetails.DAL.Dto.UserEmailDTO;
-import com.eNvestDetails.DAL.Dto.UserInfoDTO;
-import com.eNvestDetails.DAL.Dto.UserPhoneDTO;
-import com.eNvestDetails.Exception.EnvestException;
-import com.eNvestDetails.Exception.ErrorMessage;
-import com.eNvestDetails.Response.EnvestResponse;
-import com.eNvestDetails.constant.EnvestConstants;
-import com.eNvestDetails.util.ConvertBeanToDTO;
 import com.eNvestDetails.util.HibernateUtils;
 
-public class ProductDao {
+class ProductDao {
 	
 	private static Logger log = Logger.getLogger(ProductDao.class.getName());
 		

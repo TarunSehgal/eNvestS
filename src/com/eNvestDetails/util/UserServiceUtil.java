@@ -25,10 +25,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.MessageFactory;
-import com.eNvestDetails.DAL.DBServices.IDAOAdaptor;
-import com.eNvestDetails.DAL.DBServices.UserInfoDAOService;
-import com.eNvestDetails.DAL.Dao.UserInfoDao;
-import com.eNvestDetails.DAL.Dto.UserAccessTokenDTO;
+import com.eNvestDetails.DAL.IUserInfoDAOService;
+import com.eNvestDetails.DAL.UserAccessTokenDTO;
+import com.eNvestDetails.DAL.UserInfoDAOService;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
@@ -47,6 +46,9 @@ import com.plaid.client.http.HttpResponseWrapper;
 
 @Component
 public class UserServiceUtil {
+	
+	@Autowired
+	private IUserInfoDAOService daoAdapter;
 	
 	@Autowired
 	private MessageFactory message = null;
@@ -104,7 +106,7 @@ public class UserServiceUtil {
 		try{
 			//getCategories();
 			String encodePassword = passwordEncoder.encode(password);
-			userKey = UserInfoDao.createUser(userID, encodePassword,message,errorFactory);
+			userKey = daoAdapter.createUser(userID, encodePassword,message,errorFactory);
 			mes = errorFactory.getSuccessMessage(EnvestConstants.RETURN_CODE_SUCCESS
 					, message.getMessage("message.useraddedsuccess"));
 			mes.setUserKey(userKey);
@@ -123,7 +125,7 @@ public class UserServiceUtil {
 		ErrorMessage mes;
 		
 		try{
-			code = UserInfoDao.saveUser(userKey,userID, password);
+			code = daoAdapter.saveUser(userKey,userID, password);
 			
 		}catch (Exception e){
 			logger.error("Error occured while saving user", e);
@@ -184,7 +186,7 @@ public class UserServiceUtil {
 			token.setUserKey(userKey);
 			if(d instanceof UserInfo){
 				try {
-					UserInfoDao.saveUserInfo(d,errorFactory);
+					daoAdapter.saveUserInfo(d,errorFactory);
 					Map<String,Object> input = new HashMap<String,Object>(10);
 					input.put(EnvestConstants.ENVEST_RESPONSE, d);
 					Map<String,Object> output = recommendationEngine.processRequest(input);
@@ -196,7 +198,7 @@ public class UserServiceUtil {
 				}
 
 			}else{
-				UserInfoDao.saveAccessToken(token);
+				daoAdapter.saveAccessToken(token);
 			}
 			
 		}
@@ -206,7 +208,7 @@ public class UserServiceUtil {
 	public EnvestResponse submitMFA(Long userKey,String mfa,String bank){
 		UserInfo info = null;
 		try{
-			UserAccessTokenDTO  dto = UserInfoDao.getAccesTokens(userKey,bank);
+			UserAccessTokenDTO  dto = daoAdapter.getAccesTokens(userKey,bank);
 			if(dto==null)
 			{
 				logger.info("access token not found");
@@ -216,7 +218,7 @@ public class UserServiceUtil {
 		    info = plaidGateway.executeMFARequest(mfa, dto.getAccessToken());
 		    info.setUserKey(userKey);
 		    plaidGateway.addConnectProduct(null, dto.getAccessToken());
-		    UserInfoDao.saveUserInfo(info,false,errorFactory);
+		    daoAdapter.saveUserInfo(info,false,errorFactory);
 		    Map<String,Object> input = new HashMap<String,Object>(10);
 			input.put(EnvestConstants.ENVEST_RESPONSE, info);
 			Map<String,Object> output = recommendationEngine.processRequest(input);
@@ -233,12 +235,12 @@ public class UserServiceUtil {
 	public EnvestResponse deleteUser(Long userKey){
 		ErrorMessage mes = null;
 		try{
-			List<UserAccessTokenDTO> list = UserInfoDao.getAccesTokens(userKey);
+			List<UserAccessTokenDTO> list = daoAdapter.getAccesTokens(userKey);
 			for(UserAccessTokenDTO token : list){	
 				plaidGateway.deleteAccount(token.getAccessToken());
 			}
 			
-			UserInfoDao.deleteUser(userKey, errorFactory);
+			daoAdapter.deleteUser(userKey, errorFactory);
 			mes = errorFactory.getSuccessMessage(EnvestConstants.RETURN_CODE_SUCCESS
 					, message.getMessage("message.userdelete"));			
 		}catch(EnvestException e){

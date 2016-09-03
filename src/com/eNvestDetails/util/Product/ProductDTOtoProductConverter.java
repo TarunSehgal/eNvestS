@@ -1,8 +1,8 @@
 package com.eNvestDetails.util.Product;
 
-import com.eNvestDetails.DAL.Dto.BankDTO;
-import com.eNvestDetails.DAL.Dto.ProductDTO;
-import com.eNvestDetails.DAL.Dto.UserProductDTO;
+import com.eNvestDetails.DAL.BankDTO;
+import com.eNvestDetails.DAL.ProductDTO;
+import com.eNvestDetails.DAL.UserProductDTO;
 
 public class ProductDTOtoProductConverter {
 	

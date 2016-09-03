@@ -9,13 +9,14 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import com.eNvestDetails.DAL.Dao.UserInfoDao;
-import com.eNvestDetails.DAL.Dto.AccountsDTO;
-import com.eNvestDetails.DAL.Dto.AddressDTO;
-import com.eNvestDetails.DAL.Dto.UserAccessTokenDTO;
-import com.eNvestDetails.DAL.Dto.UserEmailDTO;
-import com.eNvestDetails.DAL.Dto.UserInfoDTO;
-import com.eNvestDetails.DAL.Dto.UserPhoneDTO;
+import com.eNvestDetails.DAL.AccountsDTO;
+import com.eNvestDetails.DAL.AddressDTO;
+import com.eNvestDetails.DAL.IUserInfoDAOService;
+import com.eNvestDetails.DAL.UserAccessTokenDTO;
+import com.eNvestDetails.DAL.UserEmailDTO;
+import com.eNvestDetails.DAL.UserInfoDAOService;
+import com.eNvestDetails.DAL.UserInfoDTO;
+import com.eNvestDetails.DAL.UserPhoneDTO;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.Response.AccountDetail;
@@ -43,11 +44,13 @@ public class ConvertBeanToDTO {
 	
 	public static final String ACCOUNTDTO = AccountsDTO.class.getName();
 	
+	static IUserInfoDAOService userInfoDAOAdaptor = new UserInfoDAOService();
+	
 	public static Map<String,Object> getUserInfoDTO(EnvestResponse response, ErrorMessageFactory errorFactory) throws EnvestException{
 		Map<String,Object> returnMap = new HashMap<String,Object>(10);
 		Info info = ((UserInfo)response).getInfo();
 		
-		UserInfoDTO d = UserInfoDao.getUserInfoDetail(response.getUserKey(), errorFactory);
+		UserInfoDTO d = userInfoDAOAdaptor.getUserInfoDetail(response.getUserKey(), errorFactory);
 		for(String s : info.getNames()){
 			d.setUserName(s);
 		}

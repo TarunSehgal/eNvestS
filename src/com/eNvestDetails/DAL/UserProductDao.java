@@ -1,4 +1,4 @@
-package com.eNvestDetails.DAL.Dao;
+package com.eNvestDetails.DAL;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,14 +21,6 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.eNvestDetails.Config.MessageFactory;
-import com.eNvestDetails.DAL.Dto.AccountsDTO;
-import com.eNvestDetails.DAL.Dto.AddressDTO;
-import com.eNvestDetails.DAL.Dto.BankDTO;
-import com.eNvestDetails.DAL.Dto.UserAccessTokenDTO;
-import com.eNvestDetails.DAL.Dto.UserEmailDTO;
-import com.eNvestDetails.DAL.Dto.UserInfoDTO;
-import com.eNvestDetails.DAL.Dto.UserPhoneDTO;
-import com.eNvestDetails.DAL.Dto.UserProductDTO;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.Factories.ErrorMessageFactory;

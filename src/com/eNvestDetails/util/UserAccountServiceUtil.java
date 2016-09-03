@@ -10,9 +10,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.eNvestDetails.DAL.Dao.UserInfoDao;
-import com.eNvestDetails.DAL.Dto.UserAccessTokenDTO;
-import com.eNvestDetails.DAL.Dto.UserProfileDataDTO;
+import com.eNvestDetails.DAL.IUserInfoDAOService;
+import com.eNvestDetails.DAL.UserAccessTokenDTO;
+import com.eNvestDetails.DAL.UserProfileDataDTO;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
@@ -40,6 +40,9 @@ public class UserAccountServiceUtil {
 	private PlaidConnector plaidGateway = null;
 	
 	@Autowired
+	private IUserInfoDAOService daoAdapter;
+	
+	@Autowired
 	private ErrorMessageFactory errorFactory = null;
 	
 	private Logger logger = Logger.getLogger(UserAccountServiceUtil.class.getName());
@@ -49,7 +52,7 @@ public class UserAccountServiceUtil {
 		UserInfo response = null;
 		TransactionsResponse tResponse = null;
 		try{
-			List<UserAccessTokenDTO> list = UserInfoDao.getAccesTokens(userKey);
+			List<UserAccessTokenDTO> list = daoAdapter.getAccesTokens(userKey);
 			response = new UserInfo();
 			List<AccountDetail> accDetails = new ArrayList<AccountDetail>(10);
 			List<TransactionDetail> transactionsList = new ArrayList<TransactionDetail>();
@@ -127,7 +130,7 @@ public class UserAccountServiceUtil {
 	public EnvestResponse getAccountAndTransaction(Long userKey, int type){
 		UserInfo response = null;
 		try{
-			List<UserAccessTokenDTO> list = UserInfoDao.getAccesTokens(userKey);
+			List<UserAccessTokenDTO> list = daoAdapter.getAccesTokens(userKey);
 			response = new UserInfo();
 			List<AccountDetail> accDetails = new ArrayList<AccountDetail>(10);
 			List<TransactionDetail> transactionsList = new ArrayList<TransactionDetail>();

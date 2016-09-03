@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
-import com.eNvestDetails.DAL.Dao.UserInfoDao;
+import com.eNvestDetails.DAL.IUserInfoDAOService;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
@@ -41,6 +41,9 @@ public class UserService implements eNvestService {
 	
 	@Autowired
 	private ErrorMessageFactory errorFactory = null;
+	
+	@Autowired
+	private IUserInfoDAOService daoAdapter;
 	
 	@Autowired
 	private InitiateRecommendation recommendationEngine = null;
@@ -74,7 +77,7 @@ public class UserService implements eNvestService {
 		EnvestResponse response = plaidUtil.getInfo(userId, password, bank);
 		if(response instanceof UserInfo){
 			try {
-				response.setUserKey(UserInfoDao.saveUserInfo(response, errorFactory));
+				response.setUserKey(daoAdapter.saveUserInfo(response, errorFactory));
 			} catch (EnvestException e) {
 				return e.getErrorMessage();
 			}

@@ -11,8 +11,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.eNvestDetails.Config.MessageFactory;
-import com.eNvestDetails.DAL.Dao.UserInfoDao;
-import com.eNvestDetails.DAL.Dto.UserProfileDataDTO;
+import com.eNvestDetails.DAL.IUserInfoDAOService;
+import com.eNvestDetails.DAL.UserProfileDataDTO;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.RecommendationEngine.AbstractRule;
 import com.eNvestDetails.Response.EnvestResponse;
@@ -39,7 +39,8 @@ public class UserProfile extends AbstractRule {
 	@Autowired
 	private UserAccountServiceUtil accountServiceUtil;
 	
-	
+	@Autowired
+	private IUserInfoDAOService daoAdapter;
 	private UserProfileFactory profileFactory;
 	
 	private UserProfileDataCaptureService userProfileService;
@@ -141,7 +142,7 @@ public class UserProfile extends AbstractRule {
 			
 			Map<String, String> categories = userServiceUtil.getCategories();
 			//clear profile data for fresh building
-			UserInfoDao.clearProfileData(userKey, errorFactory);
+			daoAdapter.clearProfileData(userKey, errorFactory);
 			
 			saveProfileDataList = new ArrayList<UserProfileDataDTO>();
 			profileFactory = new UserProfileFactory();

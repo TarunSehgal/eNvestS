@@ -2,7 +2,7 @@ package com.eNvestDetails.UserProfile;
 
 import java.util.List;
 
-import com.eNvestDetails.DAL.Dto.UserProfileDataDTO;
+import com.eNvestDetails.DAL.UserProfileDataDTO;
 
 public class BankFee extends UserProfileDataElement {
 	@Override

@@ -1,4 +1,4 @@
-package com.eNvestDetails.DAL.DBServices;
+package com.eNvestDetails.DAL;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,18 +9,15 @@ import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.eNvestDetails.DAL.Dao.UserInfoDao;
-import com.eNvestDetails.DAL.Dto.AddressDTO;
-import com.eNvestDetails.DAL.Dto.UserEmailDTO;
-import com.eNvestDetails.DAL.Dto.UserInfoDTO;
-import com.eNvestDetails.DAL.Dto.UserPhoneDTO;
+import com.eNvestDetails.Config.MessageFactory;
+import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.UserInfo;
 import com.plaid.client.response.InfoResponse;
 
 @Component
-public class UserInfoDAOService implements IDAOAdaptor {
+public class UserInfoDAOService implements IUserInfoDAOService {
 
 	@Autowired
 	private ErrorMessageFactory errorFactory;
@@ -101,6 +98,86 @@ public class UserInfoDAOService implements IDAOAdaptor {
 			return errorFactory.getServerErrorMessage(e.getMessage());
 		}
 		return infoResponse;
+	}
+
+	@Override
+	public Long saveUserInfo(EnvestResponse saveRespone, boolean saveAccesToken, ErrorMessageFactory errorFactory) throws EnvestException {
+		// TODO Auto-generated method stub
+		return UserInfoDao.saveUserInfo(saveRespone, saveAccesToken, errorFactory);
+	}
+
+	@Override
+	public Long saveUserInfo(EnvestResponse saveRespone, ErrorMessageFactory errorFactory) throws EnvestException {
+		return UserInfoDao.saveUserInfo(saveRespone, errorFactory);
+	}
+
+	@Override
+	public UserInfoDTO getUserInfoDetail(long key, ErrorMessageFactory errorFactory) throws EnvestException {
+		return UserInfoDao.getUserInfoDetail(key, errorFactory);
+	}
+
+	@Override
+	public long createUser(String userID, String password, MessageFactory message, ErrorMessageFactory errorFactory) throws EnvestException {
+		return UserInfoDao.createUser(userID, password, message, errorFactory);
+	}
+
+	@Override
+	public int saveUser(Long userKey, String userID, String password) {
+		return UserInfoDao.saveUser(userKey, userID, password);
+	}
+
+	@Override
+	public UserInfoDTO authenticateUser(String userId, String password) {
+		return UserInfoDao.authenticateUser(userId, password);
+	}
+
+	@Override
+	public void saveAccessToken(UserAccessTokenDTO accessToken) {
+		UserInfoDao.saveAccessToken(accessToken);
+	}
+
+	@Override
+	public List<UserAccessTokenDTO> getAccesTokens(Long id) {
+		return UserInfoDao.getAccesTokens(id);
+	}
+
+	@Override
+	public UserAccessTokenDTO getAccesTokens(Long id, String bank) {
+		return UserInfoDao.getAccesTokens(id, bank);
+	}
+
+	@Override
+	public void saveUserProfileData(List<UserProfileDataDTO> userProfile, ErrorMessageFactory errorFactory) throws EnvestException{
+	UserInfoDao.saveUserProfileData(userProfile, errorFactory);
+		
+	}
+
+	@Override
+	public List<UserProfileDataDTO> getUserProfileData(Long userKey, ErrorMessageFactory errorFactory)
+			throws EnvestException {
+		return UserInfoDao.getUserProfileData(userKey, errorFactory);
+	}
+
+	@Override
+	public boolean testConnection() {
+		return UserInfoDao.testConnection();
+	}
+
+	@Override
+	public void deleteUser(Long key 
+			, ErrorMessageFactory errorFactory) throws EnvestException {
+		UserInfoDao.deleteUser(key, errorFactory);
+	}
+
+	@Override
+	public void clearProfileData(Long key 
+			, ErrorMessageFactory errorFactory) throws EnvestException {
+		UserInfoDao.clearProfileData(key, errorFactory);
+	}
+
+	@Override
+	public Map<String, List<Object>> getProfileData(Long userKey) throws HibernateException {
+		return UserInfoDao.getProfileData(userKey);
 	}
 	
 }
