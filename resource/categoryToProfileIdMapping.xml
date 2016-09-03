@@ -7,7 +7,7 @@
 	<bean id="profileDataList" class="java.util.HashMap">
 		<constructor-arg>
 			<map>
-				<entry key="Interest"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Interest"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="1" />
 						<property name="type" value="Interest" />
 						<property name="subType" value="Total Interest Earned" />
@@ -20,7 +20,7 @@
 						</property> 						
 					</bean> 
 				</entry>	
-				<entry key="Interest,Interest Charged"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Interest,Interest Charged"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="13" />
 						<property name="type" value="Interest" />
 						<property name="subType" value="Interest,Interest Charged" />
@@ -40,7 +40,7 @@
 						
 					</bean> 
 				</entry> -->				
-				<entry key="Bank Fees"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Bank Fees"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="2" />
 						<property name="type" value="Bank Fee" />
 						<property name="subType" value="Total Bank Fee" />
@@ -52,7 +52,7 @@
 						</property> 
 					</bean> 
 				</entry>
-				<entry key="Service,Utilities"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Service,Utilities"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="3" />
 						<property name="type" value="Utility Bill" />
 						<property name="subType" value="Total Utility Bill" />
@@ -69,7 +69,7 @@
 						</property> 
 					</bean> 
 				</entry>
-				<entry key="Payment,Credit Card"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Payment,Credit Card"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="4" />
 						<property name="type" value="Credit Card Bill" />
 						<property name="subType" value="Total Credit Card Bill" />
@@ -81,7 +81,7 @@
 						</property> 
 					</bean> 
 				</entry>
-				<entry key="Payment,Loan"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Payment,Loan"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="5" />
 						<property name="type" value="Load Amount" />
 						<property name="subType" value="Load Amount" />
@@ -94,7 +94,7 @@
 						</property>
 					</bean> 
 				</entry>
-				<entry key="Transfer,Payroll"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Transfer,Payroll"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="6" />
 						<property name="type" value="Salary" />
 						<property name="subType" value="Salary" />
@@ -108,7 +108,7 @@
 						</property>
 					</bean> 
 				</entry>
-				<entry key="Tax,Refund"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Tax,Refund"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="7" />
 						<property name="type" value="Tax" />
 						<property name="subType" value="Refund" />
@@ -120,7 +120,7 @@
 						</property>
 					</bean> 
 				</entry>	
-				<entry key="Tax,Payment"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Tax,Payment"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="8" />
 						<property name="type" value="Tax" />
 						<property name="subType" value="Payment" />
@@ -132,7 +132,7 @@
 						</property>
 					</bean> 	
 				</entry>
-				<entry key="Transfer,Billpay"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Transfer,Billpay"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="9" />
 						<property name="type" value="Payment" />
 						<property name="subType" value="Bill Pay" />
@@ -144,7 +144,7 @@
 						</property>
 					</bean> 	
 				</entry>
-				<entry key="Inflow"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Inflow"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="10" />
 						<property name="type" value="Inflow" />
 						<property name="subType" value="Total Inflow" />
@@ -156,7 +156,7 @@
 						</property> 
 					</bean> 	
 				</entry>
-				<entry key="Outflow"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Outflow"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="11" />
 						<property name="type" value="Outflow" />
 						<property name="subType" value="Total Outflow" />
@@ -168,7 +168,7 @@
 						</property> 
 					</bean> 	
 				</entry>
-				<entry key="Outflow30"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Outflow30"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="15" />
 						<property name="type" value="Outflow" />
 						<property name="subType" value="Total Outflow for 30 Days" />
@@ -180,7 +180,7 @@
 						</property> 
 					</bean> 	
 				</entry>
-				<entry key="Outflow90"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Outflow90"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="16" />
 						<property name="type" value="Outflow" />
 						<property name="subType" value="Total Outflow for 90 Days" />
@@ -192,7 +192,7 @@
 						</property> 
 					</bean> 	
 				</entry>
-				<entry key="Payment,Rent"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Payment,Rent"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="12" />
 						<property name="type" value="Payment" />
 						<property name="subType" value="Rent" />
@@ -205,7 +205,7 @@
 						</property>
 					</bean> 	
 				</entry>
-				<entry key="Inflow30"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Inflow30"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="17" />
 						<property name="type" value="Inflow" />
 						<property name="subType" value="Total Inflow for 30 Days" />
@@ -217,7 +217,7 @@
 						</property> 
 					</bean> 	
 				</entry>
-				<entry key="Inflow90"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Inflow90"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="18" />
 						<property name="type" value="Inflow" />
 						<property name="subType" value="Total Inflow for 90 Days" />
@@ -229,7 +229,7 @@
 						</property> 
 					</bean> 	
 				</entry>
-				<entry key="Service,Telecommunication Services"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Service,Telecommunication Services"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="19" />
 						<property name="type" value="Cell Phone" />
 						<property name="subType" value="Total Cell Phone Bill Payment" />
@@ -241,7 +241,7 @@
 						</property> 
 					</bean> 	
 				</entry>
-				<entry key="Service,Financial,Stock Brokers"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Service,Financial,Stock Brokers"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="20" />
 						<property name="type" value="Financial" />
 						<property name="subType" value="Stock Brokers" />
@@ -253,7 +253,7 @@
 						</property> 
 					</bean> 	
 				</entry>
-				<entry key="Service,Financial,Financial Planning and Investments"> <bean class="com.eNvestDetails.dto.UserProfileDataDTO">
+				<entry key="Service,Financial,Financial Planning and Investments"> <bean class="com.eNvestDetails.DAL.UserProfileDataDTO">
 						<property name="id" value="21" />
 						<property name="type" value="Financial" />
 						<property name="subType" value="Financial Planning and Investments" />

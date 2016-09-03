@@ -1,9 +1,7 @@
 package com.eNvestDetails.Recommendation;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -11,14 +9,13 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.eNvestDetails.Config.MessageFactory;
-import com.eNvestDetails.DAL.IUserInfoDAOService;
+import com.eNvestDetails.DAL.UserInfoDAOService;
 import com.eNvestDetails.DAL.UserProfileDataDTO;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.RecommendationEngine.AbstractRule;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.TransactionDetail;
 import com.eNvestDetails.Response.UserInfo;
-import com.eNvestDetails.UserProfile.UserProfileDataElement;
 import com.eNvestDetails.UserProfile.UserProfileDataMapping;
 import com.eNvestDetails.UserProfile.UserProfileFactory;
 import com.eNvestDetails.UserProfileData.UserProfileDataCaptureService;
@@ -40,7 +37,7 @@ public class UserProfile extends AbstractRule {
 	private UserAccountServiceUtil accountServiceUtil;
 	
 	@Autowired
-	private IUserInfoDAOService daoAdapter;
+	private UserInfoDAOService daoAdapter;
 	private UserProfileFactory profileFactory;
 	
 	private UserProfileDataCaptureService userProfileService;

@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.eNvestDetails.DAL.IUserInfoDAOService;
+import com.eNvestDetails.DAL.UserInfoDAOService;
 import com.eNvestDetails.DAL.UserAccessTokenDTO;
 import com.eNvestDetails.DAL.UserProfileDataDTO;
 import com.eNvestDetails.Exception.EnvestException;
@@ -40,7 +40,7 @@ public class UserAccountServiceUtil {
 	private PlaidConnector plaidGateway = null;
 	
 	@Autowired
-	private IUserInfoDAOService daoAdapter;
+	private UserInfoDAOService daoAdapter;
 	
 	@Autowired
 	private ErrorMessageFactory errorFactory = null;

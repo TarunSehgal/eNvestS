@@ -28,7 +28,7 @@ import com.eNvestDetails.util.ConvertBeanToDTO;
 import com.eNvestDetails.util.HibernateUtils;
 
 @Component
-class ProductDaoService implements IProductDaoService {
+public class ProductDaoService implements IProductDaoService {
 
 	@Override
 	public List<ProductDTO> getAllProducts() {

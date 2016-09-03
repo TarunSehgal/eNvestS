@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Config.MessageFactory;
-import com.eNvestDetails.DAL.IUserInfoDAOService;
+import com.eNvestDetails.DAL.UserInfoDAOService;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
@@ -43,7 +43,7 @@ public class UserService implements eNvestService {
 	private ErrorMessageFactory errorFactory = null;
 	
 	@Autowired
-	private IUserInfoDAOService daoAdapter;
+	private UserInfoDAOService daoAdapter;
 	
 	@Autowired
 	private InitiateRecommendation recommendationEngine = null;

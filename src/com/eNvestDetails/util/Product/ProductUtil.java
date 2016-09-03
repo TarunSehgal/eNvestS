@@ -5,14 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.DAL.BankDTO;
-import com.eNvestDetails.DAL.IBankDaoService;
-import com.eNvestDetails.DAL.IProductDaoService;
-import com.eNvestDetails.DAL.IUserInfoDAOService;
+import com.eNvestDetails.DAL.BankDaoService;
+import com.eNvestDetails.DAL.ProductDaoService;
 import com.eNvestDetails.DAL.ProductDTO;
 import com.eNvestDetails.DAL.UserProductDTO;
 import com.eNvestDetails.DAL.UserProductDao;
@@ -29,16 +30,15 @@ import com.eNvestDetails.util.Calculation.Response;
 public class ProductUtil {
 
 	private List<Product> availableProducts = null;
-	private UserProductDao userProductDAO = new UserProductDao();
-	
+		
 	@Autowired
 	private InitiateRecommendation recommendationEngine = null;
 	
 	@Autowired
-	private IBankDaoService bankDaoService;
+	private BankDaoService bankDaoService;
 	
 	@Autowired
-	private IProductDaoService productDaoService;
+	private ProductDaoService productDaoService;
 	
 	@Autowired
 	private ErrorMessageFactory errorFactory = null;
@@ -56,10 +56,14 @@ public class ProductUtil {
 	private MessageFactory message = null;
 	
 	public ProductUtil() throws EnvestException
+	{		
+	}
+	
+	@PostConstruct
+	public void Initialize() throws EnvestException
 	{
 		availableProducts = GetAvailableProducts();
 	}
-	
 	public Product recalculateProduct(int productId, double maturityDate, double principle, String compoundingTenor) throws Exception
 	{
 		Product prd = getProduct(productId);

@@ -25,7 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.MessageFactory;
-import com.eNvestDetails.DAL.IUserInfoDAOService;
 import com.eNvestDetails.DAL.UserAccessTokenDTO;
 import com.eNvestDetails.DAL.UserInfoDAOService;
 import com.eNvestDetails.Exception.EnvestException;
@@ -33,22 +32,18 @@ import com.eNvestDetails.Exception.ErrorMessage;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
 import com.eNvestDetails.Response.EnvestResponse;
-import com.eNvestDetails.Response.MfaResponseDetail;
-import com.eNvestDetails.Response.PlaidCategory;
 import com.eNvestDetails.Response.UserInfo;
 import com.eNvestDetails.TransferService.PlaidConnector;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.security.TokenUtils;
 import com.eNvestDetails.security.User;
 import com.plaid.client.exception.PlaidMfaException;
-import com.plaid.client.exception.PlaidServersideException;
-import com.plaid.client.http.HttpResponseWrapper;
 
 @Component
 public class UserServiceUtil {
 	
 	@Autowired
-	private IUserInfoDAOService daoAdapter;
+	private UserInfoDAOService daoAdapter;
 	
 	@Autowired
 	private MessageFactory message = null;
