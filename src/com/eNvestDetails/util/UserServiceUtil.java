@@ -3,14 +3,6 @@ package com.eNvestDetails.util;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
-
-
-
-
-
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.DAL.UserAccessTokenDTO;
 import com.eNvestDetails.DAL.UserInfoDAOService;
@@ -41,10 +32,7 @@ import com.plaid.client.exception.PlaidMfaException;
 
 @Component
 public class UserServiceUtil {
-	
-	@Autowired
-	private UserInfoDAOService daoAdapter;
-	
+		
 	@Autowired
 	private MessageFactory message = null;
 	
@@ -101,7 +89,7 @@ public class UserServiceUtil {
 		try{
 			//getCategories();
 			String encodePassword = passwordEncoder.encode(password);
-			userKey = daoAdapter.createUser(userID, encodePassword,message,errorFactory);
+			userKey = userInfoDaoService.createUser(userID, encodePassword,message,errorFactory);
 			mes = errorFactory.getSuccessMessage(EnvestConstants.RETURN_CODE_SUCCESS
 					, message.getMessage("message.useraddedsuccess"));
 			mes.setUserKey(userKey);
@@ -120,7 +108,7 @@ public class UserServiceUtil {
 		ErrorMessage mes;
 		
 		try{
-			code = daoAdapter.saveUser(userKey,userID, password);
+			code = userInfoDaoService.saveUser(userKey,userID, password);
 			
 		}catch (Exception e){
 			logger.error("Error occured while saving user", e);
@@ -170,18 +158,11 @@ public class UserServiceUtil {
 			token.setAccessToken(d.getAccessToken());
 			token.setIsActive("Y");
 			token.setIsdeleted("Y");
-/*			if(d instanceof UserInfo){
-				token.setIsActive("Y");
-				token.setIsdeleted("Y");
-			}else if(d instanceof MfaResponseDetail){
-				token.setIsActive("Y");
-				token.setIsdeleted("Y");
-			}*/		
 			token.setUserBank(d.getResponseFor());
 			token.setUserKey(userKey);
 			if(d instanceof UserInfo){
 				try {
-					daoAdapter.saveUserInfo(d,errorFactory);
+					userInfoDaoService.saveUserInfo(d,errorFactory);
 					Map<String,Object> input = new HashMap<String,Object>(10);
 					input.put(EnvestConstants.ENVEST_RESPONSE, d);
 					Map<String,Object> output = recommendationEngine.processRequest(input);
@@ -193,7 +174,7 @@ public class UserServiceUtil {
 				}
 
 			}else{
-				daoAdapter.saveAccessToken(token);
+				userInfoDaoService.saveAccessToken(token);
 			}
 			
 		}
@@ -203,7 +184,7 @@ public class UserServiceUtil {
 	public EnvestResponse submitMFA(Long userKey,String mfa,String bank){
 		UserInfo info = null;
 		try{
-			UserAccessTokenDTO  dto = daoAdapter.getAccesTokens(userKey,bank);
+			UserAccessTokenDTO  dto = userInfoDaoService.getAccesTokens(userKey,bank);
 			if(dto==null)
 			{
 				logger.info("access token not found");
@@ -213,7 +194,7 @@ public class UserServiceUtil {
 		    info = plaidGateway.executeMFARequest(mfa, dto.getAccessToken());
 		    info.setUserKey(userKey);
 		    plaidGateway.addConnectProduct(null, dto.getAccessToken());
-		    daoAdapter.saveUserInfo(info,false,errorFactory);
+		    userInfoDaoService.saveUserInfo(info,false,errorFactory);
 		    Map<String,Object> input = new HashMap<String,Object>(10);
 			input.put(EnvestConstants.ENVEST_RESPONSE, info);
 			Map<String,Object> output = recommendationEngine.processRequest(input);
@@ -230,12 +211,12 @@ public class UserServiceUtil {
 	public EnvestResponse deleteUser(Long userKey){
 		ErrorMessage mes = null;
 		try{
-			List<UserAccessTokenDTO> list = daoAdapter.getAccesTokens(userKey);
+			List<UserAccessTokenDTO> list = userInfoDaoService.getAccesTokens(userKey);
 			for(UserAccessTokenDTO token : list){	
 				plaidGateway.deleteAccount(token.getAccessToken());
 			}
 			
-			daoAdapter.deleteUser(userKey, errorFactory);
+			userInfoDaoService.deleteUser(userKey, errorFactory);
 			mes = errorFactory.getSuccessMessage(EnvestConstants.RETURN_CODE_SUCCESS
 					, message.getMessage("message.userdelete"));			
 		}catch(EnvestException e){

@@ -16,7 +16,7 @@ import com.eNvestDetails.DAL.BankDaoService;
 import com.eNvestDetails.DAL.ProductDaoService;
 import com.eNvestDetails.DAL.ProductDTO;
 import com.eNvestDetails.DAL.UserProductDTO;
-import com.eNvestDetails.DAL.UserProductDao;
+import com.eNvestDetails.DAL.UserProductDaoService;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Factories.ErrorMessageFactory;
 import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
@@ -39,6 +39,9 @@ public class ProductUtil {
 	
 	@Autowired
 	private ProductDaoService productDaoService;
+	
+	@Autowired
+	UserProductDaoService userProductDaoService;
 	
 	@Autowired
 	private ErrorMessageFactory errorFactory = null;
@@ -142,13 +145,13 @@ public class ProductUtil {
 	public int SaveUserProduct(int productId, double principle,double valueAtMaturity,double interestRate, Long userKey) throws EnvestException
 	{
 		UserProductDTO userProductDTO = ProductToDTOConverter.convertProductToDTO(productId,principle,interestRate,valueAtMaturity  , userKey);
-		return UserProductDao.addNewProduct(userProductDTO, message, errorFactory);
+		return userProductDaoService.addNewProduct(userProductDTO, message, errorFactory);
 	}
 	
 	public List<Product> GetUserProduct(Long userKey) throws EnvestException
 	{
 		List<Product> availableUserProducts = new ArrayList<Product>();
-		List<UserProductDTO> userProductDTO =UserProductDao.getAllProduct(userKey, errorFactory); 
+		List<UserProductDTO> userProductDTO =userProductDaoService.getAllProduct(userKey, errorFactory); 
 		if(userProductDTO != null && userProductDTO.size()>0)
 		{
 			for(UserProductDTO dto:userProductDTO)
