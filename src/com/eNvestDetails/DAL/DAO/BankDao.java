@@ -1,4 +1,4 @@
-package com.eNvestDetails.DAL;
+package com.eNvestDetails.DAL.DAO;
 
 import java.util.List;
 import java.util.Map;
@@ -18,19 +18,20 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.eNvestDetails.Config.MessageFactory;
+import com.eNvestDetails.DAL.DTO.BankDTO;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
-import com.eNvestDetails.Factories.ErrorMessageFactory;
+import com.eNvestDetails.Factories.EnvestMessageFactory;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.util.ConvertBeanToDTO;
 import com.eNvestDetails.util.HibernateUtils;
 
-class BankDao {
+public class BankDao {
 		
 	private static Logger log = Logger.getLogger(BankDao.class.getName());			
 	
-	public static BankDTO getBankInfo(int bankId, ErrorMessageFactory errorFactory) throws EnvestException{
+	public static BankDTO getBankInfo(int bankId, EnvestMessageFactory errorFactory) throws EnvestException{
 		log.info("inside method getBankInfo");
 		BankDTO bankDTO = null;
 		Session session = null;
@@ -51,7 +52,7 @@ class BankDao {
 		return bankDTO;			
 	}
 		
-	public static void addNewBank(int bankId,String bankName, Double interest, MessageFactory message, ErrorMessageFactory errorFactory) throws EnvestException{
+	public static void addNewBank(int bankId,String bankName, Double interest, MessageFactory message, EnvestMessageFactory errorFactory) throws EnvestException{
 
 		BankDTO bankDTO = null;
 		Session session = null;

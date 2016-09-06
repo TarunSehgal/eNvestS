@@ -1,4 +1,4 @@
-package com.eNvestDetails.DAL;
+package com.eNvestDetails.DAL.DAO;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,17 +8,18 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import com.eNvestDetails.Config.MessageFactory;
+import com.eNvestDetails.DAL.DTO.UserProductDTO;
 import com.eNvestDetails.Exception.EnvestException;
-import com.eNvestDetails.Factories.ErrorMessageFactory;
+import com.eNvestDetails.Factories.EnvestMessageFactory;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.util.HibernateUtils;
 
-class UserProductDao {
+public class UserProductDao {
 	
 	private static Logger log = Logger.getLogger(UserProductDao.class.getName());
 	
 		
-	public static List<UserProductDTO> getAllProduct(Long userKey, ErrorMessageFactory errorFactory) throws EnvestException{
+	public static List<UserProductDTO> getAllProduct(Long userKey, EnvestMessageFactory errorFactory) throws EnvestException{
 		log.info("inside method getAllProducts");
 		List<UserProductDTO> productsList = new ArrayList<UserProductDTO>();
 		Session session = null;
@@ -42,7 +43,7 @@ class UserProductDao {
 		}
 		return productsList;	
 	}
-	public static UserProductDTO getProduct(String userId, ErrorMessageFactory errorFactory) throws EnvestException{
+	public static UserProductDTO getProduct(String userId, EnvestMessageFactory errorFactory) throws EnvestException{
 		log.info("inside method getproduct");
 		UserProductDTO productDTO = null;
 		Session session = null;
@@ -64,7 +65,7 @@ class UserProductDao {
 	}
 	
 		
-	public static int addNewProduct(UserProductDTO productDTO, MessageFactory message, ErrorMessageFactory errorFactory) throws EnvestException{
+	public static int addNewProduct(UserProductDTO productDTO, MessageFactory message, EnvestMessageFactory errorFactory) throws EnvestException{
 
 		Session session = null;
 		int returnCode = EnvestConstants.RETURN_CODE_SUCCESS;

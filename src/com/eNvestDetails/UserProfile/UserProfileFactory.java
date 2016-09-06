@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.eNvestDetails.DAL.UserProfileDataDTO;
+import com.eNvestDetails.DAL.DTO.UserProfileDataDTO;
 import com.eNvestDetails.Response.TransactionDetail;
 
 @Component

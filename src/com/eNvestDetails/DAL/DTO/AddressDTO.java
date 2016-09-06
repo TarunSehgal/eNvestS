@@ -1,4 +1,4 @@
-package com.eNvestDetails.DAL;
+package com.eNvestDetails.DAL.DTO;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,18 +7,22 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="envest_user_phone")
-public class UserPhoneDTO {
+@Table(name="envest_user_address")
+public class AddressDTO {
 	
 	@Id @GeneratedValue
 	@Column
-	private Long phone_id;
+	private Long address_id;
 	@Column
 	private String isprimary;
 	@Column
-	private String type;
+	private String street;
 	@Column
-	private String number;
+	private String city;
+	@Column
+	private String addressstate;
+	@Column
+	private String zip;
 	
 	@Column (columnDefinition="VARCHAR(1) default 'N'" )
 	private String isdeleted;
@@ -26,6 +30,7 @@ public class UserPhoneDTO {
 	@Column
 	private Long userKey;
 	
+
 	@Column (columnDefinition="VARCHAR(1) default 'N'" )
 	private String isActive;
 	
@@ -36,6 +41,7 @@ public class UserPhoneDTO {
 	public void setUserKey(Long userKey) {
 		this.userKey = userKey;
 	}
+	
 	public String getIsActive() {
 		return isActive;
 	}
@@ -44,12 +50,12 @@ public class UserPhoneDTO {
 		this.isActive = isActive;
 	}
 
-	public Long getPhone_id() {
-		return phone_id;
+	public Long getAddress_id() {
+		return address_id;
 	}
 
-	public void setPhone_id(Long phone_id) {
-		this.phone_id = phone_id;
+	public void setAddress_id(Long address_id) {
+		this.address_id = address_id;
 	}
 
 	public String getIsprimary() {
@@ -60,20 +66,36 @@ public class UserPhoneDTO {
 		this.isprimary = isprimary;
 	}
 
-	public String getType() {
-		return type;
+	public String getStreet() {
+		return street;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setStreet(String street) {
+		this.street = street;
 	}
 
-	public String getNumber() {
-		return number;
+	public String getCity() {
+		return city;
 	}
 
-	public void setNumber(String number) {
-		this.number = number;
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getAddressstate() {
+		return addressstate;
+	}
+
+	public void setAddressstate(String addressstate) {
+		this.addressstate = addressstate;
+	}
+
+	public String getZip() {
+		return zip;
+	}
+
+	public void setZip(String zip) {
+		this.zip = zip;
 	}
 
 	public String getIsdeleted() {
@@ -84,4 +106,6 @@ public class UserPhoneDTO {
 		this.isdeleted = isdeleted;
 	}
 
+	
+	
 }

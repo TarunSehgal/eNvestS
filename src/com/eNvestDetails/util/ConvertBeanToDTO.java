@@ -6,19 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-
-import com.eNvestDetails.DAL.AccountsDTO;
-import com.eNvestDetails.DAL.AddressDTO;
 import com.eNvestDetails.DAL.IUserInfoDAOService;
-import com.eNvestDetails.DAL.UserAccessTokenDTO;
-import com.eNvestDetails.DAL.UserEmailDTO;
 import com.eNvestDetails.DAL.UserInfoDAOService;
-import com.eNvestDetails.DAL.UserInfoDTO;
-import com.eNvestDetails.DAL.UserPhoneDTO;
+import com.eNvestDetails.DAL.DTO.AccountsDTO;
+import com.eNvestDetails.DAL.DTO.AddressDTO;
+import com.eNvestDetails.DAL.DTO.UserAccessTokenDTO;
+import com.eNvestDetails.DAL.DTO.UserEmailDTO;
+import com.eNvestDetails.DAL.DTO.UserInfoDTO;
+import com.eNvestDetails.DAL.DTO.UserPhoneDTO;
 import com.eNvestDetails.Exception.EnvestException;
-import com.eNvestDetails.Factories.ErrorMessageFactory;
+import com.eNvestDetails.Factories.EnvestMessageFactory;
 import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.UserInfo;
@@ -46,7 +43,7 @@ public class ConvertBeanToDTO {
 	
 	static IUserInfoDAOService userInfoDAOAdaptor = new UserInfoDAOService();
 	
-	public static Map<String,Object> getUserInfoDTO(EnvestResponse response, ErrorMessageFactory errorFactory) throws EnvestException{
+	public static Map<String,Object> getUserInfoDTO(EnvestResponse response, EnvestMessageFactory errorFactory) throws EnvestException{
 		Map<String,Object> returnMap = new HashMap<String,Object>(10);
 		Info info = ((UserInfo)response).getInfo();
 		

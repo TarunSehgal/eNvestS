@@ -1,4 +1,4 @@
-package com.eNvestDetails.DAL;
+package com.eNvestDetails.DAL.DAO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,9 +6,11 @@ import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+
+import com.eNvestDetails.DAL.DTO.ProductDTO;
 import com.eNvestDetails.util.HibernateUtils;
 
-class ProductDao {
+public class ProductDao {
 	
 	private static Logger log = Logger.getLogger(ProductDao.class.getName());
 		

@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.DAL.UserInfoDAOService;
-import com.eNvestDetails.DAL.UserProfileDataDTO;
-import com.eNvestDetails.Factories.ErrorMessageFactory;
+import com.eNvestDetails.DAL.DTO.UserProfileDataDTO;
+import com.eNvestDetails.Factories.EnvestMessageFactory;
 import com.eNvestDetails.RecommendationEngine.AbstractRule;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.TransactionDetail;
@@ -31,7 +31,7 @@ public class UserProfile extends AbstractRule {
 	private UserServiceUtil userServiceUtil;
 	
 	@Autowired
-	private ErrorMessageFactory errorFactory = null;
+	private EnvestMessageFactory errorFactory = null;
 	
 	@Autowired
 	private UserAccountServiceUtil accountServiceUtil;

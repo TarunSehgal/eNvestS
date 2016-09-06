@@ -1,4 +1,4 @@
-package com.eNvestDetails.DAL;
+package com.eNvestDetails.DAL.DTO;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,17 +7,19 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="envest_user_email")
-public class UserEmailDTO {
+@Table(name="envest_user_phone")
+public class UserPhoneDTO {
+	
 	@Id @GeneratedValue
 	@Column
-	private Long email_id;
+	private Long phone_id;
 	@Column
 	private String isprimary;
 	@Column
 	private String type;
 	@Column
-	private String email;
+	private String number;
+	
 	@Column (columnDefinition="VARCHAR(1) default 'N'" )
 	private String isdeleted;
 	
@@ -34,7 +36,6 @@ public class UserEmailDTO {
 	public void setUserKey(Long userKey) {
 		this.userKey = userKey;
 	}
-	
 	public String getIsActive() {
 		return isActive;
 	}
@@ -43,12 +44,12 @@ public class UserEmailDTO {
 		this.isActive = isActive;
 	}
 
-	public Long getEmail_id() {
-		return email_id;
+	public Long getPhone_id() {
+		return phone_id;
 	}
 
-	public void setEmail_id(Long email_id) {
-		this.email_id = email_id;
+	public void setPhone_id(Long phone_id) {
+		this.phone_id = phone_id;
 	}
 
 	public String getIsprimary() {
@@ -67,12 +68,12 @@ public class UserEmailDTO {
 		this.type = type;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getNumber() {
+		return number;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setNumber(String number) {
+		this.number = number;
 	}
 
 	public String getIsdeleted() {

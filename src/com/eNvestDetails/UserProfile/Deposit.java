@@ -2,7 +2,7 @@ package com.eNvestDetails.UserProfile;
 
 import java.util.List;
 
-import com.eNvestDetails.DAL.UserProfileDataDTO;
+import com.eNvestDetails.DAL.DTO.UserProfileDataDTO;
 
 public class Deposit extends UserProfileDataElement {
 

@@ -7,7 +7,7 @@ import org.hibernate.HibernateException;
 
 import com.eNvestDetails.Config.MessageFactory;
 import com.eNvestDetails.Exception.EnvestException;
-import com.eNvestDetails.Factories.ErrorMessageFactory;
+import com.eNvestDetails.Factories.EnvestMessageFactory;
 import com.eNvestDetails.Response.EnvestResponse;
 
 public interface IDAOAdaptor {

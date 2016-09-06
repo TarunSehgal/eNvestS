@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.DAL.UserInfoDAOService;
-import com.eNvestDetails.DAL.UserAccessTokenDTO;
-import com.eNvestDetails.DAL.UserProfileDataDTO;
+import com.eNvestDetails.DAL.DTO.UserAccessTokenDTO;
+import com.eNvestDetails.DAL.DTO.UserProfileDataDTO;
 import com.eNvestDetails.Exception.EnvestException;
-import com.eNvestDetails.Factories.ErrorMessageFactory;
+import com.eNvestDetails.Factories.EnvestMessageFactory;
 import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
 import com.eNvestDetails.Response.AccountDetail;
 import com.eNvestDetails.Response.BankBalance;
@@ -43,7 +43,7 @@ public class UserAccountServiceUtil {
 	private UserInfoDAOService daoAdapter;
 	
 	@Autowired
-	private ErrorMessageFactory errorFactory = null;
+	private EnvestMessageFactory errorFactory = null;
 	
 	private Logger logger = Logger.getLogger(UserAccountServiceUtil.class.getName());
 	

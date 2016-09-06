@@ -1,5 +1,5 @@
 
-package com.eNvestDetails.DAL;
+package com.eNvestDetails.DAL.DTO;
 
 import java.io.Serializable;
 

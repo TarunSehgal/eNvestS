@@ -10,16 +10,16 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import com.eNvestDetails.Config.ConfigFactory;
-import com.eNvestDetails.DAL.AccountsDTO;
-import com.eNvestDetails.DAL.AddressDTO;
-import com.eNvestDetails.DAL.BankDTO;
-import com.eNvestDetails.DAL.ProductDTO;
-import com.eNvestDetails.DAL.UserAccessTokenDTO;
-import com.eNvestDetails.DAL.UserEmailDTO;
-import com.eNvestDetails.DAL.UserInfoDTO;
-import com.eNvestDetails.DAL.UserPhoneDTO;
-import com.eNvestDetails.DAL.UserProductDTO;
-import com.eNvestDetails.DAL.UserProfileDataDTO;
+import com.eNvestDetails.DAL.DTO.AccountsDTO;
+import com.eNvestDetails.DAL.DTO.AddressDTO;
+import com.eNvestDetails.DAL.DTO.BankDTO;
+import com.eNvestDetails.DAL.DTO.ProductDTO;
+import com.eNvestDetails.DAL.DTO.UserAccessTokenDTO;
+import com.eNvestDetails.DAL.DTO.UserEmailDTO;
+import com.eNvestDetails.DAL.DTO.UserInfoDTO;
+import com.eNvestDetails.DAL.DTO.UserPhoneDTO;
+import com.eNvestDetails.DAL.DTO.UserProductDTO;
+import com.eNvestDetails.DAL.DTO.UserProfileDataDTO;
 
 
 

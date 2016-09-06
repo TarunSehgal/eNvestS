@@ -10,8 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.MessageFactory;
+import com.eNvestDetails.DAL.DAO.UserInfoDao;
+import com.eNvestDetails.DAL.DTO.AddressDTO;
+import com.eNvestDetails.DAL.DTO.UserAccessTokenDTO;
+import com.eNvestDetails.DAL.DTO.UserEmailDTO;
+import com.eNvestDetails.DAL.DTO.UserInfoDTO;
+import com.eNvestDetails.DAL.DTO.UserPhoneDTO;
+import com.eNvestDetails.DAL.DTO.UserProfileDataDTO;
 import com.eNvestDetails.Exception.EnvestException;
-import com.eNvestDetails.Factories.ErrorMessageFactory;
+import com.eNvestDetails.Factories.EnvestMessageFactory;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.UserInfo;
 import com.plaid.client.response.InfoResponse;
@@ -20,7 +27,7 @@ import com.plaid.client.response.InfoResponse;
 public class UserInfoDAOService implements IUserInfoDAOService {
 
 	@Autowired
-	private ErrorMessageFactory errorFactory;
+	private EnvestMessageFactory errorFactory;
 	
 	public EnvestResponse getUserProfileData(Long userKey){
 		
@@ -101,23 +108,23 @@ public class UserInfoDAOService implements IUserInfoDAOService {
 	}
 
 	@Override
-	public Long saveUserInfo(EnvestResponse saveRespone, boolean saveAccesToken, ErrorMessageFactory errorFactory) throws EnvestException {
+	public Long saveUserInfo(EnvestResponse saveRespone, boolean saveAccesToken, EnvestMessageFactory errorFactory) throws EnvestException {
 		// TODO Auto-generated method stub
 		return UserInfoDao.saveUserInfo(saveRespone, saveAccesToken, errorFactory);
 	}
 
 	@Override
-	public Long saveUserInfo(EnvestResponse saveRespone, ErrorMessageFactory errorFactory) throws EnvestException {
+	public Long saveUserInfo(EnvestResponse saveRespone, EnvestMessageFactory errorFactory) throws EnvestException {
 		return UserInfoDao.saveUserInfo(saveRespone, errorFactory);
 	}
 
 	@Override
-	public UserInfoDTO getUserInfoDetail(long key, ErrorMessageFactory errorFactory) throws EnvestException {
+	public UserInfoDTO getUserInfoDetail(long key, EnvestMessageFactory errorFactory) throws EnvestException {
 		return UserInfoDao.getUserInfoDetail(key, errorFactory);
 	}
 
 	@Override
-	public long createUser(String userID, String password, MessageFactory message, ErrorMessageFactory errorFactory) throws EnvestException {
+	public long createUser(String userID, String password, MessageFactory message, EnvestMessageFactory errorFactory) throws EnvestException {
 		return UserInfoDao.createUser(userID, password, message, errorFactory);
 	}
 
@@ -147,13 +154,13 @@ public class UserInfoDAOService implements IUserInfoDAOService {
 	}
 
 	@Override
-	public void saveUserProfileData(List<UserProfileDataDTO> userProfile, ErrorMessageFactory errorFactory) throws EnvestException{
+	public void saveUserProfileData(List<UserProfileDataDTO> userProfile, EnvestMessageFactory errorFactory) throws EnvestException{
 	UserInfoDao.saveUserProfileData(userProfile, errorFactory);
 		
 	}
 
 	@Override
-	public List<UserProfileDataDTO> getUserProfileData(Long userKey, ErrorMessageFactory errorFactory)
+	public List<UserProfileDataDTO> getUserProfileData(Long userKey, EnvestMessageFactory errorFactory)
 			throws EnvestException {
 		return UserInfoDao.getUserProfileData(userKey, errorFactory);
 	}
@@ -165,13 +172,13 @@ public class UserInfoDAOService implements IUserInfoDAOService {
 
 	@Override
 	public void deleteUser(Long key 
-			, ErrorMessageFactory errorFactory) throws EnvestException {
+			, EnvestMessageFactory errorFactory) throws EnvestException {
 		UserInfoDao.deleteUser(key, errorFactory);
 	}
 
 	@Override
 	public void clearProfileData(Long key 
-			, ErrorMessageFactory errorFactory) throws EnvestException {
+			, EnvestMessageFactory errorFactory) throws EnvestException {
 		UserInfoDao.clearProfileData(key, errorFactory);
 	}
 

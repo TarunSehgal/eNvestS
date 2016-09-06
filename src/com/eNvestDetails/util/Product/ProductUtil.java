@@ -11,14 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.eNvestDetails.Config.MessageFactory;
-import com.eNvestDetails.DAL.BankDTO;
 import com.eNvestDetails.DAL.BankDaoService;
 import com.eNvestDetails.DAL.ProductDaoService;
-import com.eNvestDetails.DAL.ProductDTO;
-import com.eNvestDetails.DAL.UserProductDTO;
 import com.eNvestDetails.DAL.UserProductDaoService;
+import com.eNvestDetails.DAL.DTO.BankDTO;
+import com.eNvestDetails.DAL.DTO.ProductDTO;
+import com.eNvestDetails.DAL.DTO.UserProductDTO;
 import com.eNvestDetails.Exception.EnvestException;
-import com.eNvestDetails.Factories.ErrorMessageFactory;
+import com.eNvestDetails.Factories.EnvestMessageFactory;
 import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
 import com.eNvestDetails.util.Calculation.AnnuityCalculator;
 import com.eNvestDetails.util.Calculation.GoalSeekCalculator;
@@ -44,7 +44,7 @@ public class ProductUtil {
 	UserProductDaoService userProductDaoService;
 	
 	@Autowired
-	private ErrorMessageFactory errorFactory = null;
+	private EnvestMessageFactory errorFactory = null;
 	
 	@Autowired
 	private InterestCalculator interestCalculator = null;

@@ -1,4 +1,4 @@
-package com.eNvestDetails.DAL;
+package com.eNvestDetails.DAL.DTO;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,30 +7,23 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="envest_user_address")
-public class AddressDTO {
-	
+@Table(name="envest_user_email")
+public class UserEmailDTO {
 	@Id @GeneratedValue
 	@Column
-	private Long address_id;
+	private Long email_id;
 	@Column
 	private String isprimary;
 	@Column
-	private String street;
+	private String type;
 	@Column
-	private String city;
-	@Column
-	private String addressstate;
-	@Column
-	private String zip;
-	
+	private String email;
 	@Column (columnDefinition="VARCHAR(1) default 'N'" )
 	private String isdeleted;
 	
 	@Column
 	private Long userKey;
 	
-
 	@Column (columnDefinition="VARCHAR(1) default 'N'" )
 	private String isActive;
 	
@@ -50,12 +43,12 @@ public class AddressDTO {
 		this.isActive = isActive;
 	}
 
-	public Long getAddress_id() {
-		return address_id;
+	public Long getEmail_id() {
+		return email_id;
 	}
 
-	public void setAddress_id(Long address_id) {
-		this.address_id = address_id;
+	public void setEmail_id(Long email_id) {
+		this.email_id = email_id;
 	}
 
 	public String getIsprimary() {
@@ -66,36 +59,20 @@ public class AddressDTO {
 		this.isprimary = isprimary;
 	}
 
-	public String getStreet() {
-		return street;
+	public String getType() {
+		return type;
 	}
 
-	public void setStreet(String street) {
-		this.street = street;
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	public String getCity() {
-		return city;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getAddressstate() {
-		return addressstate;
-	}
-
-	public void setAddressstate(String addressstate) {
-		this.addressstate = addressstate;
-	}
-
-	public String getZip() {
-		return zip;
-	}
-
-	public void setZip(String zip) {
-		this.zip = zip;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getIsdeleted() {
@@ -106,6 +83,4 @@ public class AddressDTO {
 		this.isdeleted = isdeleted;
 	}
 
-	
-	
 }

@@ -1,4 +1,4 @@
-package com.eNvestDetails.DAL;
+package com.eNvestDetails.DAL.DTO;
 /*package com.eNvestDetails.dto;
 
 import javax.persistence.Column;

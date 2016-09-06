@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.eNvestDetails.DAL.UserProfileDataDTO;
+import com.eNvestDetails.DAL.DTO.UserProfileDataDTO;
 import com.eNvestDetails.Response.TransactionDetail;
 
 public abstract class UserProfileDataElement {

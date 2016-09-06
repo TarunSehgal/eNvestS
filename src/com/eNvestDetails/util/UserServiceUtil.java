@@ -16,11 +16,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import com.eNvestDetails.Config.MessageFactory;
-import com.eNvestDetails.DAL.UserAccessTokenDTO;
 import com.eNvestDetails.DAL.UserInfoDAOService;
+import com.eNvestDetails.DAL.DTO.UserAccessTokenDTO;
 import com.eNvestDetails.Exception.EnvestException;
 import com.eNvestDetails.Exception.ErrorMessage;
-import com.eNvestDetails.Factories.ErrorMessageFactory;
+import com.eNvestDetails.Factories.EnvestMessageFactory;
 import com.eNvestDetails.RecommendationEngine.InitiateRecommendation;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.UserInfo;
@@ -37,7 +37,7 @@ public class UserServiceUtil {
 	private MessageFactory message = null;
 	
 	@Autowired
-	private ErrorMessageFactory errorFactory = null;
+	private EnvestMessageFactory errorFactory = null;
 	
 	@Autowired
 	private PlaidConnector plaidGateway = null;
@@ -84,14 +84,13 @@ public class UserServiceUtil {
 	}
 	
 	public EnvestResponse createUser(String userID,String password){
-		ErrorMessage mes;
+		EnvestResponse mes;
 		long userKey = 0;
 		try{
 			//getCategories();
 			String encodePassword = passwordEncoder.encode(password);
 			userKey = userInfoDaoService.createUser(userID, encodePassword,message,errorFactory);
-			mes = errorFactory.getSuccessMessage(EnvestConstants.RETURN_CODE_SUCCESS
-					, message.getMessage("message.useraddedsuccess"));
+			mes = errorFactory.getSuccessMessage(message.getMessage("message.useraddedsuccess"));
 			mes.setUserKey(userKey);
 			User user = new User(userID.toUpperCase(), encodePassword);
 			user.setId(userKey);
@@ -105,7 +104,7 @@ public class UserServiceUtil {
 		
 	public EnvestResponse saveUser(Long userKey, String userID,String password){
 		int code = 0;
-		ErrorMessage mes;
+		EnvestResponse mes;
 		
 		try{
 			code = userInfoDaoService.saveUser(userKey,userID, password);
@@ -119,8 +118,7 @@ public class UserServiceUtil {
 			mes = errorFactory.getFailureMessage(code
 					, message.getMessage("message.userAddFailure"));
 		}else{
-			mes =  errorFactory.getSuccessMessage(code
-					,message.getMessage("message.useraddedsuccess"));
+			mes =  errorFactory.getSuccessMessage(message.getMessage("message.useraddedsuccess"));
 
 			mes.setUserKey(userKey);
 		}
@@ -128,7 +126,7 @@ public class UserServiceUtil {
 	}
 	
 	public EnvestResponse authenticate(String userID,String password){
-		ErrorMessage mes = null;
+		EnvestResponse mes = null;
 		UserDetails userDetails = null;
 		try{
 			UsernamePasswordAuthenticationToken authenticationToken =
@@ -137,8 +135,7 @@ public class UserServiceUtil {
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 			userDetails = userService.loadUserByUsername(userID);
 			
-			mes = errorFactory.getSuccessMessage(EnvestConstants.RETURN_CODE_SUCCESS
-					,message.getMessage("message.userAuthenticated"));
+			mes = errorFactory.getSuccessMessage(message.getMessage("message.userAuthenticated"));
 			mes.setUserKey(((User)userDetails).getId());
 			String token = TokenUtils.createToken(userDetails);
 			mes.setAuthToken(token);
@@ -209,7 +206,7 @@ public class UserServiceUtil {
 	}
 	
 	public EnvestResponse deleteUser(Long userKey){
-		ErrorMessage mes = null;
+		EnvestResponse mes = null;
 		try{
 			List<UserAccessTokenDTO> list = userInfoDaoService.getAccesTokens(userKey);
 			for(UserAccessTokenDTO token : list){	
@@ -217,8 +214,7 @@ public class UserServiceUtil {
 			}
 			
 			userInfoDaoService.deleteUser(userKey, errorFactory);
-			mes = errorFactory.getSuccessMessage(EnvestConstants.RETURN_CODE_SUCCESS
-					, message.getMessage("message.userdelete"));			
+			mes = errorFactory.getSuccessMessage(message.getMessage("message.userdelete"));			
 		}catch(EnvestException e){
 			mes = e.getErrorMessage();
 		}
