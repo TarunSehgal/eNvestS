@@ -1,15 +1,23 @@
 package com.eNvestDetails.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.DAL.UserInfoDAOService;
 import com.eNvestDetails.DAL.DTO.UserAccessTokenDTO;
 import com.eNvestDetails.DAL.DTO.UserProfileDataDTO;
@@ -46,6 +54,12 @@ public class UserAccountServiceUtil {
 	private EnvestMessageFactory errorFactory = null;
 	
 	private Logger logger = Logger.getLogger(UserAccountServiceUtil.class.getName());
+	
+	@Autowired
+	CommonUtil commUtil;
+	
+	@Autowired
+	ConfigFactory config;
 	
 	public EnvestResponse getDashboardData(Long userKey,int type){
 
@@ -139,11 +153,17 @@ public class UserAccountServiceUtil {
 			//list = new ArrayList<UserAccessTokenDTO>(1);
 			for(UserAccessTokenDTO token : list){				
 				try{
+					GetOptions option = null;
 					response.setUserKey(userKey);
+					if(!commUtil.isTestUser(token.getAccessToken())){
+						option = new GetOptions();
+						option.setGte(commUtil.getGte(config.getResultString("transactionMonthRange")));
+					}
+					UpdateTransactionResult result = plaidGateway.updateTransactions(token.getAccessToken(),option,token.getUserBank());
 					
-					GetOptions option = new GetOptions();
-					option.setGte("04/01/2016");
-					UpdateTransactionResult result = plaidGateway.updateTransactions(token.getAccessToken(),token.getUserBank());
+					if(commUtil.isTestUser(token.getAccessToken())){
+						createDummyData(result.transactionDetails);
+					}
 					
 					extractDetails(type, accDetails, transactionsList, summaryMap, result);
 									
@@ -162,6 +182,23 @@ public class UserAccountServiceUtil {
 			logger.error("Error occured while getting transactions", e);
 		}		
 		return response;
+	}
+	
+	private void createDummyData(List<TransactionDetail> list){
+		List<TransactionDetail> transactionList = list;
+		Collections.sort(transactionList);
+		LocalDate testDate = null;
+		LocalDate dummyDate = null;
+		int month = 0;
+		for(TransactionDetail transaction : list){
+			dummyDate = new LocalDate();
+			if(null == testDate){
+				testDate = transaction.getDate();
+			}
+			month = testDate.getMonthOfYear() - transaction.getDate().getMonthOfYear();
+			dummyDate = dummyDate.minusMonths(month);
+			transaction.setDate(dummyDate);
+		}
 	}
 
 	

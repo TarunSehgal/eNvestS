@@ -9,17 +9,17 @@ import com.eNvestDetails.Response.TransactionDetail;
 public class InflowOutflow extends DataElement{
 
 	@Override
-	public void extractPrimaryInformation(TransactionDetail transaction){
+	public void extractPrimaryInformation(TransactionDetail transaction){		
 		switch (getId()) {
 		
 		case "4": // inflow
 			addIfNegative(getAmount(transaction));
-			setDates(getTransactionDate(transaction));
+			//setDates(getTransactionDate(transaction));
 			break;
 			
 		case "7": // outflow
 			addIfPositive(getAmount(transaction));
-			setDates(getTransactionDate(transaction));
+			//setDates(getTransactionDate(transaction));
 			break;
 			
 		case "8": // outflow 30 days
@@ -89,7 +89,7 @@ public class InflowOutflow extends DataElement{
 			
 			if(isTransactionDateInRange(transactionDate, startDate, days)){
 				addAmount(getAmount(transaction));			
-				setDates(getTransactionDate(transaction));
+				//setDates(getTransactionDate(transaction));
 			}
 			
 		}

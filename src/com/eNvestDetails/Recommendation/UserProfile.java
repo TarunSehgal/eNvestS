@@ -16,8 +16,6 @@ import com.eNvestDetails.RecommendationEngine.AbstractRule;
 import com.eNvestDetails.Response.EnvestResponse;
 import com.eNvestDetails.Response.TransactionDetail;
 import com.eNvestDetails.Response.UserInfo;
-import com.eNvestDetails.UserProfile.UserProfileDataMapping;
-import com.eNvestDetails.UserProfile.UserProfileFactory;
 import com.eNvestDetails.UserProfileData.UserProfileDataCaptureService;
 import com.eNvestDetails.constant.EnvestConstants;
 import com.eNvestDetails.util.UserAccountServiceUtil;
@@ -38,7 +36,6 @@ public class UserProfile extends AbstractRule {
 	
 	@Autowired
 	private UserInfoDAOService daoAdapter;
-	private UserProfileFactory profileFactory;
 	
 	private UserProfileDataCaptureService userProfileService;
 	
@@ -50,82 +47,12 @@ public class UserProfile extends AbstractRule {
 	@Autowired
 	private MessageFactory message = null;
 	
-	/*@Autowired
-	UserProfileDataMapping profileMapping;*/
-	
-	/*protected Map<String,Object> doWork(Map<String,Object> arg) throws Exception {
-		log.info("inside doWork method in UserProfile");
-
-		List<UserProfileDataDTO> saveProfileDataList = null;
-		Long userKey = null;
-		try{
-			if(null == arg || null == arg.get(EnvestConstants.ENVEST_RESPONSE) ){
-				return arg;
-			}			
-			EnvestResponse eNvestRes = (EnvestResponse) arg.get(EnvestConstants.ENVEST_RESPONSE);
-			userKey = ((UserInfo)eNvestRes).getUserKey();
-			UserInfo info = (UserInfo)accountServiceUtil.getAccountAndTransaction(userKey, EnvestConstants.GET_ACCOUNT_TRANSACTIONS);
-			
-			List<TransactionDetail> transactionList = info.getTransaction();
-			Collections.sort(transactionList);
-			
-			Map<String, String> categories = userServiceUtil.getCategories();
-			//clear profile data for fresh building
-			UserInfoDao.clearProfileData(userKey, errorFactory);
-			
-			saveProfileDataList = new ArrayList<UserProfileDataDTO>();
-			profileFactory = new UserProfileFactory();
-			//UserProfileDataElement.initializeProfileMap();
-			UserProfileDataMapping profileMapping = new UserProfileDataMapping();			
-			for(TransactionDetail transaction : transactionList){
-				
-				String categoryID = transaction.getCategoryId();
-				String categoryHierarchy = categories.get(categoryID);
-				if(null != categoryHierarchy){
-					String concatenatedCategory = null;
-					String[] split = categoryHierarchy.split(",");
-					concatenatedCategory = split[0];
-					
-					if(split.length >1){
-						concatenatedCategory  = concatenatedCategory + ","+split[1];
-					}else{
-						log.info("array of category is less than 2 : "+split);
-					}
-					
-					List<UserProfileDataElement> list = profileMapping.getBean(split[0]);
-					if(null != list){
-						for(UserProfileDataElement bean : list){
-							bean.calculateDataelement(transaction, categoryHierarchy);
-						}
-					}
-					List<UserProfileDataElement> inflowOutflow = profileMapping.getBean("Income");
-					if(null != inflowOutflow){
-						for(UserProfileDataElement bean : inflowOutflow){
-							bean.calculateDataelement(transaction, categoryHierarchy);
-						}
-					}
-				}										
-			}	
-	
-			saveProfileDataList = profileMapping.getAllValues();
-			//saveProfileDataList = profileFactory.getProfileData();
-			for(UserProfileDataDTO dto1 : saveProfileDataList){
-				dto1.setUserKey(userKey);
-			}
-			UserInfoDao.saveUserProfileData(saveProfileDataList, errorFactory);
-		}catch (Exception e){
-			log.error("error occured while building userprofile",e);
-		}
-		arg.put(EnvestConstants.USER_PROFILE, saveProfileDataList);
-		return arg;
-	}*/
-	
 	protected Map<String,Object> doWork(Map<String,Object> arg) throws Exception {
 		log.info("inside doWork method in UserProfile");
 
 		List<UserProfileDataDTO> saveProfileDataList = null;
 		Long userKey = null;
-		userProfileService = new UserProfileDataCaptureService();
+		
 		try{
 			if(null == arg || null == arg.get(EnvestConstants.ENVEST_RESPONSE) ){
 				return arg;
@@ -136,53 +63,18 @@ public class UserProfile extends AbstractRule {
 			
 			List<TransactionDetail> transactionList = info.getTransaction();
 			Collections.sort(transactionList);
-			
+			userProfileService = new UserProfileDataCaptureService(info.getAccounts());
 			Map<String, String> categories = userServiceUtil.getCategories();
 			//clear profile data for fresh building
 			daoAdapter.clearProfileData(userKey, errorFactory);
 			
 			saveProfileDataList = new ArrayList<UserProfileDataDTO>();
-			profileFactory = new UserProfileFactory();
-			//UserProfileDataElement.initializeProfileMap();
-			UserProfileDataMapping profileMapping = new UserProfileDataMapping();			
+
 			for(TransactionDetail transaction : transactionList){
 				String categoryHierarchy = categories.get(transaction.getCategoryId());
-				userProfileService.processTransaction(transaction, categoryHierarchy);
-				
-				/*String categoryID = transaction.getCategoryId();
-				
-				if(null != categoryHierarchy){
-					String concatenatedCategory = null;
-					String[] split = categoryHierarchy.split(",");
-					concatenatedCategory = split[0];
-					
-					if(split.length >1){
-						concatenatedCategory  = concatenatedCategory + ","+split[1];
-					}else{
-						log.info("array of category is less than 2 : "+split);
-					}
-					
-					List<UserProfileDataElement> list = profileMapping.getBean(split[0]);
-					if(null != list){
-						for(UserProfileDataElement bean : list){
-							bean.calculateDataelement(transaction, categoryHierarchy);
-						}
-					}
-					List<UserProfileDataElement> inflowOutflow = profileMapping.getBean("Income");
-					if(null != inflowOutflow){
-						for(UserProfileDataElement bean : inflowOutflow){
-							bean.calculateDataelement(transaction, categoryHierarchy);
-						}
-					}
-				}		*/								
+				userProfileService.processTransaction(transaction, categoryHierarchy);						
 			}	
 	
-		/*	saveProfileDataList = profileMapping.getAllValues();
-			//saveProfileDataList = profileFactory.getProfileData();
-			for(UserProfileDataDTO dto1 : saveProfileDataList){
-				dto1.setUserKey(userKey);
-			}
-			UserInfoDao.saveUserProfileData(saveProfileDataList, errorFactory);*/
 		}catch (Exception e){
 			log.error("error occured while building userprofile",e);
 		}

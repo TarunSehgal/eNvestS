@@ -3,13 +3,18 @@ package com.eNvestDetails.UserProfileData.DataElement;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.eNvestDetails.Config.ConfigFactory;
 import com.eNvestDetails.Response.TransactionDetail;
+import com.eNvestDetails.util.CommonUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonIgnoreProperties( { "allowedCategory" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
+
 public class DataElement {
 	
 	String type;
@@ -24,6 +29,11 @@ public class DataElement {
 	double amount;
 	String account;
 	String id;
+	
+	
+	private CommonUtil commonUtil = new CommonUtil();
+	
+	private ConfigFactory config = new ConfigFactory();
 	
 	
 	public String getId() {
@@ -69,7 +79,7 @@ public class DataElement {
 		return endDate;
 	}
 	public void setEndDate(Date endDate) {
-		endDate = endDate;
+		this.endDate = endDate;
 	}
 	public double getAmount() {
 		return amount;
@@ -80,7 +90,8 @@ public class DataElement {
 	
 	public void calculateDataelement(TransactionDetail transaction, String categoryHierarchy) {
 		try {			
-			if(isAllowedCategory(transaction.getCategoryId(), allowedCategory)){					
+			if(isAllowedCategory(transaction.getCategoryId(), allowedCategory)){	
+				setDates();
 				extractPrimaryInformation(transaction);					
 				extractAdditionalInformation(transaction);
 			}	
@@ -112,7 +123,13 @@ public class DataElement {
 	
 	public void extractPrimaryInformation(TransactionDetail transaction){
 		addAmount(getAmount(transaction));
-		setDates(getTransactionDate(transaction));
+		//setDates(getTransactionDate(transaction));
+		
+	}
+	
+	public void setDates(){		
+		setStartDateIfNull(new Date());
+		setEndDate(new Date(commonUtil.getGte(config.getResultString("transactionMonthRange"))));
 	}
 	
 	public void extractAdditionalInformation(TransactionDetail transaction) {		
@@ -123,10 +140,20 @@ public class DataElement {
 	}
 	
 	public void setDates(Date transactionDate){
+		setStartDateIfNull(transactionDate);
+		endDate = transactionDate;
+	}
+	
+	public void setStartDateIfNull(Date transactionDate){
 		if(null == startDate){
 			startDate = transactionDate;
-		}
-		endDate = transactionDate;
+		}		
+	}
+	
+	public void setEndDateIfNull(Date transactionDate){
+		if(null == endDate){
+			endDate = transactionDate;
+		}		
 	}
 	
 	public Date getTransactionDate(TransactionDetail transaction) {

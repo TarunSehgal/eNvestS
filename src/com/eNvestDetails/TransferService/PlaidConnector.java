@@ -27,7 +27,7 @@ import com.plaid.client.response.InfoResponse;
 import com.plaid.client.response.MfaResponse;
 import com.plaid.client.response.TransactionsResponse;
 
-@Component("tplaidGateway")
+@Component("plaidConnector")
 @Scope("singleton")
 public class PlaidConnector implements IPlaidConnector {
 
@@ -70,7 +70,11 @@ public PlaidConnector()
 		try{
 		plaidUserClient = plaidClient.getPlaidClient();
 		plaidUserClient.setAccessToken(accessToken);
-		result = plaidToEnvestConverter.convertTransactionResponse(plaidUserClient.updateTransactions(options), bank, getCategories());
+
+		TransactionsResponse response = (null == options) ?	plaidUserClient.updateTransactions() :
+			plaidUserClient.updateTransactions(options);
+				
+		result = plaidToEnvestConverter.convertTransactionResponse(response, bank, getCategories());
 		}catch(PlaidMfaException e){
 			MfaResponse mfa = e.getMfaResponse();
 			handleMfaException(mfa, bank);
@@ -81,6 +85,8 @@ public PlaidConnector()
 	
 	@Override
 	public UpdateTransactionResult updateTransactions(String accessToken, String bank) {
+		return updateTransactions(accessToken,null, bank);
+	/*	
 		UpdateTransactionResult result = null;
 		try{
 		plaidUserClient = plaidClient.getPlaidClient();
@@ -90,7 +96,7 @@ public PlaidConnector()
 			MfaResponse mfa = e.getMfaResponse();
 			handleMfaException(mfa, bank);
 		}
-		return result;
+		return result;*/
 	}
 
 	@Override
