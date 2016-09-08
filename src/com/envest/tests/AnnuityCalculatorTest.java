@@ -1,25 +1,22 @@
-package com.envest.tests;
-/*package test;
+/*package com.envest.tests;
 
 import java.util.List;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.eNvestDetails.Exception.ErrorMessage;
-import com.eNvestDetails.Factories.ErrorMessageFactory;
-import com.eNvestDetails.Factories.IErrorMessageFactory;
-import com.eNvestDetails.util.Product.Product;
-import com.eNvestDetails.util.Product.ProductUtil;
+import com.envest.services.components.EnvestMessageFactory;
+import com.envest.services.components.exceptions.SuccessMessage;
+import com.envest.services.components.util.Product.Product;
+import com.envest.services.components.util.Product.ProductUtil;
 
 public class AnnuityCalculatorTest {
 	@Autowired
-	ErrorMessageFactory fac;
+	EnvestMessageFactory fac;
 	@Test
 	public void getTransaction() throws Exception {
 		//ProductService service = new ProductService();
-		ErrorMessageFactory fac = new ErrorMessageFactory();
-		ErrorMessage msg = fac.getSuccessMessage(5, "test");
+		EnvestMessageFactory fac = new EnvestMessageFactory();
+		SuccessMessage msg = fac.getSuccessMessage("test");
 		ProductUtil util = new ProductUtil();
 		int val = util.SaveUserProduct(1002, 5000, 5000, 1.5, (long) 1001);
 		List<Product> list = util.GetUserProduct((long) 1001);
