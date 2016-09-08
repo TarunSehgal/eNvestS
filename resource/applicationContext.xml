@@ -17,7 +17,7 @@
 
 	<context:annotation-config />
 
-	<context:component-scan base-package="com.eNvestDetails" />
+	<context:component-scan base-package="com.envest" />
 
 	<mvc:annotation-driven />
 
@@ -30,7 +30,7 @@
 	<!-- <bean id="strongEncryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor"> 
 		<property name="algorithm"> <value>PBEWithMD5AndTripleDES</value> </property> 
 		<property name="password"> <value>test</value> </property> </bean> <bean 
-		id="LoadEncrypter" class="com.eNvestDetails.util.LoadEncrypter" init-method="init" 
+		id="LoadEncrypter" class="com.envest.services.components.util.LoadEncrypter" init-method="init" 
 		scope="singleton"/> -->
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
@@ -38,7 +38,7 @@
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager"
 		p:sessionFactory-ref="sessionFactory" />
 <mvc:interceptors>
-      <bean class="com.eNvestDetails.util.EnvestInterceptor">
+      <bean class="com.envest.services.components.util.EnvestInterceptor">
     </bean></mvc:interceptors>
 
 	<bean id="sessionFactory"
@@ -51,7 +51,7 @@
 				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
 			</props>
 		</property>
-		<property name="packagesToScan" value="com.eNvestDetails"></property>
+		<property name="packagesToScan" value="com.envest"></property>
 	</bean>
 
 	<bean id="dataSource"
@@ -64,7 +64,7 @@
 	</bean>
 
  <!-- rule engine processor -->
-   <bean id="eNvestOppurtunity" class="com.eNvestDetails.RecommendationEngine.InitiateRecommendation">
+   <bean id="eNvestOppurtunity" class="com.envest.services.components.recommendationengine.InitiateRecommendation">
       <property name="firstStep">
          <ref bean="testRule"/>
       </property>
@@ -80,7 +80,7 @@
          </list>
       </property>
    </bean>	
-   <!-- <bean id="eNvestProductRules" class="com.eNvestDetails.RecommendationEngine.InitiateRecommendation">
+   <!-- <bean id="eNvestProductRules" class="com.envest.services.components.recommendation.RecommendationEngine.InitiateRecommendation">
       <property name="firstStep">
          <ref bean="testRule"/>
       </property>
@@ -95,35 +95,36 @@
       </property>
    </bean> -->
 	 <!-- Recommendation -->
-   <bean id="testRule" class="com.eNvestDetails.Recommendation.TestOppurtunity">
+   <bean id="testRule" class="com.envest.services.components.recommendation.TestOppurtunity">
 		<property name="ruleEnable">
         <value>true</value></property>
    </bean>   
-   <bean id="cdProductRule" class="com.eNvestDetails.Recommendation.CDRule">
+   <bean id="cdProductRule" class="com.envest.services.components.recommendation.CDRule">
 		<property name="ruleEnable">
         <value>true</value></property>
    </bean>
-   <bean id="hyaProductRule" class="com.eNvestDetails.Recommendation.HYARule">
+   <bean id="hyaProductRule" class="com.envest.services.components.recommendation.HYARule">
 		<property name="ruleEnable">
         <value>true</value></property>
    </bean>
-   <bean id="miProductRule" class="com.eNvestDetails.Recommendation.MipRule">
+   <bean id="miProductRule" class="com.envest.services.components.recommendation.MipRule">
 		<property name="ruleEnable">
         <value>true</value></property>
    </bean>
-   <bean id="goalSeekProductRule" class="com.eNvestDetails.Recommendation.GoalSeekRule">
+   <bean id="goalSeekProductRule" class="com.envest.services.components.recommendation.GoalSeekRule">
 		<property name="ruleEnable">
         <value>false</value></property>
    </bean>
-   <bean id="userProfile" class="com.eNvestDetails.Recommendation.UserProfile">
+   <bean id="userProfile" class="com.envest.services.components.recommendation.UserProfile">
 		<property name="ruleEnable">
         <value>true</value></property>
    </bean>
    
-   <bean id="userDao" class="com.eNvestDetails.DAL.DAO.UserDao"></bean>
+   <bean id="userDao" class="com.envest.dal.dao.UserDao"></bean>
 
 <bean id="passwordEncoder" class="org.springframework.security.crypto.password.StandardPasswordEncoder">
-		<constructor-arg value="${app.secret}" />
+		<!-- <constructor-arg value="${app.secret}" /> -->
+		<constructor-arg value="test" />
 		
 	</bean>
 	<security:debug/>
@@ -152,10 +153,10 @@
 		<security:intercept-url method="DELETE" pattern="/eNvests/**" access="hasRole('USER')" />
 	</security:http>
 
-	<bean id="unauthorizedEntryPoint" class="com.eNvestDetails.security.UnauthorizedEntryPoint" />
-	<bean id="cors" class="com.eNvestDetails.security.CORSFilter" />
+	<bean id="unauthorizedEntryPoint" class="com.envest.security.UnauthorizedEntryPoint" />
+	<bean id="cors" class="com.envest.security.CORSFilter" />
 
-	<bean id="authenticationTokenProcessingFilter" class="com.eNvestDetails.security.AuthenticationTokenProcessingFilter">
+	<bean id="authenticationTokenProcessingFilter" class="com.envest.security.AuthenticationTokenProcessingFilter">
 		<constructor-arg ref="userDao" />
 	</bean>
 

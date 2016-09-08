@@ -9,7 +9,7 @@
 			<map>					
 				<entry key="Interest"> 
 					<list>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.Interest">
+						<bean class="com.envest.services.components.userprofile.Interest">
 							<property name="id" value="1" />
 							<property name="type" value="Interest" />
 							<property name="subType" value="Total Interest Earned" />
@@ -20,7 +20,7 @@
         					</list>	
         					</property>						
 						</bean> 
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.Interest">
+						<bean class="com.envest.services.components.userprofile.Interest">
 							<property name="id" value="2" />
 							<property name="type" value="Interest" />
 							<property name="subType" value="Interest Charged" />
@@ -34,7 +34,7 @@
 				</entry>				
 				<entry key="Bank Fees">
 					<list>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.BankFee">
+						<bean class="com.envest.services.components.userprofile.BankFee">
 							<property name="id" value="3" />
 							<property name="type" value="Bank Fee" />
 							<property name="subType" value="Total Bank Fee" />
@@ -49,7 +49,7 @@
 				</entry>
 				<entry key="InflowOutflow">
 					<list>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.InflowOutflow">
+						<bean class="com.envest.services.components.userprofile.InflowOutflow">
 							<property name="id" value="4" />
 							<property name="type" value="Inflow" />
 							<property name="subType" value="Total Inflow" />
@@ -59,7 +59,7 @@
         					</list>	
         					</property>	
 						</bean>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.InflowOutflow">
+						<bean class="com.envest.services.components.userprofile.InflowOutflow">
 							<property name="id" value="5" />
 							<property name="type" value="Inflow" />
 							<property name="subType" value="30 Days Inflow" />
@@ -69,7 +69,7 @@
         					</list>	
         					</property>	
 						</bean>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.InflowOutflow">
+						<bean class="com.envest.services.components.userprofile.InflowOutflow">
 							<property name="id" value="6" />
 							<property name="type" value="Inflow" />
 							<property name="subType" value="90 Days Inflow" />
@@ -79,7 +79,7 @@
         					</list>	
         					</property>	
 						</bean>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.InflowOutflow">
+						<bean class="com.envest.services.components.userprofile.InflowOutflow">
 							<property name="id" value="7" />
 							<property name="type" value="Outflow" />
 							<property name="subType" value="Total Outflow" />
@@ -89,7 +89,7 @@
         					</list>	
         					</property>	
 						</bean>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.InflowOutflow">
+						<bean class="com.envest.services.components.userprofile.InflowOutflow">
 							<property name="id" value="8" />
 							<property name="type" value="Outflow" />
 							<property name="subType" value="30 Days Outflow" />
@@ -99,7 +99,7 @@
         					</list>	
         					</property>	
 						</bean>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.InflowOutflow">
+						<bean class="com.envest.services.components.userprofile.InflowOutflow">
 							<property name="id" value="9" />
 							<property name="type" value="Outflow" />
 							<property name="subType" value="90 Days Outflow" />
@@ -113,7 +113,7 @@
 				</entry>
 				<entry key="Transfer">
 					<list>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.Salary">
+						<bean class="com.envest.services.components.userprofile.Salary">
 							<property name="id" value="10" />
 							<property name="type" value="Salary" />
 							<property name="subType" value="Salary" />
@@ -123,7 +123,7 @@
         					</list>	
         					</property>	
 						</bean>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.Payment">
+						<bean class="com.envest.services.components.userprofile.Payment">
 							<property name="id" value="17" />
 							<property name="type" value="Payment" />
 							<property name="subType" value="Bill Pay" />
@@ -137,7 +137,7 @@
 				</entry>
 				<entry key="Payment">
 					<list>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.Payment">
+						<bean class="com.envest.services.components.userprofile.Payment">
 							<property name="id" value="11" />
 							<property name="type" value="Payment" />
 							<property name="subType" value="Rent" />
@@ -147,7 +147,7 @@
         					</list>	
         					</property>	
 						</bean>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.Loan">
+						<bean class="com.envest.services.components.userprofile.Loan">
 							<property name="id" value="12" />	
 							<property name="type" value="Payment" />
 							<property name="subType" value="Loan" />
@@ -157,7 +157,7 @@
         					</list>	
         					</property>	
 						</bean>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.CreditCardPayment">
+						<bean class="com.envest.services.components.userprofile.CreditCardPayment">
 							<property name="id" value="13" />
 							<property name="type" value="Payment" />
 							<property name="subType" value="CreditCard" />
@@ -171,7 +171,7 @@
 				</entry>	
 				<entry key="Service">
 					<list>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.Payment">
+						<bean class="com.envest.services.components.userprofile.Payment">
 							<property name="id" value="14" />
 							<property name="type" value="Payment" />
 							<property name="subType" value="Utility Bill Payment" />
@@ -186,7 +186,7 @@
 							</list>
         					</property>	
 						</bean>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.Payment">
+						<bean class="com.envest.services.components.userprofile.Payment">
 							<property name="id" value="18" />
 							<property name="type" value="Payment" />
 							<property name="subType" value="Cell Phone" />
@@ -196,7 +196,7 @@
 							</list>
         					</property>	
 						</bean>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.Payment">
+						<bean class="com.envest.services.components.userprofile.Payment">
 							<property name="id" value="19" />
 							<property name="type" value="Financial" />
 							<property name="subType" value="Stock Brokers" />
@@ -206,7 +206,7 @@
 							</list>
         					</property>	
 						</bean>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.Payment">
+						<bean class="com.envest.services.components.userprofile.Payment">
 							<property name="id" value="20" />
 							<property name="type" value="Financial" />
 							<property name="subType" value="Financial Planning and Investments" />
@@ -220,7 +220,7 @@
 				</entry>	
 				<entry key="Tax">
 					<list>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.Tax">
+						<bean class="com.envest.services.components.userprofile.Tax">
 							<property name="id" value="15" />
 							<property name="type" value="Tax" />
 							<property name="subType" value="Refund" />
@@ -230,7 +230,7 @@
 							</list>
         					</property>	
 						</bean>
-						<bean class="com.eNvestDetails.UserProfileData.DataElement.Tax">
+						<bean class="com.envest.services.components.userprofile.Tax">
 							<property name="id" value="16" />
 							<property name="type" value="Tax" />
 							<property name="subType" value="Payment" />
