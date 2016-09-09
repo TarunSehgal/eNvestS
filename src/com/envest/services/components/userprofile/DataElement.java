@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-@JsonIgnoreProperties( { "allowedCategory" })
+@JsonIgnoreProperties( { "allowedCategory","startDate","endDate" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 
 public class DataElement {
@@ -89,7 +89,7 @@ public class DataElement {
 	public void calculateDataelement(TransactionDetail transaction, String categoryHierarchy) {
 		try {			
 			if(isAllowedCategory(transaction.getCategoryId(), allowedCategory)){	
-				setDates();
+				//setDates();
 				extractPrimaryInformation(transaction);					
 				extractAdditionalInformation(transaction);
 			}	

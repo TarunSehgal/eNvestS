@@ -36,7 +36,7 @@ public Map<String,UserInfo.Summary> convertTransactionsToSummaries(List<Transact
 	public TransactionDetail convertTransactionToTransactionDetail(Transaction transaction) {
 		TransactionDetail transactionBean = new TransactionDetail();
 		transactionBean.setAccountId(transaction.getAccountId());
-		transactionBean.setAmount(transaction.getAmount());
+		transactionBean.setAmount(transaction.getAmount() * -1);
 		transactionBean.setCategory(transaction.getCategory());
 		transactionBean.setCategoryId(transaction.getCategoryId());
 		transactionBean.setEntityId(transaction.getEntityId());

@@ -12,12 +12,12 @@ public class InflowOutflow extends DataElement{
 	public void extractPrimaryInformation(TransactionDetail transaction){		
 		switch (getId()) {
 		
-		case "4": // inflow
+		case "7": // outflow
 			addIfNegative(getAmount(transaction));
 			//setDates(getTransactionDate(transaction));
 			break;
 			
-		case "7": // outflow
+		case "4": // inflow
 			addIfPositive(getAmount(transaction));
 			//setDates(getTransactionDate(transaction));
 			break;
@@ -96,7 +96,7 @@ public class InflowOutflow extends DataElement{
 	}
 	
 	private boolean shouldIncludeTransaction(TransactionDetail transaction, boolean inflow){
-		if(inflow){
+		if(!inflow){
 			return isNegativeAmount(transaction);
 		}
 		return isPositiveAmount(transaction);

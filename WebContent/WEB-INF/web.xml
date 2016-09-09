@@ -36,7 +36,7 @@
 </filter-mapping>
  <filter>
         <filter-name>cors</filter-name>
-        <filter-class>com.eNvestDetails.security.CORSFilter</filter-class>
+        <filter-class>com.envest.security.CORSFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>cors</filter-name>

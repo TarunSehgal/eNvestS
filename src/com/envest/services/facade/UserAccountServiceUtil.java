@@ -286,13 +286,14 @@ public class UserAccountServiceUtil {
 		ProfileResponse response = null;
 		try {
 			UserInfo info = new UserInfo();
-			response = new ProfileResponse();
+			
 			info.setUserKey(userKey);
 			Map<String,Object> input = new HashMap<String,Object>(10);
 			input.put(EnvestConstants.ENVEST_RESPONSE, info);
 			Map<String,Object> output = recommendationEngine.processRequest(input);
-			response.setProfile((List<DataElement>)input.get(
-					EnvestConstants.USER_PROFILE));
+			response = (ProfileResponse)input.get(
+					EnvestConstants.USER_PROFILE);
+			
 			response.setUserKey(userKey);
 		} catch (EnvestException e) {
 			e.printStackTrace();

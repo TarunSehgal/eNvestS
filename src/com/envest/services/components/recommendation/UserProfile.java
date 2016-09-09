@@ -2,6 +2,7 @@ package com.envest.services.components.recommendation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -63,14 +64,14 @@ public class UserProfile extends AbstractRule {
 			
 			List<TransactionDetail> transactionList = info.getTransaction();
 			Collections.sort(transactionList);
-			userProfileService = new UserProfileDataCaptureService(info.getAccounts());
+			
 			Map<String, String> categories = userServiceUtil.getCategories();
 			//clear profile data for fresh building
 			daoAdapter.clearProfileData(userKey, errorFactory);
 			
 			saveProfileDataList = new ArrayList<UserProfileDataDTO>();
-
-			for(TransactionDetail transaction : transactionList){
+			userProfileService = new UserProfileDataCaptureService(info.getAccounts());
+			for(TransactionDetail transaction : transactionList){				
 				String categoryHierarchy = categories.get(transaction.getCategoryId());
 				userProfileService.processTransaction(transaction, categoryHierarchy);						
 			}	
@@ -78,7 +79,7 @@ public class UserProfile extends AbstractRule {
 		}catch (Exception e){
 			log.error("error occured while building userprofile",e);
 		}
-		arg.put(EnvestConstants.USER_PROFILE, userProfileService.getData());
+		arg.put(EnvestConstants.USER_PROFILE, userProfileService.getProfileResponse());
 		return arg;
 	}
 }	
