@@ -1,10 +1,6 @@
 package com.envest.services.components.util.Calculation;
 
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import com.envest.services.facade.UserServiceUtil;
 
 @Component
 public class AnnuityCalculator {

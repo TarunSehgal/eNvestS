@@ -16,9 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.GenericFilterBean;
 
-import com.envest.services.facade.UserAccountServiceUtil;
-
-
 public class AuthenticationTokenProcessingFilter extends GenericFilterBean
 {
 

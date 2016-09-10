@@ -15,9 +15,8 @@ import com.envest.services.components.EnvestConstants;
 import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.config.MessageFactory;
 import com.envest.services.components.recommendationengine.AbstractRule;
-import com.envest.services.facade.UserAccountServiceUtil;
+import com.envest.services.facade.DataServiceFacade;
 import com.envest.services.facade.UserProfileDataCaptureService;
-import com.envest.services.facade.UserServiceUtil;
 import com.envest.services.response.EnvestResponse;
 import com.envest.services.response.TransactionDetail;
 import com.envest.services.response.UserInfo;
@@ -25,15 +24,12 @@ import com.envest.services.response.UserInfo;
 public class UserProfile extends AbstractRule {
 	
 	private static Logger log = Logger.getLogger(UserProfile.class.getName()); 
-
-	@Autowired
-	private UserServiceUtil userServiceUtil;
 	
 	@Autowired
 	private EnvestMessageFactory errorFactory = null;
 	
 	@Autowired
-	private UserAccountServiceUtil accountServiceUtil;
+	private DataServiceFacade dataService;
 	
 	@Autowired
 	private UserInfoDAOService daoAdapter;
@@ -60,12 +56,12 @@ public class UserProfile extends AbstractRule {
 			}			
 			EnvestResponse eNvestRes = (EnvestResponse) arg.get(EnvestConstants.ENVEST_RESPONSE);
 			userKey = ((UserInfo)eNvestRes).getUserKey();
-			UserInfo info = (UserInfo)accountServiceUtil.getAccountAndTransaction(userKey, EnvestConstants.GET_ACCOUNT_TRANSACTIONS);
+			UserInfo info = (UserInfo)dataService.getAccountAndTransaction(userKey, EnvestConstants.GET_ACCOUNT_TRANSACTIONS);
 			
 			List<TransactionDetail> transactionList = info.getTransaction();
 			Collections.sort(transactionList);
 			
-			Map<String, String> categories = userServiceUtil.getCategories();
+			Map<String, String> categories = dataService.getCategories();
 			//clear profile data for fresh building
 			daoAdapter.clearProfileData(userKey, errorFactory);
 			
