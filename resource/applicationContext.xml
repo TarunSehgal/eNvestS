@@ -127,8 +127,8 @@
 		
 	</bean>
 	<security:debug/>
-	<!-- <security:http pattern="/DataService/users/registerUser" security="none"/>
-	<security:http pattern="/DataService/users/authenticate" security="none"/> -->
+	<!-- <security:http pattern="/UserService/users/registerUser" security="none"/>
+	<security:http pattern="/UserService/users/authenticate" security="none"/> -->
 	<security:authentication-manager id="authenticationManager">
 		<security:authentication-provider user-service-ref="userDao">
 			<security:password-encoder ref="passwordEncoder"></security:password-encoder>
@@ -142,8 +142,8 @@
 		authentication-manager-ref="authenticationManager"
 		create-session="stateless">
 		<security:csrf disabled="true"/>				
-		<security:intercept-url pattern="/envest/DataService/users/authenticate" access="permitAll" />
-		<security:intercept-url pattern="/DataService/users/registerUser" access="permitAll" />
+		<security:intercept-url pattern="/envest/userservice/users/authenticate" access="permitAll" />
+		<security:intercept-url pattern="/UserService/users/registerUser" access="permitAll" />
 		<security:custom-filter ref="cors" position="FIRST" />
 		<security:custom-filter ref="authenticationTokenProcessingFilter" position="PRE_AUTH_FILTER" />
 		<security:intercept-url method="GET" pattern="/eNvest/**" access="hasRole('USER')" />
