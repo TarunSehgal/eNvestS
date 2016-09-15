@@ -18,7 +18,7 @@ import com.envest.services.components.config.ConfigFactory;
 import com.envest.services.components.config.MessageFactory;
 import com.envest.services.components.exceptions.EnvestException;
 import com.envest.services.components.recommendationengine.InitiateRecommendation;
-import com.envest.services.facade.DataServiceFacade;
+import com.envest.services.facade.UserServiceFacade;
 import com.envest.services.response.EnvestResponse;
 import com.envest.services.response.UserInfo;
 
@@ -34,7 +34,7 @@ public class UserService implements eNvestService {
 	private MessageFactory message = null;
 	
 	@Autowired
-	private DataServiceFacade dataService = null;
+	private UserServiceFacade dataService = null;
 	
 	@Autowired
 	private EnvestMessageFactory errorFactory = null;
@@ -98,11 +98,6 @@ public class UserService implements eNvestService {
 			@RequestParam("password") String password,@RequestParam("bank") String bank) {
 		return dataService.linkAccounts(userKey, userID, password, bank);
 		
-	}
-	
-	@RequestMapping(value="/UserService/users/getDashBoard",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
-	public EnvestResponse getDashBoard(@RequestParam("userKey") Long userKey){
-		return dataService.getDashboardData(userKey, EnvestConstants.GET_ACCOUNT_TRANSACTIONS);		
 	}
 	
 	@RequestMapping(value="/UserService/users/submitMFA",method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)	

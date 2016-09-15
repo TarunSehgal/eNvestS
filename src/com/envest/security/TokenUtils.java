@@ -16,17 +16,17 @@ public class TokenUtils
 	public static final String MAGIC_KEY = "eNvestMagicKey!!";
 
 
-	public static String createToken(UserDetails userDetails)
+	public static String createToken(String name, String passwordHash)
 	{
 		/* Expires in 5 mins */
 		long expires = System.currentTimeMillis() + 1000L * 30 * 60;
 
 		StringBuilder tokenBuilder = new StringBuilder();
-		tokenBuilder.append(userDetails.getUsername());
+		tokenBuilder.append(name);
 		tokenBuilder.append(":");
 		tokenBuilder.append(expires);
 		tokenBuilder.append(":");
-		tokenBuilder.append(TokenUtils.computeSignature(userDetails, expires));
+		tokenBuilder.append(TokenUtils.computeSignature(name, passwordHash, expires));
 
 		return tokenBuilder.toString();
 	}
@@ -42,14 +42,14 @@ public class TokenUtils
 			return token;
 	}
 
-	public static String computeSignature(UserDetails userDetails, long expires)
+	public static String computeSignature(String name, String passwordHash, long expires)
 	{
 		StringBuilder signatureBuilder = new StringBuilder();
-		signatureBuilder.append(userDetails.getUsername());
+		signatureBuilder.append(name);
 		signatureBuilder.append(":");
 		signatureBuilder.append(expires);
 		signatureBuilder.append(":");
-		signatureBuilder.append(userDetails.getPassword());
+		signatureBuilder.append(passwordHash);
 		signatureBuilder.append(":");
 		signatureBuilder.append(TokenUtils.MAGIC_KEY);
 
@@ -85,6 +85,6 @@ public class TokenUtils
 			return false;
 		}
 
-		return signature.equals(TokenUtils.computeSignature(userDetails, expires));
+		return signature.equals(TokenUtils.computeSignature(userDetails.getUsername(), userDetails.getPassword(), expires));
 	}
 }

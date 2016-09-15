@@ -1,8 +1,6 @@
 package com.envest.services.components.recommendation;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -10,12 +8,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.envest.dal.UserInfoDAOService;
-import com.envest.dal.dto.UserProfileDataDTO;
 import com.envest.services.components.EnvestConstants;
 import com.envest.services.components.EnvestMessageFactory;
-import com.envest.services.components.config.MessageFactory;
 import com.envest.services.components.recommendationengine.AbstractRule;
-import com.envest.services.facade.DataServiceFacade;
+import com.envest.services.facade.UserServiceFacade;
+import com.envest.services.facade.TransactionServiceFacade;
 import com.envest.services.facade.UserProfileDataCaptureService;
 import com.envest.services.response.EnvestResponse;
 import com.envest.services.response.TransactionDetail;
@@ -29,7 +26,10 @@ public class UserProfile extends AbstractRule {
 	private EnvestMessageFactory errorFactory = null;
 	
 	@Autowired
-	private DataServiceFacade dataService;
+	private UserServiceFacade dataService;
+	
+	@Autowired
+	private TransactionServiceFacade transactionService;
 	
 	@Autowired
 	private UserInfoDAOService daoAdapter;
@@ -40,14 +40,9 @@ public class UserProfile extends AbstractRule {
 		log.info("inside make decision method in testoppurtunity");
 		return Boolean.parseBoolean(getRuleEnable());
 	}
-		
-	@Autowired
-	private MessageFactory message = null;
 	
 	protected Map<String,Object> doWork(Map<String,Object> arg) throws Exception {
 		log.info("inside doWork method in UserProfile");
-
-		List<UserProfileDataDTO> saveProfileDataList = null;
 		Long userKey = null;
 		
 		try{
@@ -56,16 +51,15 @@ public class UserProfile extends AbstractRule {
 			}			
 			EnvestResponse eNvestRes = (EnvestResponse) arg.get(EnvestConstants.ENVEST_RESPONSE);
 			userKey = ((UserInfo)eNvestRes).getUserKey();
-			UserInfo info = (UserInfo)dataService.getAccountAndTransaction(userKey, EnvestConstants.GET_ACCOUNT_TRANSACTIONS);
+			UserInfo info = (UserInfo)transactionService.getAccountAndTransaction(userKey, EnvestConstants.GET_ACCOUNT_TRANSACTIONS);
 			
 			List<TransactionDetail> transactionList = info.getTransaction();
 			Collections.sort(transactionList);
 			
 			Map<String, String> categories = dataService.getCategories();
 			//clear profile data for fresh building
-			daoAdapter.clearProfileData(userKey, errorFactory);
+			daoAdapter.clearProfileData(userKey, errorFactory);			
 			
-			saveProfileDataList = new ArrayList<UserProfileDataDTO>();
 			userProfileService = new UserProfileDataCaptureService(info.getAccounts());
 			for(TransactionDetail transaction : transactionList){				
 				String categoryHierarchy = categories.get(transaction.getCategoryId());
