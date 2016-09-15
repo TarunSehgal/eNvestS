@@ -16,6 +16,7 @@ import com.envest.dal.dto.UserEmailDTO;
 import com.envest.dal.dto.UserInfoDTO;
 import com.envest.dal.dto.UserPhoneDTO;
 import com.envest.dal.dto.UserProfileDataDTO;
+import com.envest.security.TokenUtils;
 import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.config.MessageFactory;
 import com.envest.services.components.exceptions.EnvestException;
@@ -141,6 +142,11 @@ public class UserInfoDAOService implements IUserInfoDAOService {
 	@Override
 	public void saveAccessToken(UserAccessTokenDTO accessToken) {
 		UserInfoDao.saveAccessToken(accessToken);
+	}
+	
+	public void saveAccessToken(EnvestResponse response) {
+		UserAccessTokenDTO token = TokenUtils.createTokenFromResponse(response);
+		UserInfoDao.saveAccessToken(token);
 	}
 
 	@Override

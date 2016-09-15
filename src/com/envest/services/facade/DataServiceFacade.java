@@ -88,22 +88,16 @@ public class DataServiceFacade {
 	
 	public EnvestResponse getDashboardData(Long userKey,int type){
 
-		UserInfo response = null;
-		TransactionsResponse tResponse = null;
 		try{
 			List<UserAccessTokenDTO> list = daoAdapter.getAccesTokens(userKey);
-			response = new UserInfo();
 			List<AccountDetail> accDetails = new ArrayList<AccountDetail>(10);
 			List<TransactionDetail> transactionsList = new ArrayList<TransactionDetail>();
-			List<UserInfo.Summary> summary = new ArrayList<UserInfo.Summary>();
 			Map<String,UserInfo.Summary> summaryMap = new HashMap<String,UserInfo.Summary>(20);
-			UserInfo.DashBoardSummary dashBoardSummaryObject = new UserInfo.DashBoardSummary();
 			List<BankBalance> balance = new ArrayList<BankBalance>(10);
 			//list = new ArrayList<UserAccessTokenDTO>(1);
 			for(UserAccessTokenDTO token : list){				
 				try{
-					//response = new UserDetails();
-					response.setUserKey(userKey);
+					//response = new UserDetails();					
 					GetOptions option = new GetOptions();
 					option.setGte("04/01/2016");
 					UpdateTransactionResult result = plaidGateway.updateTransactions(token.getAccessToken(),token.getUserBank());					
@@ -116,29 +110,63 @@ public class DataServiceFacade {
 					return errorFactory.getServerErrorMessage(e.getMessage());
 				}
 				
-			}
-			Collection<UserInfo.Summary> coll = summaryMap.values();
-			for(UserInfo.Summary sum : coll){
-				dashBoardSummaryObject.setTotalBankFee(dashBoardSummaryObject.getTotalBankFee() + sum.getTotalBankFee());
-				dashBoardSummaryObject.setTotalInterest(dashBoardSummaryObject.getTotalInterest() + sum.getTotalInterest());
-				dashBoardSummaryObject.setTotalInflow(dashBoardSummaryObject.getTotalInflow() + sum.getInflow());
-				dashBoardSummaryObject.setTotalOutflow(dashBoardSummaryObject.getTotalOutflow() + sum.getOutflow());
-				summary.add(sum);
-			}
-			
-			dashBoardSummaryObject.setBankBalances(balance);
-			response.setSummary(summary);
-			response.setDashBoardSummary(dashBoardSummaryObject);
-			response.setAccounts(accDetails);
-			response.setTransaction(transactionsList);
+			}			
+			return createDashBoardResponse(userKey, accDetails, transactionsList, summaryMap, balance);
 		}catch(Exception e){
 			logger.error("Error occured while getting dashboarddata", e);
-		}		
-		return response;
-	
-		
+		}	
+		return null;
 	}
 
+
+	private UserInfo createDashBoardResponse(Long userKey, List<AccountDetail> accDetails,
+			List<TransactionDetail> transactionsList, Map<String, UserInfo.Summary> summaryMap,
+			List<BankBalance> balance) {
+		UserInfo response = new UserInfo();
+		response.setUserKey(userKey);
+		response.setSummary(getSummary(summaryMap));
+		response.setDashBoardSummary(getDashBoardSummary(summaryMap, balance));
+		response.setAccounts(accDetails);
+		response.setTransaction(transactionsList);
+		
+		return response;
+	}
+	
+	private UserInfo createResponse(Long userKey, List<AccountDetail> accDetails,
+			List<TransactionDetail> transactionsList, Map<String, UserInfo.Summary> summaryMap) {
+		UserInfo response = new UserInfo();
+		response.setUserKey(userKey);
+		response.setSummary(getSummary(summaryMap));
+		response.setAccounts(accDetails);
+		response.setTransaction(transactionsList);
+		
+		return response;
+	}
+
+
+	private List<UserInfo.Summary> getSummary(Map<String, UserInfo.Summary> summaryMap) {
+		List<UserInfo.Summary> summary = new ArrayList<UserInfo.Summary>();
+		Collection<UserInfo.Summary> coll = summaryMap.values();
+		for(UserInfo.Summary sum : coll){
+			summary.add(sum);
+		}
+		
+		return summary;
+	}	
+	
+	private UserInfo.DashBoardSummary getDashBoardSummary(Map<String, UserInfo.Summary> summaryMap, List<BankBalance> balance) {
+		UserInfo.DashBoardSummary dashBoardSummaryObject = new UserInfo.DashBoardSummary();
+		dashBoardSummaryObject.setBankBalances(balance);
+		Collection<UserInfo.Summary> coll = summaryMap.values();
+		for(UserInfo.Summary sum : coll){
+			dashBoardSummaryObject.setTotalBankFee(dashBoardSummaryObject.getTotalBankFee() + sum.getTotalBankFee());
+			dashBoardSummaryObject.setTotalInterest(dashBoardSummaryObject.getTotalInterest() + sum.getTotalInterest());
+			dashBoardSummaryObject.setTotalInflow(dashBoardSummaryObject.getTotalInflow() + sum.getInflow());
+			dashBoardSummaryObject.setTotalOutflow(dashBoardSummaryObject.getTotalOutflow() + sum.getOutflow());
+		}
+		
+		return dashBoardSummaryObject;
+	}
 
 	private void extractDetails(int type, List<AccountDetail> accDetails, List<TransactionDetail> transactionsList,
 			Map<String, UserInfo.Summary> summaryMap, UpdateTransactionResult result) {
@@ -167,19 +195,15 @@ public class DataServiceFacade {
 	
 
 	public EnvestResponse getAccountAndTransaction(Long userKey, int type){
-		UserInfo response = null;
 		try{
 			List<UserAccessTokenDTO> list = daoAdapter.getAccesTokens(userKey);
-			response = new UserInfo();
 			List<AccountDetail> accDetails = new ArrayList<AccountDetail>(10);
 			List<TransactionDetail> transactionsList = new ArrayList<TransactionDetail>();
-			List<UserInfo.Summary> summary = new ArrayList<UserInfo.Summary>();
 			Map<String,UserInfo.Summary> summaryMap = new HashMap<String,UserInfo.Summary>(20);
 			//list = new ArrayList<UserAccessTokenDTO>(1);
 			for(UserAccessTokenDTO token : list){				
 				try{
 					GetOptions option = null;
-					response.setUserKey(userKey);
 					if(!commUtil.isTestUser(token.getAccessToken())){
 						option = new GetOptions();
 						option.setGte(commUtil.getGte(config.getResultString("transactionMonthRange")));
@@ -196,17 +220,12 @@ public class DataServiceFacade {
 					return errorFactory.getServerErrorMessage(e.getMessage());
 				}			
 			}
-			Collection<UserInfo.Summary> coll = summaryMap.values();
-			for(UserInfo.Summary sum : coll){
-				summary.add(sum);
-			}
-			response.setSummary(summary);
-			response.setAccounts(accDetails);
-			response.setTransaction(transactionsList);
+
+			return createResponse(userKey, accDetails, transactionsList, summaryMap);
 		}catch(Exception e){
 			logger.error("Error occured while getting transactions", e);
 		}		
-		return response;
+		return null;
 	}
 	
 	private void createDummyData(List<TransactionDetail> list){
@@ -340,18 +359,13 @@ public class DataServiceFacade {
 		EnvestResponse d = getInfo(userID, password, bank);
 		d.setUserKey(userKey);
 		if(!(d instanceof ErrorMessage)){
-			UserAccessTokenDTO token = new UserAccessTokenDTO();
-			token.setAccessToken(d.getAccessToken());
-			token.setIsActive("Y");
-			token.setIsdeleted("Y");
-			token.setUserBank(d.getResponseFor());
-			token.setUserKey(userKey);
 			if(d instanceof UserInfo){
 				try {
 					userInfoDaoService.saveUserInfo(d,errorFactory);
-					Map<String,Object> input = new HashMap<String,Object>(10);
+					/*WHat is purpose if nothing is returned*/
+					/*Map<String,Object> input = new HashMap<String,Object>(10);
 					input.put(EnvestConstants.ENVEST_RESPONSE, d);
-					Map<String,Object> output = recommendationEngine.processRequest(input);
+					Map<String,Object> output = recommendationEngine.processRequest(input);*/
 				} catch (EnvestException e) {
 					d = e.getErrorMessage();
 				} catch (Exception e) {
@@ -360,7 +374,7 @@ public class DataServiceFacade {
 				}
 
 			}else{
-				userInfoDaoService.saveAccessToken(token);
+				userInfoDaoService.saveAccessToken(d);
 			}
 			
 		}
@@ -381,9 +395,9 @@ public class DataServiceFacade {
 		    info.setUserKey(userKey);
 		    plaidGateway.addConnectProduct(null, dto.getAccessToken());
 		    userInfoDaoService.saveUserInfo(info,false,errorFactory);
-		    Map<String,Object> input = new HashMap<String,Object>(10);
+		    /*Map<String,Object> input = new HashMap<String,Object>(10);
 			input.put(EnvestConstants.ENVEST_RESPONSE, info);
-			Map<String,Object> output = recommendationEngine.processRequest(input);
+			Map<String,Object> output = recommendationEngine.processRequest(input);*/
 		}catch(PlaidMfaException e){
 			logger.info("MFA required");
 			return plaidGateway.handleMfaException(e.getMfaResponse(), bank);

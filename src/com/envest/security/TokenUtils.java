@@ -6,6 +6,9 @@ import java.security.NoSuchAlgorithmException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.codec.Hex;
 
+import com.envest.dal.dto.UserAccessTokenDTO;
+import com.envest.services.response.EnvestResponse;
+
 
 public class TokenUtils
 {
@@ -28,6 +31,16 @@ public class TokenUtils
 		return tokenBuilder.toString();
 	}
 
+	public static UserAccessTokenDTO createTokenFromResponse(EnvestResponse response)
+	{
+			UserAccessTokenDTO token = new UserAccessTokenDTO();
+			token.setAccessToken(response.getAccessToken());
+			token.setIsActive("Y");
+			token.setIsdeleted("Y");
+			token.setUserBank(response.getResponseFor());
+			token.setUserKey(response.getUserKey());
+			return token;
+	}
 
 	public static String computeSignature(UserDetails userDetails, long expires)
 	{
