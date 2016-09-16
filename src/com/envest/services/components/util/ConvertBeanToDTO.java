@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.envest.dal.IUserInfoDAOService;
-import com.envest.dal.UserInfoDAOService;
+import com.envest.dal.IUserDataService;
+import com.envest.dal.UserDataService;
 import com.envest.dal.dto.AccountsDTO;
 import com.envest.dal.dto.AddressDTO;
 import com.envest.dal.dto.UserAccessTokenDTO;
@@ -41,7 +41,7 @@ public class ConvertBeanToDTO {
 	
 	public static final String ACCOUNTDTO = AccountsDTO.class.getName();
 	
-	static IUserInfoDAOService userInfoDAOAdaptor = new UserInfoDAOService();
+	static IUserDataService userInfoDAOAdaptor = new UserDataService();
 	
 	public static Map<String,Object> getUserInfoDTO(EnvestResponse response, EnvestMessageFactory errorFactory) throws EnvestException{
 		Map<String,Object> returnMap = new HashMap<String,Object>(10);

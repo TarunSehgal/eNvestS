@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.envest.dal.UserInfoDAOService;
+import com.envest.dal.UserDataService;
 import com.envest.services.components.EnvestConstants;
 import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.recommendationengine.AbstractRule;
@@ -32,7 +32,7 @@ public class UserProfile extends AbstractRule {
 	private TransactionServiceFacade transactionService;
 	
 	@Autowired
-	private UserInfoDAOService daoAdapter;
+	private UserDataService daoAdapter;
 	
 	private UserProfileDataCaptureService userProfileService;
 	

@@ -241,13 +241,16 @@ public class UserInfoDao {
 		return getAccessTokensList(id,null);		
 	}
 	
-	public static UserAccessTokenDTO getAccesTokens(Long id,String bank){
+	public static UserAccessTokenDTO getAccesTokens(Long id,String bank) throws Exception{
 		
 		List<UserAccessTokenDTO> tokens = getAccessTokensList(id, bank);		
 		if(tokens != null && tokens.size() > 0)
+		{
 			return tokens.get(0);
-		
-		return null;
+		}
+		else{
+			throw new Exception("Access token not found");
+		}
 	}
 	
 	private static List<UserAccessTokenDTO> getAccessTokensList(Long id,String bank){

@@ -13,7 +13,7 @@ import com.envest.services.components.config.MessageFactory;
 import com.envest.services.components.exceptions.EnvestException;
 import com.envest.services.response.EnvestResponse;
 
-public interface IUserInfoDAOService extends IDAOAdaptor{
+public interface IUserDataService extends IDAOAdaptor{
 	public Long saveUserInfo(EnvestResponse saveRespone, boolean saveAccesToken, EnvestMessageFactory errorFactory)
 			throws EnvestException;
 
@@ -32,7 +32,7 @@ public interface IUserInfoDAOService extends IDAOAdaptor{
 
 	public List<UserAccessTokenDTO> getAccesTokens(Long id);
 
-	public UserAccessTokenDTO getAccesTokens(Long id, String bank);
+	public UserAccessTokenDTO getAccesTokens(Long id, String bank) throws Exception;
 
 	public void saveUserProfileData(List<UserProfileDataDTO> userProfile, EnvestMessageFactory errorFactory)
 			throws EnvestException;

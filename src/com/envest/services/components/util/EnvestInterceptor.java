@@ -6,14 +6,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.envest.dal.IUserInfoDAOService;
-import com.envest.dal.UserInfoDAOService;
+import com.envest.dal.IUserDataService;
+import com.envest.dal.UserDataService;
 
 public class EnvestInterceptor extends HandlerInterceptorAdapter {
 	
 	public static final Logger log = Logger.getLogger(EnvestInterceptor.class.getName());
 	
-	private IUserInfoDAOService daoAdapter = new UserInfoDAOService();
+	private IUserDataService daoAdapter = new UserDataService();
 	
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
             Object handler) throws Exception {

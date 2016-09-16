@@ -55,7 +55,7 @@ public PlaidConnector()
 	}
 
 	@Override
-	public UserInfo executeMFARequest(String mfa, String accessToken)
+	public UserInfo getUserInfoDetails(String mfa, String accessToken)
 	{
 		PlaidHttpRequest request = plaidRequestFactory.GetPlaidMFARequest(mfa, accessToken);
 		 httpDelegate =  new ApacheHttpClientHttpDelegate
@@ -107,13 +107,18 @@ public PlaidConnector()
 	}
 	
 	@Override
+	public TransactionsResponse addConnectProduct(String accessToken) {
+	    return addConnectProduct(null, accessToken);
+	}
+	
+	@Override
 	public TransactionsResponse addConnectProduct(ConnectOptions options) {
 		plaidUserClient = plaidClient.getPlaidClient();
 	    return plaidUserClient.addProduct("connect", options);
 	}
 
 	@Override
-	public UserInfo getInfoResponse(String userId, String password, String bankName, InfoOptions options) {
+	public UserInfo getUserAccountDetails(String userId, String password, String bankName, InfoOptions options) {
 		plaidUserClient = plaidClient.getPlaidClient();
 		Credentials testCredentials = new Credentials(userId, password);
 		InfoResponse response =  plaidUserClient.info(testCredentials, bankName,	options);

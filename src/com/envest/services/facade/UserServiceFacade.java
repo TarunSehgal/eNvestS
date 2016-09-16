@@ -10,14 +10,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.envest.dal.UserInfoDAOService;
+import com.envest.dal.UserDataService;
 import com.envest.dal.dto.UserAccessTokenDTO;
 import com.envest.security.TokenUtils;
 import com.envest.security.User;
@@ -43,7 +42,7 @@ public class UserServiceFacade {
 	@Autowired
 	public EnvestMessageFactory errorFactory;
 	@Autowired
-	public PlaidConnector plaidGateway;
+	public PlaidConnector plaidConnector;
 	public Logger logger = Logger.getLogger(UserServiceFacade.class.getName());;
 	@Autowired
 	public InitiateRecommendation recommendationEngine;
@@ -54,10 +53,10 @@ public class UserServiceFacade {
 	@Qualifier("authenticationManager")
 	@Autowired
 	public AuthenticationManager authManager;
+
 	@Autowired
-	public UserInfoDAOService userInfoDaoService;
-	@Autowired
-	public UserInfoDAOService daoAdapter;
+	public UserDataService userDataService;
+
 	@Autowired
 	public CommonUtil commUtil;
 	@Autowired
@@ -86,33 +85,37 @@ public class UserServiceFacade {
 
 	public Map<String, String> getCategories() {
 		logger.info("getting categories");
-		return plaidGateway.getCategories();
+		return plaidConnector.getCategories();
 	}
 
 	public EnvestResponse getInfo(String userId, String password, String bank) {
 		logger.info("Starting to get user info");
 		UserInfo userInfo;
 		try {
-			userInfo = plaidGateway.getInfoResponse(userId, password, bank, null);
-			plaidGateway.addConnectProduct(null, userInfo.getAccessToken());
+			userInfo = plaidConnector.getUserAccountDetails(userId, password, bank, null);
+			registerPlaidProducts(userInfo.getAccessToken());
 		} catch (PlaidMfaException e) {
 			logger.info("MFA required");
-			return plaidGateway.handleMfaException(e.getMfaResponse(), bank);
+			return plaidConnector.handleMfaException(e.getMfaResponse(), bank);
 		} catch (Exception e) {
 			logger.error("Error occured while retriving user info", e);
-			return errorFactory.getServerErrorMessage(e.getMessage());
+			return getErrorMessage(e);
 		}
 
 		logger.info("Exiting user info method");
 		return userInfo;
+	}
+	
+	private void registerPlaidProducts(String accessToken) {
+		plaidConnector.addConnectProduct(accessToken);
 	}
 
 	public EnvestResponse createUser(String userID, String password) {
 		EnvestResponse mes;
 		try {
 			String encodePassword = passwordEncoder.encode(password);
-			userInfoDaoService.createUser(userID, encodePassword, message, errorFactory);
-			mes = getSuccessMessage(userID, "message.useraddedsuccess");
+			userDataService.createUser(userID, encodePassword, message, errorFactory);
+			mes = getSucessMessageWithAuthToken(userID, "message.useraddedsuccess");
 		} catch (EnvestException e) {
 			mes = e.getErrorMessage();
 		}
@@ -121,104 +124,110 @@ public class UserServiceFacade {
 
 	public EnvestResponse saveUser(Long userKey, String userID, String password) {
 		int code = 0;
-		EnvestResponse mes;
+		EnvestResponse response;
 
 		try {
-			code = userInfoDaoService.saveUser(userKey, userID, password);
+			code = userDataService.saveUser(userKey, userID, password);
 			
-			if (code != EnvestConstants.RETURN_CODE_SUCCESS) {
-				mes = errorFactory.getFailureMessage(code, message.getMessage("message.userAddFailure"));
-			} else {
-				mes = getSuccessMessage(userID, "message.useraddedsuccess");
-			}
+			response = code == EnvestConstants.RETURN_CODE_SUCCESS 
+			      ? getSucessMessageWithAuthToken(userID, "message.useraddedsuccess")
+			      : errorFactory.getFailureMessage(code, message.getMessage("message.userAddFailure"));			
 
 		} catch (Exception e) {
 			logger.error("Error occured while saving user", e);
-			return errorFactory.getServerErrorMessage(message.getMessage("message.serverError"));
+			return getErrorMessage("message.serverError");
 		}
-		return mes;
+		return response;
 	}
 
+	// SG - ToDo
+	// Need to simplify authentication process
 	public EnvestResponse authenticate(String userID, String password) {
-		EnvestResponse mes = null;
+		EnvestResponse response = null;
 		try {
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userID,
 					password);
 			Authentication authentication = this.authManager.authenticate(authenticationToken);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
-			mes = getSuccessMessage(userID, "message.userAuthenticated");
-		} catch (AuthenticationException e) {
-			mes = errorFactory.getServerErrorMessage(e.getMessage());
+			response = getSucessMessageWithAuthToken(userID, "message.userAuthenticated");		
 		} catch (Exception e) {
-			mes = errorFactory.getServerErrorMessage(e.getMessage());
+			response = getErrorMessage(e);
 		}
-		return mes;
+		return response;
 	}
 
-	public EnvestResponse linkAccounts(Long userKey, String userID, String password, String bank) {
-		EnvestResponse d = getInfo(userID, password, bank);
-		d.setUserKey(userKey);
-		if (!(d instanceof ErrorMessage)) {
-			if (d instanceof UserInfo) {
-				try {
-					userInfoDaoService.saveUserInfo(d, errorFactory);
-				} catch (EnvestException e) {
-					d = e.getErrorMessage();
-				} catch (Exception e) {
-					logger.error("Error occurred during recomendationsengine", e);
-				}
-
-			} else {
-				userInfoDaoService.saveAccessToken(d);
+	public EnvestResponse linkUserBank(Long userKey, String userID, String password, String bank) {
+		EnvestResponse response = getInfo(userID, password, bank);
+		response.setUserKey(userKey);
+		try {
+			if (response instanceof UserInfo) {
+				userDataService.saveUserInfo(response, errorFactory);
+			} else if (!(response instanceof ErrorMessage)) {
+				userDataService.saveAccessToken(response);
 			}
+		} catch (Exception e) {
+			logger.error("Error occurred during recomendationsengine", e);
+			response = getErrorMessage(e);
 		}
-		return d;
+		return response;
 	}
 
 	public EnvestResponse submitMFA(Long userKey, String mfa, String bank) {
 		UserInfo info = null;
 		try {
-			UserAccessTokenDTO dto = userInfoDaoService.getAccesTokens(userKey, bank);
-			if (dto == null) {
-				logger.info("access token not found");
-				return errorFactory.getServerErrorMessage("Access token not found");
-			}
-
-			info = plaidGateway.executeMFARequest(mfa, dto.getAccessToken());
+			// SG - ToDo Return accessToken in string from DataService rather than returning a DTO object
+			UserAccessTokenDTO dto = userDataService.getAccesTokens(userKey, bank);
+			
+			// SG - ToDo - Introduce layer above plaidGateway which sets userKey on response.
+			info = plaidConnector.getUserInfoDetails(mfa, dto.getAccessToken());
 			info.setUserKey(userKey);
-			plaidGateway.addConnectProduct(null, dto.getAccessToken());
-			userInfoDaoService.saveUserInfo(info, false, errorFactory);
+			registerPlaidProducts(dto.getAccessToken());
+			userDataService.saveUserInfo(info, false, errorFactory);
 		} catch (PlaidMfaException e) {
 			logger.info("MFA required");
-			return plaidGateway.handleMfaException(e.getMfaResponse(), bank);
+			return plaidConnector.handleMfaException(e.getMfaResponse(), bank);
 
 		} catch (Exception e) {
-			return errorFactory.getServerErrorMessage(e.getMessage());
+			return getErrorMessage(e);
 		}
 		return info;
 	}
 
-	public EnvestResponse deleteUser(Long userKey) {
-		EnvestResponse mes = null;
-		try {
-			List<UserAccessTokenDTO> list = userInfoDaoService.getAccesTokens(userKey);
-			for (UserAccessTokenDTO token : list) {
-				plaidGateway.deleteAccount(token.getAccessToken());
-			}
 
-			userInfoDaoService.deleteUser(userKey, errorFactory);
-			mes = errorFactory.getSuccessMessage(message.getMessage("message.userdelete"));
-		} catch (EnvestException e) {
-			mes = e.getErrorMessage();
+	public EnvestResponse deleteUser(Long userKey) {
+		EnvestResponse response = null;
+		try {
+			// SG - ToDo Return List of accessTokens in string from DataService rather than returning a List of DTOs
+			List<UserAccessTokenDTO> tokens = userDataService.getAccesTokens(userKey);
+			for (UserAccessTokenDTO token : tokens) {
+				plaidConnector.deleteAccount(token.getAccessToken());
+			}			
+
+			userDataService.deleteUser(userKey, errorFactory);			
+			response = getSuccessMessage("message.userdelete");
+		} catch (EnvestException e) {			
+			response = getErrorMessage(e);
 		}
-		return mes;
+		return response;
 	}
 
 	public EnvestResponse getUserInfo(Long userkey) {
-		return userInfoDaoService.getUserProfileData(userkey);
+		return userDataService.getUserProfileData(userkey);
+	}
+
+	private EnvestResponse getSuccessMessage(String msg) {
+		return errorFactory.getSuccessMessage(message.getMessage(msg));
+	}
+
+	private EnvestResponse getErrorMessage(Exception e) {
+		return errorFactory.getServerErrorMessage(e.getMessage());
+	}
+
+	private EnvestResponse getErrorMessage(String msg) {
+		return errorFactory.getServerErrorMessage(message.getMessage(msg));
 	}
 	
-	private EnvestResponse getSuccessMessage(String userID, String mes) {
+	private EnvestResponse getSucessMessageWithAuthToken(String userID, String mes) {
 		UserDetails userDetails = userService.loadUserByUsername(userID);
 		EnvestResponse response;
 		response = errorFactory.getSuccessMessage(message.getMessage(mes));

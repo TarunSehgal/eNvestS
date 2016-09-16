@@ -16,7 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.envest.dal.UserInfoDAOService;
+import com.envest.dal.UserDataService;
 import com.envest.dal.dto.UserAccessTokenDTO;
 import com.envest.servicegateways.plaid.PlaidConnector;
 import com.envest.servicegateways.plaid.UpdateTransactionResult;
@@ -52,9 +52,9 @@ public class TransactionServiceFacade {
 	@Autowired
 	public AuthenticationManager authManager;
 	@Autowired
-	public UserInfoDAOService userInfoDaoService;
+	public UserDataService userInfoDaoService;
 	@Autowired
-	public UserInfoDAOService daoAdapter;
+	public UserDataService daoAdapter;
 	@Autowired
 	public CommonUtil commUtil;
 	@Autowired

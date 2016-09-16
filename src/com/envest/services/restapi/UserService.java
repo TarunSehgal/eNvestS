@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.envest.dal.UserInfoDAOService;
+import com.envest.dal.UserDataService;
 import com.envest.services.components.EnvestConstants;
 import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.config.ConfigFactory;
@@ -40,7 +40,7 @@ public class UserService implements eNvestService {
 	private EnvestMessageFactory errorFactory = null;
 	
 	@Autowired
-	private UserInfoDAOService daoAdapter;
+	private UserDataService daoAdapter;
 	
 	@Autowired
 	private InitiateRecommendation recommendationEngine = null;
@@ -96,7 +96,7 @@ public class UserService implements eNvestService {
 	@RequestMapping(value="/UserService/users/linkAccount",method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)	
 	public EnvestResponse linkAccount(@RequestParam("userKey") Long userKey,@RequestParam("userID") String userID,
 			@RequestParam("password") String password,@RequestParam("bank") String bank) {
-		return dataService.linkAccounts(userKey, userID, password, bank);
+		return dataService.linkUserBank(userKey, userID, password, bank);
 		
 	}
 	

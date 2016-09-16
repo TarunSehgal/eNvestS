@@ -25,7 +25,7 @@ import com.envest.services.response.UserInfo;
 import com.plaid.client.response.InfoResponse;
 
 @Component
-public class UserInfoDAOService implements IUserInfoDAOService {
+public class UserDataService implements IUserDataService {
 
 	@Autowired
 	private EnvestMessageFactory errorFactory;
@@ -155,7 +155,7 @@ public class UserInfoDAOService implements IUserInfoDAOService {
 	}
 
 	@Override
-	public UserAccessTokenDTO getAccesTokens(Long id, String bank) {
+	public UserAccessTokenDTO getAccesTokens(Long id, String bank) throws Exception {
 		return UserInfoDao.getAccesTokens(id, bank);
 	}
 
