@@ -20,7 +20,7 @@ import com.envest.dal.UserDataService;
 import com.envest.dal.dto.UserAccessTokenDTO;
 import com.envest.security.TokenUtils;
 import com.envest.security.User;
-import com.envest.servicegateways.plaid.PlaidConnector;
+import com.envest.servicegateways.plaid.PlaidClientService;
 import com.envest.services.components.EnvestConstants;
 import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.config.ConfigFactory;
@@ -42,7 +42,7 @@ public class UserServiceFacade {
 	@Autowired
 	public EnvestMessageFactory errorFactory;
 	@Autowired
-	public PlaidConnector plaidConnector;
+	public PlaidClientService plaidConnector;
 	public Logger logger = Logger.getLogger(UserServiceFacade.class.getName());;
 	@Autowired
 	public InitiateRecommendation recommendationEngine;

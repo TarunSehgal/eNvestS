@@ -27,13 +27,13 @@ import com.plaid.client.response.InfoResponse;
 import com.plaid.client.response.MfaResponse;
 import com.plaid.client.response.TransactionsResponse;
 
-@Component("plaidConnector")
+@Component("plaidClientService")
 @Scope("singleton")
-public class PlaidConnector implements IPlaidConnector {
+public class PlaidClientService implements IPlaidClientService {
 
 	ApacheHttpClientHttpDelegate httpDelegate = null;	
 	@Autowired
-	private PlaidClient plaidClient;
+	private PlaidUserClientProvider plaidUserClientProvider;
 	@Autowired
 	IPlaidToEnvestConverter plaidToEnvestConverter;
 	@Autowired
@@ -41,7 +41,7 @@ public class PlaidConnector implements IPlaidConnector {
 
 private PlaidUserClient plaidUserClient;
 
-public PlaidConnector()
+public PlaidClientService()
 {
 	
 }
@@ -51,7 +51,7 @@ public PlaidConnector()
 	public void Initialize()
 	{
 		httpDelegate =  new ApacheHttpClientHttpDelegate
-				 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());		
+				 (PlaidUserClientProvider.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());		
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public PlaidConnector()
 	{
 		PlaidHttpRequest request = plaidRequestFactory.GetPlaidMFARequest(mfa, accessToken);
 		 httpDelegate =  new ApacheHttpClientHttpDelegate
-				 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
+				 (PlaidUserClientProvider.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
 	    HttpResponseWrapper<InfoResponse> response= httpDelegate.doPost(request, InfoResponse.class);
 	    return plaidToEnvestConverter.convertInforesponseToUserinfo(response.getResponseBody(), null, null);
 	}
@@ -68,7 +68,7 @@ public PlaidConnector()
 	public UpdateTransactionResult updateTransactions(String accessToken, GetOptions options, String bank) {
 		UpdateTransactionResult result = null;
 		try{
-		plaidUserClient = plaidClient.getPlaidClient();
+		plaidUserClient = plaidUserClientProvider.getPlaidClient();
 		plaidUserClient.setAccessToken(accessToken);
 
 		TransactionsResponse response = (null == options) ?	plaidUserClient.updateTransactions() :
@@ -101,7 +101,7 @@ public PlaidConnector()
 
 	@Override
 	public TransactionsResponse addConnectProduct(ConnectOptions options, String accessToken) {
-		plaidUserClient = plaidClient.getPlaidClient();
+		plaidUserClient = plaidUserClientProvider.getPlaidClient();
 	    plaidUserClient.setAccessToken(accessToken);
 	    return plaidUserClient.addProduct("connect", options);
 	}
@@ -113,13 +113,13 @@ public PlaidConnector()
 	
 	@Override
 	public TransactionsResponse addConnectProduct(ConnectOptions options) {
-		plaidUserClient = plaidClient.getPlaidClient();
+		plaidUserClient = plaidUserClientProvider.getPlaidClient();
 	    return plaidUserClient.addProduct("connect", options);
 	}
 
 	@Override
 	public UserInfo getUserAccountDetails(String userId, String password, String bankName, InfoOptions options) {
-		plaidUserClient = plaidClient.getPlaidClient();
+		plaidUserClient = plaidUserClientProvider.getPlaidClient();
 		Credentials testCredentials = new Credentials(userId, password);
 		InfoResponse response =  plaidUserClient.info(testCredentials, bankName,	options);
 		return plaidToEnvestConverter.convertInforesponseToUserinfo(response, bankName, userId);
@@ -127,7 +127,7 @@ public PlaidConnector()
 
 	@Override
 	public void deleteAccount(String accessToken) {
-		plaidUserClient = plaidClient.getPlaidClient();
+		plaidUserClient = plaidUserClientProvider.getPlaidClient();
 		plaidUserClient.setAccessToken(accessToken);
 		plaidUserClient.deleteUser();		
 	}
@@ -158,7 +158,7 @@ public PlaidConnector()
 	{
 		PlaidHttpRequest request = plaidRequestFactory.getPlaidRequest(path);
 		 httpDelegate =  new ApacheHttpClientHttpDelegate
-				 (PlaidClient.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
+				 (PlaidUserClientProvider.BASE_TEST, HttpClientBuilder.create().disableContentCompression().build());
 	    return (HttpResponseWrapper<R>) httpDelegate.doPost(request, inputClass);
 	}
 	
@@ -166,7 +166,7 @@ public PlaidConnector()
 	{
 		PlaidHttpRequest request = plaidRequestFactory.getPlaidRequest(path);
 		 httpDelegate =  new ApacheHttpClientHttpDelegate
-				 (PlaidClient.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());
+				 (PlaidUserClientProvider.BASE_URI_PRODUCTION, HttpClientBuilder.create().disableContentCompression().build());
 	    return (HttpResponseWrapper<R>) httpDelegate.doGet(request, inputClass);
 	}
 }

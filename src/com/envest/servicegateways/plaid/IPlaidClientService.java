@@ -10,7 +10,7 @@ import com.plaid.client.request.InfoOptions;
 import com.plaid.client.response.MfaResponse;
 import com.plaid.client.response.TransactionsResponse;
 
-public interface IPlaidConnector {
+public interface IPlaidClientService {
 	/*public <R> HttpResponseWrapper<R> createExecuteGetRequest(String path, Class<R> inputClass);
 	public <R> HttpResponseWrapper<R> createExecutePostRequest(String path, Class<R> inputClass);	*/
 	public Map<String,String> getCategories();

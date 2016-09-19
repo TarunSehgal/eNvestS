@@ -57,21 +57,8 @@ public class UserProfileDataCaptureService {
 			setProfileEndDate(transaction.getDate().toDate());
 			if(isAllowedTransaction(transaction.getAccountId())){
 				if(null != categoryHierarchy){
-					String[] split = categoryHierarchy.split(",");
-					List<DataElement> dataElementList = profileDataMapping.
-							getDataElementList(split[0]);
-					if(null != dataElementList){
-						for(DataElement bean : dataElementList){
-							bean.calculateDataelement(transaction, categoryHierarchy);
-						}
-					}
-					dataElementList = profileDataMapping.
-							getDataElementList("InflowOutflow");
-					if(null != dataElementList){
-						for(DataElement bean : dataElementList){
-							bean.calculateDataelement(transaction, categoryHierarchy);
-						}
-					}					
+					calculateDataElements(transaction, categoryHierarchy, categoryHierarchy.split(",")[0]);
+					calculateDataElements(transaction, categoryHierarchy, "InflowOutflow");										
 				}
 			}			
 		}catch (Exception e){
@@ -101,6 +88,17 @@ public class UserProfileDataCaptureService {
 			}
 		}
 		return isAllowed;
+	}
+	
+	private void calculateDataElements(TransactionDetail transaction
+			,String categoryHierarchy, String elementId)
+	{
+		List<DataElement> dataElementList = profileDataMapping.getDataElementList(elementId);
+		if(null != dataElementList){
+			for(DataElement bean : dataElementList){
+				bean.calculateDataelement(transaction, categoryHierarchy);
+			}
+		}
 	}
 	
 	private void setEndDateIfNull(Date date){

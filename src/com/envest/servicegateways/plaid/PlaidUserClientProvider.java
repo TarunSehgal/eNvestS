@@ -11,7 +11,7 @@ import com.plaid.client.PlaidUserClient;
 
 @Component("tplaidClient")
 @Scope("singleton")
-class PlaidClient {
+class PlaidUserClientProvider {
 	
 	 public static final String BASE_URI_PRODUCTION = PlaidClients.BASE_URI_PRODUCTION;
 	 
@@ -20,7 +20,7 @@ class PlaidClient {
 	 @Autowired
 	 IPlaidEnvironment plaidEnvironment = null;
 	 
-	 public PlaidClient(){
+	 public PlaidUserClientProvider(){
 		
 	 }
 	

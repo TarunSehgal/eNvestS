@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.envest.dal.UserDataService;
 import com.envest.dal.dto.UserAccessTokenDTO;
-import com.envest.servicegateways.plaid.PlaidConnector;
+import com.envest.servicegateways.plaid.PlaidClientService;
 import com.envest.servicegateways.plaid.UpdateTransactionResult;
 import com.envest.services.components.EnvestConstants;
 import com.envest.services.components.EnvestMessageFactory;
@@ -40,7 +40,7 @@ public class TransactionServiceFacade {
 	@Autowired
 	public EnvestMessageFactory errorFactory;
 	@Autowired
-	public PlaidConnector plaidGateway;
+	public PlaidClientService plaidClientService;
 	public Logger logger  = Logger.getLogger(TransactionServiceFacade.class.getName());;
 	@Autowired
 	public InitiateRecommendation recommendationEngine;
@@ -70,7 +70,7 @@ public class TransactionServiceFacade {
 			List<BankBalance> balance = new ArrayList<BankBalance>(10);
 			for(UserAccessTokenDTO token : list){				
 				try{
-					UpdateTransactionResult result = plaidGateway.updateTransactions(token.getAccessToken(),token.getUserBank());					
+					UpdateTransactionResult result = plaidClientService.updateTransactions(token.getAccessToken(),token.getUserBank());					
 
 					extractDetails(type, accDetails, transactionsList, summaryMap, result);
 					
@@ -101,7 +101,7 @@ public class TransactionServiceFacade {
 						option = new GetOptions();
 						option.setGte(commUtil.getGte(config.getResultString("transactionMonthRange")));
 					}
-					UpdateTransactionResult result = plaidGateway.updateTransactions(token.getAccessToken(),option,token.getUserBank());
+					UpdateTransactionResult result = plaidClientService.updateTransactions(token.getAccessToken(),option,token.getUserBank());
 					
 					if(commUtil.isTestUser(token.getAccessToken())){
 						createDummyData(result.transactionDetails);
@@ -196,19 +196,17 @@ public class TransactionServiceFacade {
 	}
 	
 	private void createDummyData(List<TransactionDetail> list){
-		List<TransactionDetail> transactionList = list;
-		Collections.sort(transactionList);
+		//Rad - transactionList and list both will point to same memory location, why we need assignment and 
+		// sorting if we are iterating all elements
+/*		List<TransactionDetail> transactionList = list;
+		Collections.sort(transactionList);*/
 		LocalDate testDate = null;
-		LocalDate dummyDate = null;
-		int month = 0;
 		for(TransactionDetail transaction : list){
-			dummyDate = new LocalDate();
 			if(null == testDate){
 				testDate = transaction.getDate();
 			}
-			month = testDate.getMonthOfYear() - transaction.getDate().getMonthOfYear();
-			dummyDate = dummyDate.minusMonths(month);
-			transaction.setDate(dummyDate);
+			int month = testDate.getMonthOfYear() - transaction.getDate().getMonthOfYear();
+			transaction.setDate(new LocalDate().minusMonths(month));
 		}
 	}
 }
