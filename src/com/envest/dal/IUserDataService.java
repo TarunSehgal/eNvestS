@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.hibernate.HibernateException;
 
+import com.envest.dal.dao.UserInfoDao;
 import com.envest.dal.dto.UserAccessTokenDTO;
 import com.envest.dal.dto.UserInfoDTO;
 import com.envest.dal.dto.UserProfileDataDTO;
@@ -21,7 +22,7 @@ public interface IUserDataService extends IDAOAdaptor{
 
 	public UserInfoDTO getUserInfoDetail(long key, EnvestMessageFactory errorFactory) throws EnvestException;
 
-	public long createUser(String userID, String password, MessageFactory message, EnvestMessageFactory errorFactory)
+	public long registerUser(String userID, String password, MessageFactory message, EnvestMessageFactory errorFactory)
 			throws EnvestException;
 
 	public int saveUser(Long userKey, String userID, String password);
@@ -33,6 +34,9 @@ public interface IUserDataService extends IDAOAdaptor{
 	public List<UserAccessTokenDTO> getAccesTokens(Long id);
 
 	public UserAccessTokenDTO getAccesTokens(Long id, String bank) throws Exception;
+	public List<String> getAccesTokenList(Long id) throws Exception ;
+
+	public String getAccesToken(Long id, String bank) throws Exception;
 
 	public void saveUserProfileData(List<UserProfileDataDTO> userProfile, EnvestMessageFactory errorFactory)
 			throws EnvestException;

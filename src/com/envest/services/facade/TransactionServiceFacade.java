@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.envest.dal.UserDataService;
 import com.envest.dal.dto.UserAccessTokenDTO;
-import com.envest.servicegateways.plaid.PlaidClientService;
+import com.envest.servicegateways.plaid.PlaidService;
 import com.envest.servicegateways.plaid.UpdateTransactionResult;
 import com.envest.services.components.EnvestConstants;
 import com.envest.services.components.EnvestMessageFactory;
@@ -40,7 +40,7 @@ public class TransactionServiceFacade {
 	@Autowired
 	public EnvestMessageFactory errorFactory;
 	@Autowired
-	public PlaidClientService plaidClientService;
+	public PlaidService plaidClientService;
 	public Logger logger  = Logger.getLogger(TransactionServiceFacade.class.getName());;
 	@Autowired
 	public InitiateRecommendation recommendationEngine;

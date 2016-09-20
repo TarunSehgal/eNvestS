@@ -1,4 +1,4 @@
-package com.envest.servicegateways.plaid;
+package com.envest.servicegateways.adapter.plaid;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import com.envest.services.response.TransactionDetail;
 import com.envest.services.response.UserInfo;
 import com.plaid.client.response.Transaction;
 
-class PlaidTransactionAdapter implements IPlaidTransactionAdapter {
+public class PlaidTransactionAdapter implements IPlaidTransactionAdapter {
 
 public List<TransactionDetail> convertTransactionsToTransactionDetail(List<Transaction> transactions){
 		

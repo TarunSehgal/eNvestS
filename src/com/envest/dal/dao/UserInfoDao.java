@@ -1,5 +1,6 @@
 package com.envest.dal.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import com.envest.dal.dto.AccountsDTO;
@@ -75,7 +77,7 @@ public class UserInfoDao {
 			UserAccessTokenDTO accessToken = (UserAccessTokenDTO)data.get(ConvertBeanToDTO.USERACCESSTOKEN);
 			if(null != accessToken && saveAccesToken){
 				accessToken.setUserKey(userInfoDTO.getUserkey());
-				List<UserAccessTokenDTO> alreadyExistAccessToken = getAccessTokensList(accessToken.getUserKey(), accessToken.getUserBank());
+				List<UserAccessTokenDTO> alreadyExistAccessToken = getAccessTokensDTOList(accessToken.getUserKey(), accessToken.getUserBank());
 				if(!(alreadyExistAccessToken != null && alreadyExistAccessToken.size() > 0)){
 					
 					session.saveOrUpdate(accessToken);
@@ -121,7 +123,7 @@ public class UserInfoDao {
 		return userInfoDTO;			
 	}
 	
-	public static long createUser(String userID,String password, MessageFactory message, EnvestMessageFactory errorFactory) throws EnvestException{
+	public static long registerUser(String userID,String password, MessageFactory message, EnvestMessageFactory errorFactory) throws EnvestException{
 
 		UserInfoDTO userInfoDTO = null;
 		Session session = null;
@@ -220,7 +222,7 @@ public class UserInfoDao {
 	public static void saveAccessToken(UserAccessTokenDTO accessToken){
 		Session session = null;
 		try{
-			List<UserAccessTokenDTO> alreadyExistAccessToken = getAccessTokensList(accessToken.getUserKey(), accessToken.getUserBank());
+			List<UserAccessTokenDTO> alreadyExistAccessToken = getAccessTokensDTOList(accessToken.getUserKey(), accessToken.getUserBank());
 			if(alreadyExistAccessToken != null && alreadyExistAccessToken.size() > 0){
 				return;
 			}
@@ -238,12 +240,12 @@ public class UserInfoDao {
 	}
 	
 	public static List<UserAccessTokenDTO> getAccesTokens(Long id){
-		return getAccessTokensList(id,null);		
+		return getAccessTokensDTOList(id,null);		
 	}
 	
 	public static UserAccessTokenDTO getAccesTokens(Long id,String bank) throws Exception{
 		
-		List<UserAccessTokenDTO> tokens = getAccessTokensList(id, bank);		
+		List<UserAccessTokenDTO> tokens = getAccessTokensDTOList(id, bank);		
 		if(tokens != null && tokens.size() > 0)
 		{
 			return tokens.get(0);
@@ -253,7 +255,23 @@ public class UserInfoDao {
 		}
 	}
 	
-	private static List<UserAccessTokenDTO> getAccessTokensList(Long id,String bank){
+	public static List<String> getAccesTokenList(Long id) throws Exception{
+		return getAccessTokensList(id, null);				
+	}
+	
+	public static String getAccesToken(Long id,String bank) throws Exception{
+		
+		List<String> tokens = getAccessTokensList(id, bank);		
+		if(tokens != null && tokens.size() > 0)
+		{
+			return tokens.get(0);
+		}
+		else{
+			throw new Exception("Access token not found");
+		}
+	}
+	
+	private static List<UserAccessTokenDTO> getAccessTokensDTOList(Long id,String bank){
 		Session session = null;
 		List<UserAccessTokenDTO> list = null;
 		try{
@@ -275,10 +293,31 @@ public class UserInfoDao {
 			session.close();
 		}
 		return list;		
+	}	
+	
+	private static List<String> getAccessTokensList(Long id,String bank){
+		Session session = null;
+		List<String> list = null;
+		try{
+			session = HibernateUtils.getSessionFactory().openSession();
+			//need to add active flag condition
+			Criteria criteria = session.createCriteria(UserAccessTokenDTO.class);
+			criteria.setProjection(Projections.distinct(Projections.projectionList()
+				    .add(Projections.property("accessToken"), "accessToken")));
+			criteria.add(Restrictions.eq("userKey", id));
+			if(null != bank){
+				criteria.add(Restrictions.eq("userBank", bank));
+			}
+			
+			list = criteria.list();
+		}catch (HibernateException e) {
+			log.error("Error occured while getting access token",e);
+			throw e;		
+		}finally{
+			session.close();
+		}
+		return list;		
 	}
-	
-
-	
 	
 	public static void saveUserProfileData(List<UserProfileDataDTO> userProfile, EnvestMessageFactory errorFactory)throws EnvestException{
 		log.info("inside method saveUserProfileData");

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.envest.servicegateways.factory.plaid.IPlaidRequestFactory;
 import com.envest.services.response.MfaResponseDetail;
 import com.envest.services.response.PlaidCategory;
 import com.envest.services.response.UserInfo;
@@ -27,9 +28,9 @@ import com.plaid.client.response.InfoResponse;
 import com.plaid.client.response.MfaResponse;
 import com.plaid.client.response.TransactionsResponse;
 
-@Component("plaidClientService")
+@Component("plaidService")
 @Scope("singleton")
-public class PlaidClientService implements IPlaidClientService {
+public class PlaidService implements IPlaidService {
 
 	ApacheHttpClientHttpDelegate httpDelegate = null;	
 	@Autowired
@@ -41,12 +42,11 @@ public class PlaidClientService implements IPlaidClientService {
 
 private PlaidUserClient plaidUserClient;
 
-public PlaidClientService()
+public PlaidService( )
 {
 	
 }
-
-		
+	
 	@PostConstruct
 	public void Initialize()
 	{
@@ -55,7 +55,7 @@ public PlaidClientService()
 	}
 
 	@Override
-	public UserInfo getUserInfoDetails(String mfa, String accessToken)
+	public UserInfo getUserAccountDetails(String mfa, String accessToken)
 	{
 		PlaidHttpRequest request = plaidRequestFactory.GetPlaidMFARequest(mfa, accessToken);
 		 httpDelegate =  new ApacheHttpClientHttpDelegate

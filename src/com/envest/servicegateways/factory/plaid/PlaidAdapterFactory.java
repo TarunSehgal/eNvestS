@@ -1,7 +1,14 @@
-package com.envest.servicegateways.plaid;
+package com.envest.servicegateways.factory.plaid;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import com.envest.servicegateways.adapter.plaid.IPlaidAccountAdapter;
+import com.envest.servicegateways.adapter.plaid.IPlaidInfoAdapter;
+import com.envest.servicegateways.adapter.plaid.IPlaidTransactionAdapter;
+import com.envest.servicegateways.adapter.plaid.PlaidAccountAdapter;
+import com.envest.servicegateways.adapter.plaid.PlaidInfoAdapter;
+import com.envest.servicegateways.adapter.plaid.PlaidTransactionAdapter;
 
 @Component
 @Scope("singleton")

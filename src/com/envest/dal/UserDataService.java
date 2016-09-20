@@ -125,8 +125,8 @@ public class UserDataService implements IUserDataService {
 	}
 
 	@Override
-	public long createUser(String userID, String password, MessageFactory message, EnvestMessageFactory errorFactory) throws EnvestException {
-		return UserInfoDao.createUser(userID, password, message, errorFactory);
+	public long registerUser(String userID, String password, MessageFactory message, EnvestMessageFactory errorFactory) throws EnvestException {
+		return UserInfoDao.registerUser(userID, password, message, errorFactory);
 	}
 
 	@Override
@@ -159,6 +159,16 @@ public class UserDataService implements IUserDataService {
 		return UserInfoDao.getAccesTokens(id, bank);
 	}
 
+	@Override
+	public List<String> getAccesTokenList(Long id) throws Exception {
+		return UserInfoDao.getAccesTokenList(id);
+	}
+
+	@Override
+	public String getAccesToken(Long id, String bank) throws Exception {
+		return UserInfoDao.getAccesToken(id, bank);
+	}
+	
 	@Override
 	public void saveUserProfileData(List<UserProfileDataDTO> userProfile, EnvestMessageFactory errorFactory) throws EnvestException{
 	UserInfoDao.saveUserProfileData(userProfile, errorFactory);

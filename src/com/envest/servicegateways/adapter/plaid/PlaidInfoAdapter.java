@@ -1,4 +1,4 @@
-package com.envest.servicegateways.plaid;
+package com.envest.servicegateways.adapter.plaid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import com.plaid.client.response.InfoResponse.Email;
 import com.plaid.client.response.InfoResponse.Info;
 import com.plaid.client.response.InfoResponse.PhoneNumber;
 
-class PlaidInfoAdapter implements IPlaidInfoAdapter {
+public class PlaidInfoAdapter implements IPlaidInfoAdapter {
 IPlaidAccountAdapter accountAdapter = new PlaidAccountAdapter();
 	public UserInfo convertToUserInfo(InfoResponse r,String bank,String userId){
 		UserInfo userInfo = new UserInfo();

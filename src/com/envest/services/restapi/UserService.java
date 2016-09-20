@@ -86,7 +86,7 @@ public class UserService implements eNvestService {
 	public @ResponseBody EnvestResponse registerUser(@RequestParam("userID") String userID,
 			@RequestParam("password") String password
 			,@RequestParam("firstName") String firstName,@RequestParam("lastName") String lastName) {
-		return dataService.createUser(userID, password);
+		return dataService.registerUser(userID, password);
 	}
 	
 	@RequestMapping(value="/UserService/users/authenticate",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
@@ -102,7 +102,7 @@ public class UserService implements eNvestService {
 	
 	@RequestMapping(value="/UserService/users/submitMFA",method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)	
 	public EnvestResponse submitMFA(@RequestParam("userKey") Long userKey,@RequestParam("mfa")String mfa,@RequestParam("bank")String bank){
-		return dataService.submitMFA(userKey, mfa,bank);
+		return dataService.linkUserBankWithMFACode(userKey, mfa,bank);
 	}
 	
 	@RequestMapping(value="/UserService/users/deleteUser",method=RequestMethod.POST,produces=MediaType.APPLICATION_JSON_VALUE)	

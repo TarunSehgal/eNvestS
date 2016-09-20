@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.envest.servicegateways.factory.plaid.IPlaidAdapterFactory;
 import com.envest.services.response.AccountDetail;
 import com.envest.services.response.TransactionDetail;
 import com.envest.services.response.UserInfo;

@@ -17,10 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.envest.dal.UserDataService;
-import com.envest.dal.dto.UserAccessTokenDTO;
 import com.envest.security.TokenUtils;
 import com.envest.security.User;
-import com.envest.servicegateways.plaid.PlaidClientService;
+import com.envest.servicegateways.plaid.PlaidService;
 import com.envest.services.components.EnvestConstants;
 import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.config.ConfigFactory;
@@ -42,7 +41,7 @@ public class UserServiceFacade {
 	@Autowired
 	public EnvestMessageFactory errorFactory;
 	@Autowired
-	public PlaidClientService plaidConnector;
+	public PlaidService plaidService;
 	public Logger logger = Logger.getLogger(UserServiceFacade.class.getName());;
 	@Autowired
 	public InitiateRecommendation recommendationEngine;
@@ -85,18 +84,18 @@ public class UserServiceFacade {
 
 	public Map<String, String> getCategories() {
 		logger.info("getting categories");
-		return plaidConnector.getCategories();
+		return plaidService.getCategories();
 	}
 
 	public EnvestResponse getInfo(String userId, String password, String bank) {
 		logger.info("Starting to get user info");
 		UserInfo userInfo;
 		try {
-			userInfo = plaidConnector.getUserAccountDetails(userId, password, bank, null);
+			userInfo = plaidService.getUserAccountDetails(userId, password, bank, null);
 			registerPlaidProducts(userInfo.getAccessToken());
 		} catch (PlaidMfaException e) {
 			logger.info("MFA required");
-			return plaidConnector.handleMfaException(e.getMfaResponse(), bank);
+			return plaidService.handleMfaException(e.getMfaResponse(), bank);
 		} catch (Exception e) {
 			logger.error("Error occured while retriving user info", e);
 			return getErrorMessage(e);
@@ -107,14 +106,14 @@ public class UserServiceFacade {
 	}
 	
 	private void registerPlaidProducts(String accessToken) {
-		plaidConnector.addConnectProduct(accessToken);
+		plaidService.addConnectProduct(accessToken);
 	}
 
-	public EnvestResponse createUser(String userID, String password) {
+	public EnvestResponse registerUser(String userID, String password) {
 		EnvestResponse mes;
 		try {
 			String encodePassword = passwordEncoder.encode(password);
-			userDataService.createUser(userID, encodePassword, message, errorFactory);
+			userDataService.registerUser(userID, encodePassword, message, errorFactory);
 			mes = getSucessMessageWithAuthToken(userID, "message.useraddedsuccess");
 		} catch (EnvestException e) {
 			mes = e.getErrorMessage();
@@ -172,20 +171,19 @@ public class UserServiceFacade {
 		return response;
 	}
 
-	public EnvestResponse submitMFA(Long userKey, String mfa, String bank) {
+	public EnvestResponse linkUserBankWithMFACode(Long userKey, String mfa, String bank) {
 		UserInfo info = null;
 		try {
-			// SG - ToDo Return accessToken in string from DataService rather than returning a DTO object
-			UserAccessTokenDTO dto = userDataService.getAccesTokens(userKey, bank);
+			String accessToken = userDataService.getAccesToken(userKey, bank);
 			
 			// SG - ToDo - Introduce layer above plaidGateway which sets userKey on response.
-			info = plaidConnector.getUserInfoDetails(mfa, dto.getAccessToken());
+			info = plaidService.getUserAccountDetails(mfa, accessToken);
 			info.setUserKey(userKey);
-			registerPlaidProducts(dto.getAccessToken());
+			registerPlaidProducts(accessToken);
 			userDataService.saveUserInfo(info, false, errorFactory);
 		} catch (PlaidMfaException e) {
 			logger.info("MFA required");
-			return plaidConnector.handleMfaException(e.getMfaResponse(), bank);
+			return plaidService.handleMfaException(e.getMfaResponse(), bank);
 
 		} catch (Exception e) {
 			return getErrorMessage(e);
@@ -197,15 +195,14 @@ public class UserServiceFacade {
 	public EnvestResponse deleteUser(Long userKey) {
 		EnvestResponse response = null;
 		try {
-			// SG - ToDo Return List of accessTokens in string from DataService rather than returning a List of DTOs
-			List<UserAccessTokenDTO> tokens = userDataService.getAccesTokens(userKey);
-			for (UserAccessTokenDTO token : tokens) {
-				plaidConnector.deleteAccount(token.getAccessToken());
+			List<String> tokens = userDataService.getAccesTokenList(userKey);
+			for (String token : tokens) {
+				plaidService.deleteAccount(token);
 			}			
 
 			userDataService.deleteUser(userKey, errorFactory);			
 			response = getSuccessMessage("message.userdelete");
-		} catch (EnvestException e) {			
+		} catch (Exception e) {			
 			response = getErrorMessage(e);
 		}
 		return response;

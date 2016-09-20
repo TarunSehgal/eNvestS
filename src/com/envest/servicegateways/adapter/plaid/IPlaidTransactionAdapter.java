@@ -1,4 +1,4 @@
-package com.envest.servicegateways.plaid;
+package com.envest.servicegateways.adapter.plaid;
 
 import java.util.List;
 import java.util.Map;

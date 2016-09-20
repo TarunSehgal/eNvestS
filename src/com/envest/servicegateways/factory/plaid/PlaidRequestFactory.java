@@ -1,8 +1,9 @@
-package com.envest.servicegateways.plaid;
+package com.envest.servicegateways.factory.plaid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.envest.servicegateways.plaid.IPlaidEnvironment;
 import com.plaid.client.http.PlaidHttpRequest;
 
 @Component

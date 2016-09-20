@@ -1,4 +1,4 @@
-package com.envest.servicegateways.plaid;
+package com.envest.servicegateways.factory.plaid;
 
 import com.plaid.client.http.PlaidHttpRequest;
 

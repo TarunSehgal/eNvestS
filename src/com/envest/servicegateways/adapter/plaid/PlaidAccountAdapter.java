@@ -1,4 +1,4 @@
-package com.envest.servicegateways.plaid;
+package com.envest.servicegateways.adapter.plaid;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -9,7 +9,7 @@ import java.util.Random;
 import com.envest.services.response.AccountDetail;
 import com.plaid.client.response.Account;
 
-class PlaidAccountAdapter implements IPlaidAccountAdapter {
+public class PlaidAccountAdapter implements IPlaidAccountAdapter {
 
 	public List<AccountDetail> convertPlaidAccountsToAccountDetails(List<Account> acc,String bank){
 		List<AccountDetail> accDetails = null;
