@@ -30,7 +30,7 @@ public class UserDataService implements IUserDataService {
 	@Autowired
 	private EnvestMessageFactory errorFactory;
 	
-	public EnvestResponse getUserProfileData(Long userKey){
+	public EnvestResponse getUserProfileData(Long userKey) throws EnvestException{
 		
 		List<Object> data = null;
 		Map<String,List<Object>> userProfileData;
@@ -130,42 +130,42 @@ public class UserDataService implements IUserDataService {
 	}
 
 	@Override
-	public int saveUser(Long userKey, String userID, String password) {
+	public int saveUser(Long userKey, String userID, String password) throws EnvestException {
 		return UserInfoDao.saveUser(userKey, userID, password);
 	}
 
 	@Override
-	public UserInfoDTO authenticateUser(String userId, String password) {
+	public UserInfoDTO authenticateUser(String userId, String password)throws EnvestException  {
 		return UserInfoDao.authenticateUser(userId, password);
 	}
 
 	@Override
-	public void saveAccessToken(UserAccessTokenDTO accessToken) {
+	public void saveAccessToken(UserAccessTokenDTO accessToken) throws EnvestException  {
 		UserInfoDao.saveAccessToken(accessToken);
 	}
 	
-	public void saveAccessToken(EnvestResponse response) {
+	public void saveAccessToken(EnvestResponse response) throws EnvestException  {
 		UserAccessTokenDTO token = TokenUtils.createTokenFromResponse(response);
 		UserInfoDao.saveAccessToken(token);
 	}
 
 	@Override
-	public List<UserAccessTokenDTO> getAccesTokens(Long id) {
+	public List<UserAccessTokenDTO> getAccesTokens(Long id) throws EnvestException  {
 		return UserInfoDao.getAccesTokens(id);
 	}
 
 	@Override
-	public UserAccessTokenDTO getAccesTokens(Long id, String bank) throws Exception {
+	public UserAccessTokenDTO getAccesTokens(Long id, String bank) throws EnvestException  {
 		return UserInfoDao.getAccesTokens(id, bank);
 	}
 
 	@Override
-	public List<String> getAccesTokenList(Long id) throws Exception {
+	public List<String> getAccesTokenList(Long id) throws EnvestException  {
 		return UserInfoDao.getAccesTokenList(id);
 	}
 
 	@Override
-	public String getAccesToken(Long id, String bank) throws Exception {
+	public String getAccesToken(Long id, String bank) throws EnvestException  {
 		return UserInfoDao.getAccesToken(id, bank);
 	}
 	
@@ -199,7 +199,7 @@ public class UserDataService implements IUserDataService {
 	}
 
 	@Override
-	public Map<String, List<Object>> getProfileData(Long userKey) throws HibernateException {
+	public Map<String, List<Object>> getProfileData(Long userKey) throws EnvestException  {
 		return UserInfoDao.getProfileData(userKey);
 	}
 	

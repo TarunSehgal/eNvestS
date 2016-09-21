@@ -1,20 +1,11 @@
 package com.envest.dal.dao;
 
 import java.util.List;
-import java.util.Map;
-
-import javax.persistence.Column;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-
-
-
-
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.envest.dal.dto.BankDTO;
@@ -22,14 +13,11 @@ import com.envest.services.components.EnvestConstants;
 import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.config.MessageFactory;
 import com.envest.services.components.exceptions.EnvestException;
-import com.envest.services.components.exceptions.ErrorMessage;
-import com.envest.services.components.util.ConvertBeanToDTO;
 import com.envest.services.components.util.HibernateUtils;
-import com.envest.services.response.EnvestResponse;
 
 public class BankDao {
 		
-	private static Logger log = Logger.getLogger(BankDao.class.getName());			
+	private static Logger log = Logger.getLogger(BankDao.class.getName());	
 	
 	public static BankDTO getBankInfo(int bankId, EnvestMessageFactory errorFactory) throws EnvestException{
 		log.info("inside method getBankInfo");

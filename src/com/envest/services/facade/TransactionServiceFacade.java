@@ -117,8 +117,9 @@ public class TransactionServiceFacade {
 			return createResponse(userKey, accDetails, transactionsList, summaryMap);
 		}catch(Exception e){
 			logger.error("Error occured while getting transactions", e);
-		}		
-		return null;
+			return errorFactory.getServerErrorMessage(e.getMessage());
+		}	
+		
 	}
 		
 	private UserInfo createDashBoardResponse(Long userKey, List<AccountDetail> accDetails,

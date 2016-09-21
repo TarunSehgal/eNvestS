@@ -2,19 +2,23 @@ package com.envest.dal.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.envest.dal.dto.ProductDTO;
+import com.envest.services.components.EnvestMessageFactory;
+import com.envest.services.components.exceptions.EnvestException;
 import com.envest.services.components.util.HibernateUtils;
 
 public class ProductDao {
 	
 	private static Logger log = Logger.getLogger(ProductDao.class.getName());
-		
-	public static List<ProductDTO> getAllProducts() {
+	
+	public static List<ProductDTO> getAllProducts() throws EnvestException {
 		List<ProductDTO> productDTOList = new ArrayList<ProductDTO>();
 		Session session = null;
 		try{
@@ -29,7 +33,9 @@ public class ProductDao {
 			}			
 		}catch (HibernateException e) {
 			log.error("Error occured while saving user",e);
-			throw e;		
+			throw new EnvestException(new EnvestMessageFactory().
+					getServerErrorMessage(e.getMessage())) ;	
+				
 		}finally{
 			session.close();
 		}
@@ -38,7 +44,7 @@ public class ProductDao {
 		
 	}
 	
-	public static ProductDTO getProducts(int ProductId) {
+	public static ProductDTO getProducts(int ProductId) throws EnvestException {
 		Session session = null;
 		try{
 			session = HibernateUtils.getSessionFactory().openSession();
@@ -49,7 +55,8 @@ public class ProductDao {
 			}			
 		}catch (HibernateException e) {
 			log.error("Error occured while saving user",e);
-			throw e;		
+			throw new EnvestException(new EnvestMessageFactory().
+					getServerErrorMessage(e.getMessage())) ;		
 		}finally{
 			session.close();
 		}		

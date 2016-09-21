@@ -25,18 +25,18 @@ public interface IUserDataService extends IDAOAdaptor{
 	public long registerUser(String userID, String password, MessageFactory message, EnvestMessageFactory errorFactory)
 			throws EnvestException;
 
-	public int saveUser(Long userKey, String userID, String password);
+	public int saveUser(Long userKey, String userID, String password) throws EnvestException ;
 
-	public UserInfoDTO authenticateUser(String userId, String password);
+	public UserInfoDTO authenticateUser(String userId, String password) throws EnvestException ;
 
-	public void saveAccessToken(UserAccessTokenDTO accessToken);
+	public void saveAccessToken(UserAccessTokenDTO accessToken) throws EnvestException ;
 
-	public List<UserAccessTokenDTO> getAccesTokens(Long id);
+	public List<UserAccessTokenDTO> getAccesTokens(Long id) throws EnvestException ;
 
-	public UserAccessTokenDTO getAccesTokens(Long id, String bank) throws Exception;
-	public List<String> getAccesTokenList(Long id) throws Exception ;
+	public UserAccessTokenDTO getAccesTokens(Long id, String bank) throws EnvestException ;
+	public List<String> getAccesTokenList(Long id) throws EnvestException  ;
 
-	public String getAccesToken(Long id, String bank) throws Exception;
+	public String getAccesToken(Long id, String bank) throws EnvestException;
 
 	public void saveUserProfileData(List<UserProfileDataDTO> userProfile, EnvestMessageFactory errorFactory)
 			throws EnvestException;
@@ -52,5 +52,5 @@ public interface IUserDataService extends IDAOAdaptor{
 	public void clearProfileData(Long key 
 			, EnvestMessageFactory errorFactory) throws EnvestException;
 
-	public Map<String, List<Object>> getProfileData(Long userKey) throws HibernateException;
+	public Map<String, List<Object>> getProfileData(Long userKey) throws EnvestException ;
 }

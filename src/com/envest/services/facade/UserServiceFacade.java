@@ -74,10 +74,11 @@ public class UserServiceFacade {
 
 			response.setUserKey(userKey);
 		} catch (EnvestException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-
 			logger.error("Error occurred during recomendationsengine", e);
+			getErrorMessage(e);
+		} catch (Exception e) {
+			logger.error("Error occurred during recomendationsengine", e);
+			getErrorMessage(e);
 		}
 		return response;
 	}
@@ -208,8 +209,13 @@ public class UserServiceFacade {
 		return response;
 	}
 
-	public EnvestResponse getUserInfo(Long userkey) {
-		return userDataService.getUserProfileData(userkey);
+	public EnvestResponse getUserInfo(Long userkey)  {
+		try {
+			return userDataService.getUserProfileData(userkey);
+		} catch (EnvestException e) {
+			// TODO Auto-generated catch block
+			return getErrorMessage(e);
+		}
 	}
 
 	private EnvestResponse getSuccessMessage(String msg) {

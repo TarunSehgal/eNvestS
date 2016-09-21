@@ -1,6 +1,5 @@
 package com.envest.dal.dao;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -166,7 +165,7 @@ public class UserInfoDao {
 	
 	}
 	
-	public static int saveUser(Long userKey,String userID,String password) {
+	public static int saveUser(Long userKey,String userID,String password) throws EnvestException{
 		UserInfoDTO userInfoDTO = null;
 		Session session = null;
 		int returnCode = EnvestConstants.RETURN_CODE_SUCCESS;
@@ -187,7 +186,8 @@ public class UserInfoDao {
 			
 		}catch (HibernateException e) {
 			log.error("Error occured while saving user",e);
-			throw e;		
+			throw new EnvestException(new EnvestMessageFactory().
+					getServerErrorMessage(e.getMessage())) ;		
 		}finally{
 			session.close();
 		}
@@ -196,7 +196,7 @@ public class UserInfoDao {
 		
 	}
 	
-	public static UserInfoDTO authenticateUser(String userId,String password){
+	public static UserInfoDTO authenticateUser(String userId,String password) throws EnvestException{
 		UserInfoDTO userInfoDTO = null;
 		Session session = null;
 		try{
@@ -212,14 +212,15 @@ public class UserInfoDao {
 			}
 		}catch (HibernateException e) {
 			log.error("Error occured while authenticating the user",e);
-			throw e;		
+			throw new EnvestException(new EnvestMessageFactory().
+					getServerErrorMessage(e.getMessage())) ;		
 		}finally{
 			session.close();
 		}
 		return userInfoDTO;
 	}
 
-	public static void saveAccessToken(UserAccessTokenDTO accessToken){
+	public static void saveAccessToken(UserAccessTokenDTO accessToken) throws EnvestException{
 		Session session = null;
 		try{
 			List<UserAccessTokenDTO> alreadyExistAccessToken = getAccessTokensDTOList(accessToken.getUserKey(), accessToken.getUserBank());
@@ -233,17 +234,18 @@ public class UserInfoDao {
 			session.getTransaction().commit();
 		}catch (HibernateException e) {
 			log.error("Error occured while saving access token",e);
-			throw e;		
+			throw new EnvestException(new EnvestMessageFactory().
+					getServerErrorMessage(e.getMessage()));		
 		}finally{
 			session.close();
 		}
 	}
 	
-	public static List<UserAccessTokenDTO> getAccesTokens(Long id){
+	public static List<UserAccessTokenDTO> getAccesTokens(Long id) throws EnvestException{
 		return getAccessTokensDTOList(id,null);		
 	}
 	
-	public static UserAccessTokenDTO getAccesTokens(Long id,String bank) throws Exception{
+	public static UserAccessTokenDTO getAccesTokens(Long id,String bank) throws EnvestException{
 		
 		List<UserAccessTokenDTO> tokens = getAccessTokensDTOList(id, bank);		
 		if(tokens != null && tokens.size() > 0)
@@ -251,15 +253,16 @@ public class UserInfoDao {
 			return tokens.get(0);
 		}
 		else{
-			throw new Exception("Access token not found");
+			throw new EnvestException(new EnvestMessageFactory().
+					getServerErrorMessage("Access token not found")) ;			
 		}
 	}
 	
-	public static List<String> getAccesTokenList(Long id) throws Exception{
+	public static List<String> getAccesTokenList(Long id) throws EnvestException{
 		return getAccessTokensList(id, null);				
 	}
 	
-	public static String getAccesToken(Long id,String bank) throws Exception{
+	public static String getAccesToken(Long id,String bank) throws EnvestException{
 		
 		List<String> tokens = getAccessTokensList(id, bank);		
 		if(tokens != null && tokens.size() > 0)
@@ -267,11 +270,13 @@ public class UserInfoDao {
 			return tokens.get(0);
 		}
 		else{
-			throw new Exception("Access token not found");
+			throw new EnvestException(new EnvestMessageFactory().
+					getServerErrorMessage("Access token not found")) ;	
 		}
 	}
 	
-	private static List<UserAccessTokenDTO> getAccessTokensDTOList(Long id,String bank){
+	private static List<UserAccessTokenDTO> getAccessTokensDTOList(Long id
+			,String bank) throws EnvestException{
 		Session session = null;
 		List<UserAccessTokenDTO> list = null;
 		try{
@@ -288,14 +293,16 @@ public class UserInfoDao {
 			list = criteria.list();
 		}catch (HibernateException e) {
 			log.error("Error occured while getting access token",e);
-			throw e;		
+			throw new EnvestException(new EnvestMessageFactory().
+					getServerErrorMessage(e.getMessage()));			
 		}finally{
 			session.close();
 		}
 		return list;		
 	}	
 	
-	private static List<String> getAccessTokensList(Long id,String bank){
+	private static List<String> getAccessTokensList(Long id
+			,String bank) throws EnvestException{
 		Session session = null;
 		List<String> list = null;
 		try{
@@ -312,14 +319,16 @@ public class UserInfoDao {
 			list = criteria.list();
 		}catch (HibernateException e) {
 			log.error("Error occured while getting access token",e);
-			throw e;		
+			throw new EnvestException(new EnvestMessageFactory().
+					getServerErrorMessage(e.getMessage()));			
 		}finally{
 			session.close();
 		}
 		return list;		
 	}
 	
-	public static void saveUserProfileData(List<UserProfileDataDTO> userProfile, EnvestMessageFactory errorFactory)throws EnvestException{
+	public static void saveUserProfileData(List<UserProfileDataDTO> userProfile
+			, EnvestMessageFactory errorFactory) throws EnvestException{
 		log.info("inside method saveUserProfileData");
 		UserInfoDTO userInfoDTO = null;
 		Session session = null;
@@ -341,7 +350,8 @@ public class UserInfoDao {
 	}
 	
 
-	public static List<UserProfileDataDTO> getUserProfileData(Long userKey, EnvestMessageFactory errorFactory) throws EnvestException{
+	public static List<UserProfileDataDTO> getUserProfileData(Long userKey
+			, EnvestMessageFactory errorFactory) throws EnvestException{
 		Session session = null;
 		List<UserProfileDataDTO> list = null;
 		try{
@@ -420,7 +430,7 @@ public class UserInfoDao {
 		}
 	}
 	
-	public static Map<String,List<Object>> getProfileData(Long userKey) throws HibernateException{
+	public static Map<String,List<Object>> getProfileData(Long userKey) throws EnvestException{
 		Session session = null;
 		Map<String,List<Object>> returnData = new HashMap<String,List<Object>>(10);
 		List<Object> list = null;
@@ -440,7 +450,8 @@ public class UserInfoDao {
 					.setLong("userKey", userKey).list();*/
 		}catch(HibernateException e){
 			log.error("error getting getProfileData",e);
-			throw e;
+			throw new EnvestException(new EnvestMessageFactory().
+					getServerErrorMessage(e.getMessage()));	
 		}finally{
 			session.close();
 		}

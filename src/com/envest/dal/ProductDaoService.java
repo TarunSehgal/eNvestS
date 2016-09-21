@@ -33,12 +33,12 @@ import com.envest.services.response.EnvestResponse;
 public class ProductDaoService implements IProductDaoService {
 
 	@Override
-	public List<ProductDTO> getAllProducts() {
+	public List<ProductDTO> getAllProducts() throws EnvestException {
 		return ProductDao.getAllProducts();
 	}
 
 	@Override
-	public ProductDTO getProducts(int ProductId) {
+	public ProductDTO getProducts(int ProductId) throws EnvestException  {
 		return ProductDao.getProducts(ProductId);
 	}
 
