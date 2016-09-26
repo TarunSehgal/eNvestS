@@ -197,10 +197,6 @@ public class TransactionServiceFacade {
 	}
 	
 	private void createDummyData(List<TransactionDetail> list){
-		//Rad - transactionList and list both will point to same memory location, why we need assignment and 
-		// sorting if we are iterating all elements
-/*		List<TransactionDetail> transactionList = list;
-		Collections.sort(transactionList);*/
 		LocalDate testDate = null;
 		for(TransactionDetail transaction : list){
 			if(null == testDate){
