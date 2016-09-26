@@ -20,6 +20,7 @@ import com.envest.security.TokenUtils;
 import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.config.MessageFactory;
 import com.envest.services.components.exceptions.EnvestException;
+import com.envest.services.response.Address;
 import com.envest.services.response.EnvestResponse;
 import com.envest.services.response.UserInfo;
 import com.plaid.client.response.InfoResponse;
@@ -38,7 +39,7 @@ public class UserDataService implements IUserDataService {
 		try{
 			infoResponse = new UserInfo();
 			UserInfo.Info info = new UserInfo.Info();
-			UserInfo.Address addressResponse = null;
+			Address addressResponse = null;
 			UserInfo.Email emailResponse = null;
 			UserInfo.PhoneNumber phoneResponse = null;
 			infoResponse.setInfo(info);
@@ -57,11 +58,11 @@ public class UserDataService implements IUserDataService {
 				info.setNames(name);
 			}
 			data = (List)userProfileData.get("AddressDTO");
-			List<UserInfo.Address> addList = new ArrayList<UserInfo.Address>(10);
+			List<Address> addList = new ArrayList<Address>(10);
 			if(null != data && data.size() > 0){
 				Iterator<Object> iterator = data.iterator();
 				while(iterator.hasNext()){
-					addressResponse = new  UserInfo.Address();
+					addressResponse = new  Address();
 					address = (AddressDTO)iterator.next();
 					addressResponse.setCity(address.getCity());
 					addressResponse.setPrimary("Y".equals(address.getIsprimary()));

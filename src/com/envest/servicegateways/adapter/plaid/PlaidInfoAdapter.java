@@ -22,11 +22,11 @@ IPlaidAccountAdapter accountAdapter = new PlaidAccountAdapter();
 		UserInfo.Info info = new UserInfo.Info();
 		info.setNames(f.getNames());
 		
-		UserInfo.Address address = null;
-		List<UserInfo.Address> addList = new ArrayList<UserInfo.Address>(10);
+		com.envest.services.response.Address address = null;
+		List<com.envest.services.response.Address> addList = new ArrayList<com.envest.services.response.Address>(10);
 		
 		for (Address ad : f.getAddresses()) {
-			address = new UserInfo.Address();	
+			address = new com.envest.services.response.Address();	
 			address.setPrimary(ad.getPrimary());
 			if (null != ad.getAddressDetails()){
 				address.setCity(ad.getAddressDetails().getCity());
