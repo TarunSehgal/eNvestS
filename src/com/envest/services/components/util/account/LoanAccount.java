@@ -1,10 +1,6 @@
 package com.envest.services.components.util.account;
 
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-public abstract class Loan extends Liability {
+public class LoanAccount extends Account {
 	
 	double balance;
 	double loanAmount;
@@ -12,10 +8,10 @@ public abstract class Loan extends Liability {
 	String maturityDate;
 	double monthlyPayment;
 	
-	protected Loan(String bankName, int accountNumber, int noOfAccounts, AccountType accountType, double apy,double balance,
+	protected LoanAccount(String bankName, int accountNumber, AccountType accountType, double apy,double balance,
 	double loanAmount,String startDate,String maturityDate,	double monthlyPayment)
 	{
-		super(bankName, accountNumber, noOfAccounts, accountType, apy);
+		super(bankName, accountNumber, accountType, apy);
 		this.balance = balance;
 		this.loanAmount = loanAmount;
 		this.startDate = startDate;
