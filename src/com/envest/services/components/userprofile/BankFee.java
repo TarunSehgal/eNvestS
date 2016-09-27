@@ -1,4 +1,4 @@
-/*package com.envest.services.components.userprofile;
+package com.envest.services.components.userprofile;
 
 import com.envest.services.response.TransactionDetail;
 
@@ -73,4 +73,3 @@ public class BankFee extends DataElement {
 	}
 
 }
-*/

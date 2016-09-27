@@ -1,4 +1,4 @@
-/*package com.envest.services.components.userprofile;
+package com.envest.services.components.userprofile;
 
 import java.util.Date;
 
@@ -103,4 +103,3 @@ public class InflowOutflow extends DataElement{
 	}
 	
 }
-*/
