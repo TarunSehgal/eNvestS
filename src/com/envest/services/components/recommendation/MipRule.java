@@ -6,6 +6,7 @@ import java.util.Map;
 import com.envest.services.components.recommendationengine.AbstractProductRule;
 import com.envest.services.components.util.Product.MIProduct;
 import com.envest.services.components.util.Product.ProductType;
+import com.envest.services.components.util.account.UserProfileData;
 
 public class MipRule extends AbstractProductRule {
 	
@@ -15,19 +16,19 @@ public class MipRule extends AbstractProductRule {
 	}
 
 	@Override
-	protected boolean makeDecision(Map<String, Object> arg) throws Exception {
+	protected boolean makeDecision(UserProfileData arg) throws Exception {
 		return Boolean.parseBoolean(getRuleEnable());
 	}
 
 	@Override
-	protected Map<String, Object> doWork(Map<String, Object> arg) throws Exception {
+	protected UserProfileData doWork(UserProfileData arg) throws Exception {
 		MIProduct highestRateProduct = (MIProduct) getHighestRateProduct();	
 		if(arg == null)
 		{
-			arg = new HashMap<String, Object>();
+			arg = new UserProfileData();
 		}
 		highestRateProduct.monthlyCashFlow = 500;
-		arg.put(getProductType().toString(), highestRateProduct);
+		arg.addAsset(highestRateProduct);
 		return arg;
 	}
 

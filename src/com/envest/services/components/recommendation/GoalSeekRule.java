@@ -1,11 +1,9 @@
 package com.envest.services.components.recommendation;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.envest.services.components.recommendationengine.AbstractProductRule;
 import com.envest.services.components.util.Product.GoalSeekProduct;
 import com.envest.services.components.util.Product.ProductType;
+import com.envest.services.components.util.account.UserProfileData;
 
 public class GoalSeekRule extends AbstractProductRule {
 
@@ -20,21 +18,21 @@ public class GoalSeekRule extends AbstractProductRule {
 	}
 
 	@Override
-	protected boolean makeDecision(Map<String, Object> arg) throws Exception {
+	protected boolean makeDecision(UserProfileData arg) throws Exception {
 		// TODO Auto-generated method stub
 		return Boolean.parseBoolean(getRuleEnable());
 	}
 
 	@Override
-	protected Map<String, Object> doWork(Map<String, Object> arg) throws Exception {
+	protected UserProfileData doWork(UserProfileData arg) throws Exception {
 		
 		GoalSeekProduct goalSeekProduct = (GoalSeekProduct) getHighestRateProduct();
 		if(arg == null)
 		{
-			arg = new HashMap<String, Object>();
+			arg = new UserProfileData();
 		}
 		goalSeekProduct.principle = 25000;
-		arg.put(getProductType().toString(), goalSeekProduct);
+		arg.addAsset(goalSeekProduct);
 		return arg;
 	}
 

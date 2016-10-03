@@ -28,6 +28,7 @@ import com.envest.services.components.exceptions.EnvestException;
 import com.envest.services.components.exceptions.ErrorMessage;
 import com.envest.services.components.recommendationengine.InitiateRecommendation;
 import com.envest.services.components.util.CommonUtil;
+import com.envest.services.components.util.account.UserProfileData;
 import com.envest.services.response.EnvestResponse;
 import com.envest.services.response.ProfileResponse;
 import com.envest.services.response.UserInfo;
@@ -64,13 +65,11 @@ public class UserServiceFacade {
 	public EnvestResponse getProfileData(Long userKey) {
 		ProfileResponse response = null;
 		try {
-			UserInfo info = new UserInfo();
+			UserProfileData userProfileData = new UserProfileData();
+			userProfileData.setUserKey(userKey);
 
-			info.setUserKey(userKey);
-			Map<String, Object> input = new HashMap<String, Object>(10);
-			input.put(EnvestConstants.ENVEST_RESPONSE, info);
-			recommendationEngine.processRequest(input);
-			response = (ProfileResponse) input.get(EnvestConstants.USER_PROFILE);
+			UserProfileData result = recommendationEngine.processRequest(userProfileData);
+			response = result.getProfile();
 
 			response.setUserKey(userKey);
 		} catch (EnvestException e) {

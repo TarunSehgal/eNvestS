@@ -1,20 +1,20 @@
 package com.envest.services.components.recommendationengine;
 
-import java.util.Map;
+import com.envest.services.components.util.account.UserProfileData;
 
 public abstract class AbstractAction extends AbstractComponent {
 	private AbstractComponent nextStep;
 
-	public Map<String,Object> execute(Map<String,Object> arg) throws Exception {
+	public UserProfileData execute(UserProfileData arg) throws Exception {
 		
-		Map<String,Object> object = this.doExecute(arg);
+		UserProfileData object = this.doExecute(arg);
 		if (nextStep != null){
 			object = nextStep.execute(arg);
 		}
 		return object;
 	}
 
-	protected abstract Map<String,Object> doExecute(Map<String,Object> arg) throws Exception;
+	protected abstract UserProfileData doExecute(UserProfileData arg) throws Exception;
 
 	public void setNextStep(AbstractComponent nextStep) {
 		this.nextStep = nextStep;

@@ -5,18 +5,19 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.envest.services.components.recommendationengine.AbstractRule;
+import com.envest.services.components.util.account.UserProfileData;
 
 public class TestOppurtunity extends AbstractRule {
 	
 	private static Logger log = Logger.getLogger(TestOppurtunity.class.getName()); 
 
-	protected boolean makeDecision(Map<String,Object> arg) throws Exception {
+	protected boolean makeDecision(UserProfileData arg) throws Exception {
 		log.info("inside make decision method in testoppurtunity");
 		return Boolean.parseBoolean(getRuleEnable());
 	}
 
 	
-	protected Map<String,Object> doWork(Map<String,Object> arg) throws Exception {
+	protected UserProfileData doWork(UserProfileData arg) throws Exception {
 		log.info("inside doWork method in testoppurtunity");
 		return arg;
 	}

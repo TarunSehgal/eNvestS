@@ -1,11 +1,9 @@
 package com.envest.services.components.recommendation;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.envest.services.components.recommendationengine.AbstractProductRule;
 import com.envest.services.components.util.Product.CDProduct;
 import com.envest.services.components.util.Product.ProductType;
+import com.envest.services.components.util.account.UserProfileData;
 
 public class CDRule extends AbstractProductRule {
 
@@ -15,20 +13,20 @@ public class CDRule extends AbstractProductRule {
 	}
 
 	@Override
-	protected Map<String, Object> doWork(Map<String, Object> arg) throws Exception {
+	protected UserProfileData doWork(UserProfileData arg) throws Exception {
 		
 		CDProduct highestRatecd = (CDProduct) getHighestRateProduct();
 		if(arg == null)
 		{
-			arg = new HashMap<String, Object>();
+			arg = new UserProfileData();
 		}
 		highestRatecd.principle = 10000;
-		arg.put(getProductType().toString(), highestRatecd);
+		arg.addAsset(highestRatecd);
 		return arg;
 	}
 
 	@Override
-	protected boolean makeDecision(Map<String, Object> arg) throws Exception {
+	protected boolean makeDecision(UserProfileData arg) throws Exception {
 		// TODO Auto-generated method stub
 		return Boolean.parseBoolean(getRuleEnable());
 	}

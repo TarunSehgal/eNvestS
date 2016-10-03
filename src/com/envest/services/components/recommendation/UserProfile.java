@@ -11,10 +11,12 @@ import com.envest.dal.UserDataService;
 import com.envest.services.components.EnvestConstants;
 import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.recommendationengine.AbstractRule;
+import com.envest.services.components.util.account.UserProfileData;
 import com.envest.services.facade.UserServiceFacade;
 import com.envest.services.facade.TransactionServiceFacade;
 import com.envest.services.facade.UserProfileDataCaptureService;
 import com.envest.services.response.EnvestResponse;
+import com.envest.services.response.ProfileResponse;
 import com.envest.services.response.TransactionDetail;
 import com.envest.services.response.UserInfo;
 
@@ -36,21 +38,21 @@ public class UserProfile extends AbstractRule {
 	
 	private UserProfileDataCaptureService userProfileService;
 	
-	protected boolean makeDecision(Map<String,Object> arg) throws Exception {
+	protected boolean makeDecision(UserProfileData arg) throws Exception {
 		log.info("inside make decision method in testoppurtunity");
 		return Boolean.parseBoolean(getRuleEnable());
 	}
 	
-	protected Map<String,Object> doWork(Map<String,Object> arg) throws Exception {
+	protected UserProfileData doWork(UserProfileData arg) throws Exception {
 		log.info("inside doWork method in UserProfile");
 		Long userKey = null;
 		
 		try{
-			if(null == arg || null == arg.get(EnvestConstants.ENVEST_RESPONSE) ){
+			if(null == arg || 0 == arg.getUserKey() ){
 				return arg;
 			}			
-			EnvestResponse eNvestRes = (EnvestResponse) arg.get(EnvestConstants.ENVEST_RESPONSE);
-			userKey = ((UserInfo)eNvestRes).getUserKey();
+
+			userKey = arg.getUserKey();
 			UserInfo info = (UserInfo)transactionService.getAccountAndTransaction(userKey, EnvestConstants.GET_ACCOUNT_TRANSACTIONS);
 			
 			List<TransactionDetail> transactionList = info.getTransaction();
@@ -69,7 +71,7 @@ public class UserProfile extends AbstractRule {
 		}catch (Exception e){
 			log.error("error occured while building userprofile",e);
 		}
-		arg.put(EnvestConstants.USER_PROFILE, userProfileService.getProfileResponse());
+		arg.setProfile((ProfileResponse)userProfileService.getProfileResponse());
 		return arg;
 	}
 }	

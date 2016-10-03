@@ -25,6 +25,7 @@ import com.envest.services.components.util.Calculation.GoalSeekCalculator;
 import com.envest.services.components.util.Calculation.InterestCalculator;
 import com.envest.services.components.util.Calculation.PayoutResponse;
 import com.envest.services.components.util.Calculation.Response;
+import com.envest.services.components.util.account.UserProfileData;
 
 @Component
 public class ProductUtil {
@@ -183,17 +184,25 @@ public class ProductUtil {
 	{
 		
 		//InitiateRecommendation recommendationEngine = new InitiateRecommendation();
-		Map<String, Object> arg = new HashMap<String, Object>();
+		UserProfileData arg = new UserProfileData();
 		
-		Map<String, Object> resultArg = recommendationEngine.processRequest(arg);
+		UserProfileData resultArg = recommendationEngine.processRequest(arg);
 		List<Product> recommendedProducts = new ArrayList<Product>();
-		if(resultArg != null && resultArg.size()>0)
+		if(resultArg != null && resultArg.getAssets() != null)
 		{
+			List<Product> temp;
 			for(ProductType val:ProductType.values())
 			{
-				if(resultArg.containsKey(val.toString()))
+				temp = resultArg.getAssets().getAccounts(val);
+				if(temp != null)
 				{
-					recommendedProducts.add((Product) resultArg.get(val.toString()));
+					recommendedProducts.addAll(temp);
+				}
+				
+				temp = resultArg.getLiabilitys().getAccounts(val);
+				if(temp != null)
+				{
+					recommendedProducts.addAll(temp);
 				}
 			}
 		}
