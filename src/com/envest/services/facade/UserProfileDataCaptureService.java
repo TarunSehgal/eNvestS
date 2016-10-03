@@ -55,12 +55,15 @@ public class UserProfileDataCaptureService {
 			
 		try{
 			setProfileEndDate(transaction.getDate().toDate());
-			if(isAllowedTransaction(transaction.getAccountId())){
+			//if(isAllowedTransaction(transaction.getAccountId())){
 				if(null != categoryHierarchy){
 					calculateDataElements(transaction, categoryHierarchy, categoryHierarchy.split(",")[0]);
-					calculateDataElements(transaction, categoryHierarchy, "InflowOutflow");										
+					if(isAllowedTransaction(transaction.getAccountId())){
+						calculateDataElements(transaction, categoryHierarchy, "InflowOutflow");		
+					}
+													
 				}
-			}			
+			//}			
 		}catch (Exception e){
 			e.printStackTrace();
 		}

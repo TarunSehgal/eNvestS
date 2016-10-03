@@ -216,6 +216,16 @@
 							</list>
         					</property>	
 						</bean>
+						<bean class="com.envest.services.components.userprofile.Insurance">
+							<property name="id" value="21" />
+							<property name="type" value="Insurance" />
+							<property name="subType" value="Insurance Payment" />
+							<property name="allowedCategory">
+							<list>
+								<value>18030000</value>	
+							</list>
+        					</property>	
+						</bean>
 					</list> 
 				</entry>	
 				<entry key="Tax">
