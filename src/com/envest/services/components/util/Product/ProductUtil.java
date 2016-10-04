@@ -186,27 +186,7 @@ public class ProductUtil {
 		//InitiateRecommendation recommendationEngine = new InitiateRecommendation();
 		UserProfileData arg = new UserProfileData();
 		
-		UserProfileData resultArg = recommendationEngine.processRequest(arg);
-		List<Product> recommendedProducts = new ArrayList<Product>();
-		if(resultArg != null && resultArg.getAssets() != null)
-		{
-			List<Product> temp;
-			for(ProductType val:ProductType.values())
-			{
-				temp = resultArg.getAssets().getAccounts(val);
-				if(temp != null)
-				{
-					recommendedProducts.addAll(temp);
-				}
-				
-				temp = resultArg.getLiabilitys().getAccounts(val);
-				if(temp != null)
-				{
-					recommendedProducts.addAll(temp);
-				}
-			}
-		}
-		return recommendedProducts;
+		return recommendationEngine.processRequest(arg).getRecommendedProducts();		
 	}
 	
 	public List<Product> GetAvailableProducts(ProductType productType)

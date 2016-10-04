@@ -32,7 +32,7 @@ public class GoalSeekRule extends AbstractProductRule {
 			arg = new UserProfileData();
 		}
 		goalSeekProduct.principle = 25000;
-		arg.addAsset(goalSeekProduct);
+		arg.addRecommendedProduct(goalSeekProduct);
 		return arg;
 	}
 

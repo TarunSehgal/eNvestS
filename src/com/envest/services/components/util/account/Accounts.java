@@ -14,26 +14,26 @@ public class Accounts {
 	int noOfAccounts;
 	double totalBalance;
 
-	Map<ProductType, List<Product>> accounts = new HashMap<ProductType, List<Product>>();
+	Map<AccountType, List<Account>> accounts = new HashMap<AccountType, List<Account>>();
 
 	public int getNoOfAccounts()
 	{
 		return accounts.size();
 	}
 
-	public void addAccount(Product account)
+	public void addAccount(Account account)
 	{
-		if(accounts.containsKey(account.productType))
+		if(accounts.containsKey(account.accountType))
 		{
-		accounts.get(account.productType).add(account);
+		accounts.get(account.accountType).add(account);
 		}else
 		{
-			accounts.put(account.productType, new ArrayList<Product>());
-			accounts.get(account.productType).add(account);
+			accounts.put(account.accountType, new ArrayList<Account>());
+			accounts.get(account.accountType).add(account);
 		}
 	}
 	
-	public List<Product> getAccounts(ProductType type)
+	public List<Account> getAccounts(AccountType type)
 	{
 		if(accounts.containsKey(type))
 		{
@@ -42,7 +42,7 @@ public class Accounts {
 		return null;
 	}
 	
-	public Collection<List<Product>> getAllAccounts()
+	public Collection<List<Account>> getAllAccounts()
 	{
 		return accounts.values();
 	}

@@ -1,5 +1,8 @@
 package com.envest.services.components.util.account;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.envest.services.components.util.Product.Product;
 import com.envest.services.response.ProfileResponse;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -19,6 +22,22 @@ public class UserProfileData {
 	//added temporarily so that code does not break.
 	//Has to be removed
 	ProfileResponse profileResponse;
+	
+	List<Product> recommendedProducts;
+	
+	public List<Product> getRecommendedProducts()
+	{
+		return recommendedProducts;
+	}
+	
+	public void addRecommendedProduct(Product product)
+	{
+		if(recommendedProducts == null)
+		{
+			recommendedProducts = new ArrayList<Product>();
+		}
+		recommendedProducts.add(product);
+	}
 	
 	public ProfileResponse getProfile()
 	{
@@ -40,7 +59,7 @@ public class UserProfileData {
 		this.assets = asset;
 	}
 	
-	public void addAsset(Product asset)
+	public void addAsset(Account asset)
 	{
 		if(asset == null)
 		{
@@ -59,7 +78,7 @@ public class UserProfileData {
 		this.liabilities = asset;
 	}
 	
-	public void addLiability(Product asset)
+	public void addLiability(Account asset)
 	{
 		if(asset == null)
 		{

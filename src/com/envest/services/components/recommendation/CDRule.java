@@ -21,7 +21,7 @@ public class CDRule extends AbstractProductRule {
 			arg = new UserProfileData();
 		}
 		highestRatecd.principle = 10000;
-		arg.addAsset(highestRatecd);
+		arg.addRecommendedProduct(highestRatecd);
 		return arg;
 	}
 

@@ -1,8 +1,5 @@
 package com.envest.services.components.recommendation;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.envest.services.components.recommendationengine.AbstractProductRule;
 import com.envest.services.components.util.Product.MIProduct;
 import com.envest.services.components.util.Product.ProductType;
@@ -28,7 +25,7 @@ public class MipRule extends AbstractProductRule {
 			arg = new UserProfileData();
 		}
 		highestRateProduct.monthlyCashFlow = 500;
-		arg.addAsset(highestRateProduct);
+		arg.addRecommendedProduct(highestRateProduct);
 		return arg;
 	}
 
