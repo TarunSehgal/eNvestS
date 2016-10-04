@@ -29,15 +29,15 @@ public class InitiateRecommendation {
 	      this.firstStep = firstStep;
 	   }
 	   
-	   public UserProfileData processRequest(UserProfileData arg) throws Exception {
+	   public RecommendationResponse processRequest(UserProfileData arg) throws Exception {
 		   AbstractComponent  executeRule= null;
-		  // Map<String,Object> returnObject 
+		   RecommendationResponse response = new RecommendationResponse();
 		   for(String rule :rules){
 			   executeRule = (AbstractComponent) context.getBean(rule);
-			   arg = executeRule.execute(arg);
+			   response.Merge(executeRule.execute(arg));
 		   }
 	      //firstStep.execute(arg);
-		   return arg;
+		   return response;
 	   }
 	   
 }

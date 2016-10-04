@@ -11,6 +11,7 @@ import com.envest.dal.UserDataService;
 import com.envest.services.components.EnvestConstants;
 import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.recommendationengine.AbstractRule;
+import com.envest.services.components.recommendationengine.RecommendationResponse;
 import com.envest.services.components.util.account.UserProfileData;
 import com.envest.services.facade.UserServiceFacade;
 import com.envest.services.facade.TransactionServiceFacade;
@@ -43,13 +44,13 @@ public class UserProfile extends AbstractRule {
 		return Boolean.parseBoolean(getRuleEnable());
 	}
 	
-	protected UserProfileData doWork(UserProfileData arg) throws Exception {
+	protected RecommendationResponse doWork(UserProfileData arg) throws Exception {
 		log.info("inside doWork method in UserProfile");
 		Long userKey = null;
-		
+		RecommendationResponse response = new RecommendationResponse();
 		try{
 			if(null == arg || 0 == arg.getUserKey() ){
-				return arg;
+				return response;
 			}			
 
 			userKey = arg.getUserKey();
@@ -71,7 +72,7 @@ public class UserProfile extends AbstractRule {
 		}catch (Exception e){
 			log.error("error occured while building userprofile",e);
 		}
-		arg.setProfile((ProfileResponse)userProfileService.getProfileResponse());
-		return arg;
+		response.setProfile((ProfileResponse)userProfileService.getProfileResponse());
+		return response;
 	}
 }	

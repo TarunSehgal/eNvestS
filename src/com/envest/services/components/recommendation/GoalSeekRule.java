@@ -1,6 +1,7 @@
 package com.envest.services.components.recommendation;
 
 import com.envest.services.components.recommendationengine.AbstractProductRule;
+import com.envest.services.components.recommendationengine.RecommendationResponse;
 import com.envest.services.components.util.Product.GoalSeekProduct;
 import com.envest.services.components.util.Product.ProductType;
 import com.envest.services.components.util.account.UserProfileData;
@@ -24,16 +25,13 @@ public class GoalSeekRule extends AbstractProductRule {
 	}
 
 	@Override
-	protected UserProfileData doWork(UserProfileData arg) throws Exception {
+	protected RecommendationResponse doWork(UserProfileData arg) throws Exception {
 		
 		GoalSeekProduct goalSeekProduct = (GoalSeekProduct) getHighestRateProduct();
-		if(arg == null)
-		{
-			arg = new UserProfileData();
-		}
+		RecommendationResponse response = new RecommendationResponse();
 		goalSeekProduct.principle = 25000;
-		arg.addRecommendedProduct(goalSeekProduct);
-		return arg;
+		response.addRecommendedProduct(goalSeekProduct);
+		return response;
 	}
 
 }

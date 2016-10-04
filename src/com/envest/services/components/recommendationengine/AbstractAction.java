@@ -5,16 +5,16 @@ import com.envest.services.components.util.account.UserProfileData;
 public abstract class AbstractAction extends AbstractComponent {
 	private AbstractComponent nextStep;
 
-	public UserProfileData execute(UserProfileData arg) throws Exception {
+	public RecommendationResponse execute(UserProfileData arg) throws Exception {
 		
-		UserProfileData object = this.doExecute(arg);
+		RecommendationResponse response = this.doExecute(arg);
 		if (nextStep != null){
-			object = nextStep.execute(arg);
+			response.Merge(nextStep.execute(arg));
 		}
-		return object;
+		return response;
 	}
 
-	protected abstract UserProfileData doExecute(UserProfileData arg) throws Exception;
+	protected abstract RecommendationResponse doExecute(UserProfileData arg) throws Exception;
 
 	public void setNextStep(AbstractComponent nextStep) {
 		this.nextStep = nextStep;

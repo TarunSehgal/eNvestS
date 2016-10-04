@@ -1,10 +1,9 @@
 package com.envest.services.components.recommendation;
 
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 
 import com.envest.services.components.recommendationengine.AbstractRule;
+import com.envest.services.components.recommendationengine.RecommendationResponse;
 import com.envest.services.components.util.account.UserProfileData;
 
 public class TestOppurtunity extends AbstractRule {
@@ -17,9 +16,10 @@ public class TestOppurtunity extends AbstractRule {
 	}
 
 	
-	protected UserProfileData doWork(UserProfileData arg) throws Exception {
+	protected RecommendationResponse doWork(UserProfileData arg) throws Exception {
 		log.info("inside doWork method in testoppurtunity");
-		return arg;
+		RecommendationResponse response = new RecommendationResponse();
+		return response;
 	}
 	
 }

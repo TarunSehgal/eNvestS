@@ -17,37 +17,7 @@ public class UserProfileData {
 	Insurance insurance;
 	Cashflow cashflow;
 	Tax tax;
-	Employment employment;
-	
-	//added temporarily so that code does not break.
-	//Has to be removed
-	ProfileResponse profileResponse;
-	
-	List<Product> recommendedProducts;
-	
-	public List<Product> getRecommendedProducts()
-	{
-		return recommendedProducts;
-	}
-	
-	public void addRecommendedProduct(Product product)
-	{
-		if(recommendedProducts == null)
-		{
-			recommendedProducts = new ArrayList<Product>();
-		}
-		recommendedProducts.add(product);
-	}
-	
-	public ProfileResponse getProfile()
-	{
-		return profileResponse;
-	}
-	
-	public void setProfile(ProfileResponse profileResponse)
-	{
-		this.profileResponse = profileResponse;
-	}
+	Employment employment;	
 	
 	public Accounts getAssets()
 	{

@@ -27,6 +27,7 @@ import com.envest.services.components.config.MessageFactory;
 import com.envest.services.components.exceptions.EnvestException;
 import com.envest.services.components.exceptions.ErrorMessage;
 import com.envest.services.components.recommendationengine.InitiateRecommendation;
+import com.envest.services.components.recommendationengine.RecommendationResponse;
 import com.envest.services.components.util.CommonUtil;
 import com.envest.services.components.util.account.UserProfileData;
 import com.envest.services.response.EnvestResponse;
@@ -68,7 +69,7 @@ public class UserServiceFacade {
 			UserProfileData userProfileData = new UserProfileData();
 			userProfileData.setUserKey(userKey);
 
-			UserProfileData result = recommendationEngine.processRequest(userProfileData);
+			RecommendationResponse result = recommendationEngine.processRequest(userProfileData);
 			response = result.getProfile();
 
 			response.setUserKey(userKey);

@@ -27,13 +27,13 @@ public abstract class AbstractRule extends AbstractComponent {
 		this.ruleEnable = ruleEnable;
 	}
 
-	public UserProfileData execute(UserProfileData arg) throws Exception {
+	public RecommendationResponse execute(UserProfileData arg) throws Exception {
 		boolean outcome = makeDecision(arg);
-		UserProfileData object = doWork(arg);
+		RecommendationResponse response = doWork(arg);
 		if (null != nextStep && outcome){
-			object = nextStep.execute(arg);
+			response.Merge(nextStep.execute(arg));
 		}
-		return object;
+		return response;		
 	}
 
 	public AbstractComponent getOppurtunityRule() {
@@ -46,6 +46,6 @@ public abstract class AbstractRule extends AbstractComponent {
 
 	protected abstract boolean makeDecision(UserProfileData arg) throws Exception;
 	
-	protected abstract UserProfileData doWork(UserProfileData arg) throws Exception;
+	protected abstract RecommendationResponse doWork(UserProfileData arg) throws Exception;
 
 }
