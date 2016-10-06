@@ -1,13 +1,13 @@
 package com.envest.services.components.util.account;
 
-public class MonthlyInvestmentPlan extends Account {
+public class MonthlyInvestmentPlanAccount extends Account {
 	double monthlyInvestment;
 	double maturity;
 	String startDate;
 	String maturityDate;
 	int routingNumber;
 
-protected MonthlyInvestmentPlan(String bankName, int accountNumber, AccountType accountType, double apy, int routingNumber, double monthlyInvestment, double maturity, String maturityDate, String startDate)
+protected MonthlyInvestmentPlanAccount(String bankName, int accountNumber, AccountType accountType, double apy, int routingNumber, double monthlyInvestment, double maturity, String maturityDate, String startDate)
 {
 super(bankName, accountNumber, accountType, apy);
 this.monthlyInvestment = monthlyInvestment;

@@ -2,7 +2,7 @@ package com.envest.services.components.recommendationengine;
 
 import java.util.Map;
 
-import com.envest.services.components.util.account.UserProfileData;
+import com.envest.services.components.userprofile.EnvestUserProfile;
 
 public abstract class AbstractRule extends AbstractComponent {
 
@@ -27,7 +27,7 @@ public abstract class AbstractRule extends AbstractComponent {
 		this.ruleEnable = ruleEnable;
 	}
 
-	public RecommendationResponse execute(UserProfileData arg) throws Exception {
+	public RecommendationResponse execute(EnvestUserProfile arg) throws Exception {
 		boolean outcome = makeDecision(arg);
 		RecommendationResponse response = doWork(arg);
 		if (null != nextStep && outcome){
@@ -44,8 +44,8 @@ public abstract class AbstractRule extends AbstractComponent {
 		this.oppurtunityRule = oppurtunityRule;
 	}
 
-	protected abstract boolean makeDecision(UserProfileData arg) throws Exception;
+	protected abstract boolean makeDecision(EnvestUserProfile arg) throws Exception;
 	
-	protected abstract RecommendationResponse doWork(UserProfileData arg) throws Exception;
+	protected abstract RecommendationResponse doWork(EnvestUserProfile arg) throws Exception;
 
 }

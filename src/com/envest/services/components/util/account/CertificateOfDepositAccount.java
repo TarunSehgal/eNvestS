@@ -1,13 +1,13 @@
 package com.envest.services.components.util.account;
 
-public class CertificateOfDeposit extends Account {
+public class CertificateOfDepositAccount extends Account {
 			double principal;
 			double maturity;
 			String startDate;
 			String maturityDate;
 			int routingNumber;
 
-	protected CertificateOfDeposit(String bankName, int accountNumber, AccountType accountType, double apy, int routingNumber, double principal, double maturity, String maturityDate, String startDate)
+	protected CertificateOfDepositAccount(String bankName, int accountNumber, AccountType accountType, double apy, int routingNumber, double principal, double maturity, String maturityDate, String startDate)
 	{
 		super(bankName, accountNumber, accountType, apy);
 		this.principal = principal;

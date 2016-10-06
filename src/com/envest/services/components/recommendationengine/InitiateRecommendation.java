@@ -6,7 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import com.envest.services.components.util.account.UserProfileData;
+import com.envest.services.components.userprofile.EnvestUserProfile;
 
 
 public class InitiateRecommendation {
@@ -29,7 +29,7 @@ public class InitiateRecommendation {
 	      this.firstStep = firstStep;
 	   }
 	   
-	   public RecommendationResponse processRequest(UserProfileData arg) throws Exception {
+	   public RecommendationResponse processRequest(EnvestUserProfile arg) throws Exception {
 		   AbstractComponent  executeRule= null;
 		   RecommendationResponse response = new RecommendationResponse();
 		   for(String rule :rules){

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.envest.services.components.util.Product.Product;
-import com.envest.services.response.ProfileResponse;
+import com.envest.services.response.CashFlowAnalysisResponse;
 
 public class RecommendationResponse {
-		ProfileResponse profileResponse;
+		CashFlowAnalysisResponse profileResponse;
 		
 		List<Product> recommendedProducts= new ArrayList<Product>();
 		
@@ -21,12 +21,12 @@ public class RecommendationResponse {
 			recommendedProducts.add(product);
 		}
 		
-		public ProfileResponse getProfile()
+		public CashFlowAnalysisResponse getProfile()
 		{
 			return profileResponse;
 		}
 		
-		public void setProfile(ProfileResponse profileResponse)
+		public void setProfile(CashFlowAnalysisResponse profileResponse)
 		{
 			this.profileResponse = profileResponse;
 		}

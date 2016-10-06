@@ -9,7 +9,7 @@ import com.envest.services.components.CategoryToProfileElementFactory;
 import com.envest.services.components.userprofile.DataElement;
 import com.envest.services.response.AccountDetail;
 import com.envest.services.response.EnvestResponse;
-import com.envest.services.response.ProfileResponse;
+import com.envest.services.response.CashFlowAnalysisResponse;
 import com.envest.services.response.TransactionDetail;
 
 @Component
@@ -74,7 +74,7 @@ public class UserProfileDataCaptureService {
 	}
 	
 	public EnvestResponse getProfileResponse(){
-		ProfileResponse response = new ProfileResponse();
+		CashFlowAnalysisResponse response = new CashFlowAnalysisResponse();
 		response.setStartDate(getProfileStartDate());
 		response.setEndDate(getProfileEndDate());
 		response.setProfile(getData());

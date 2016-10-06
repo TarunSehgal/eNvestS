@@ -20,12 +20,12 @@ import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.config.MessageFactory;
 import com.envest.services.components.exceptions.EnvestException;
 import com.envest.services.components.recommendationengine.InitiateRecommendation;
+import com.envest.services.components.userprofile.EnvestUserProfile;
 import com.envest.services.components.util.Calculation.AnnuityCalculator;
 import com.envest.services.components.util.Calculation.GoalSeekCalculator;
 import com.envest.services.components.util.Calculation.InterestCalculator;
 import com.envest.services.components.util.Calculation.PayoutResponse;
 import com.envest.services.components.util.Calculation.Response;
-import com.envest.services.components.util.account.UserProfileData;
 
 @Component
 public class ProductUtil {
@@ -184,7 +184,7 @@ public class ProductUtil {
 	{
 		
 		//InitiateRecommendation recommendationEngine = new InitiateRecommendation();
-		UserProfileData arg = new UserProfileData();
+		EnvestUserProfile arg = new EnvestUserProfile();
 		
 		return recommendationEngine.processRequest(arg).getRecommendedProducts();		
 	}

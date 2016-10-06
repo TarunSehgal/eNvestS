@@ -9,7 +9,7 @@ import java.util.Map;
 import com.envest.services.components.util.Product.Product;
 import com.envest.services.components.util.Product.ProductType;
 
-public class Accounts {
+public class AccountList {
 	ProductType type;
 	int noOfAccounts;
 	double totalBalance;

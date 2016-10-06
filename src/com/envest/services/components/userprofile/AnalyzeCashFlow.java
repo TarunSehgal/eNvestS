@@ -1,4 +1,4 @@
-package com.envest.services.components.recommendation;
+package com.envest.services.components.userprofile;
 
 import java.util.Collections;
 import java.util.List;
@@ -6,24 +6,23 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.envest.dal.UserDataService;
 import com.envest.services.components.EnvestConstants;
 import com.envest.services.components.EnvestMessageFactory;
-import com.envest.services.components.recommendationengine.AbstractRule;
 import com.envest.services.components.recommendationengine.RecommendationResponse;
-import com.envest.services.components.userprofile.EnvestUserProfile;
-import com.envest.services.facade.UserServiceFacade;
 import com.envest.services.facade.TransactionServiceFacade;
 import com.envest.services.facade.UserProfileDataCaptureService;
+import com.envest.services.facade.UserServiceFacade;
 import com.envest.services.response.EnvestResponse;
-import com.envest.services.response.CashFlowAnalysisResponse;
 import com.envest.services.response.TransactionDetail;
 import com.envest.services.response.UserInfo;
 
-public class UserProfile extends AbstractRule {
+@Component
+public class AnalyzeCashFlow  {
 	
-	private static Logger log = Logger.getLogger(UserProfile.class.getName()); 
+	private static Logger log = Logger.getLogger(AnalyzeCashFlow.class.getName()); 
 	
 	@Autowired
 	private EnvestMessageFactory errorFactory = null;
@@ -37,31 +36,26 @@ public class UserProfile extends AbstractRule {
 	@Autowired
 	private UserDataService daoAdapter;
 	
-	private UserProfileDataCaptureService userProfileService;
 	
-	protected boolean makeDecision(EnvestUserProfile arg) throws Exception {
+	
+/*	protected boolean makeDecision(EnvestUserProfile arg) throws Exception {
 		log.info("inside make decision method in testoppurtunity");
 		return Boolean.parseBoolean(getRuleEnable());
-	}
+	}*/
 	
-	protected RecommendationResponse doWork(EnvestUserProfile arg) throws Exception {
+	public EnvestResponse processTransaction(UserInfo info) throws Exception {
 		log.info("inside doWork method in UserProfile");
-		Long userKey = null;
-		RecommendationResponse response = new RecommendationResponse();
-		try{
-			if(null == arg || 0 == arg.getUserKey() ){
-				return response;
-			}			
+		UserProfileDataCaptureService userProfileService = null;
 
-			userKey = arg.getUserKey();
-			UserInfo info = (UserInfo)transactionService.getAccountAndTransaction(userKey, EnvestConstants.GET_ACCOUNT_TRANSACTIONS);
+		try{
+			
 			
 			List<TransactionDetail> transactionList = info.getTransaction();
 			Collections.sort(transactionList);
 			
 			Map<String, String> categories = dataService.getCategories();
 			//clear profile data for fresh building
-			daoAdapter.clearProfileData(userKey, errorFactory);			
+			//daoAdapter.clearProfileData(userKey, errorFactory);			
 			
 			userProfileService = new UserProfileDataCaptureService(info.getAccounts());
 			for(TransactionDetail transaction : transactionList){				
@@ -72,7 +66,7 @@ public class UserProfile extends AbstractRule {
 		}catch (Exception e){
 			log.error("error occured while building userprofile",e);
 		}
-		response.setProfile((CashFlowAnalysisResponse)userProfileService.getProfileResponse());
-		return response;
+		//response.setProfile((ProfileResponse)userProfileService.getProfileResponse());
+		return userProfileService.getProfileResponse();
 	}
 }	

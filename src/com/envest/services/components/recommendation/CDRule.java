@@ -2,9 +2,9 @@ package com.envest.services.components.recommendation;
 
 import com.envest.services.components.recommendationengine.AbstractProductRule;
 import com.envest.services.components.recommendationengine.RecommendationResponse;
+import com.envest.services.components.userprofile.EnvestUserProfile;
 import com.envest.services.components.util.Product.CDProduct;
 import com.envest.services.components.util.Product.ProductType;
-import com.envest.services.components.util.account.UserProfileData;
 
 public class CDRule extends AbstractProductRule {
 
@@ -14,7 +14,7 @@ public class CDRule extends AbstractProductRule {
 	}
 
 	@Override
-	protected RecommendationResponse doWork(UserProfileData arg) throws Exception {
+	protected RecommendationResponse doWork(EnvestUserProfile arg) throws Exception {
 		
 		CDProduct highestRatecd = (CDProduct) getHighestRateProduct();
 		RecommendationResponse response = new RecommendationResponse();
@@ -24,7 +24,7 @@ public class CDRule extends AbstractProductRule {
 	}
 
 	@Override
-	protected boolean makeDecision(UserProfileData arg) throws Exception {
+	protected boolean makeDecision(EnvestUserProfile arg) throws Exception {
 		// TODO Auto-generated method stub
 		return Boolean.parseBoolean(getRuleEnable());
 	}

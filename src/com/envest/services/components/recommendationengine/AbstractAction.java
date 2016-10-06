@@ -1,11 +1,11 @@
 package com.envest.services.components.recommendationengine;
 
-import com.envest.services.components.util.account.UserProfileData;
+import com.envest.services.components.userprofile.EnvestUserProfile;
 
 public abstract class AbstractAction extends AbstractComponent {
 	private AbstractComponent nextStep;
 
-	public RecommendationResponse execute(UserProfileData arg) throws Exception {
+	public RecommendationResponse execute(EnvestUserProfile arg) throws Exception {
 		
 		RecommendationResponse response = this.doExecute(arg);
 		if (nextStep != null){
@@ -14,7 +14,7 @@ public abstract class AbstractAction extends AbstractComponent {
 		return response;
 	}
 
-	protected abstract RecommendationResponse doExecute(UserProfileData arg) throws Exception;
+	protected abstract RecommendationResponse doExecute(EnvestUserProfile arg) throws Exception;
 
 	public void setNextStep(AbstractComponent nextStep) {
 		this.nextStep = nextStep;

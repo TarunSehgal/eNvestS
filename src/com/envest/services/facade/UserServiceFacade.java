@@ -28,10 +28,10 @@ import com.envest.services.components.exceptions.EnvestException;
 import com.envest.services.components.exceptions.ErrorMessage;
 import com.envest.services.components.recommendationengine.InitiateRecommendation;
 import com.envest.services.components.recommendationengine.RecommendationResponse;
+import com.envest.services.components.userprofile.EnvestUserProfile;
 import com.envest.services.components.util.CommonUtil;
-import com.envest.services.components.util.account.UserProfileData;
 import com.envest.services.response.EnvestResponse;
-import com.envest.services.response.ProfileResponse;
+import com.envest.services.response.CashFlowAnalysisResponse;
 import com.envest.services.response.UserInfo;
 import com.plaid.client.exception.PlaidMfaException;
 
@@ -64,9 +64,9 @@ public class UserServiceFacade {
 	public ConfigFactory config;
 
 	public EnvestResponse getProfileData(Long userKey) {
-		ProfileResponse response = null;
+		CashFlowAnalysisResponse response = null;
 		try {
-			UserProfileData userProfileData = new UserProfileData();
+			EnvestUserProfile userProfileData = new EnvestUserProfile();
 			userProfileData.setUserKey(userKey);
 
 			RecommendationResponse result = recommendationEngine.processRequest(userProfileData);
