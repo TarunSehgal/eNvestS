@@ -12,12 +12,12 @@ import com.envest.services.components.EnvestConstants;
 import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.recommendationengine.AbstractRule;
 import com.envest.services.components.recommendationengine.RecommendationResponse;
-import com.envest.services.components.userprofile.EnvestUserProfile;
 import com.envest.services.facade.UserServiceFacade;
 import com.envest.services.facade.TransactionServiceFacade;
 import com.envest.services.facade.UserProfileDataCaptureService;
 import com.envest.services.response.EnvestResponse;
 import com.envest.services.response.CashFlowAnalysisResponse;
+import com.envest.services.response.EnvestUserProfile;
 import com.envest.services.response.TransactionDetail;
 import com.envest.services.response.UserInfo;
 

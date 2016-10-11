@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import com.envest.services.components.CategoryToProfileElementFactory;
-import com.envest.services.components.userprofile.DataElement;
+import com.envest.services.components.userprofile.cashFlowDataElement.DataElement;
 import com.envest.services.response.AccountDetail;
 import com.envest.services.response.EnvestResponse;
 import com.envest.services.response.CashFlowAnalysisResponse;

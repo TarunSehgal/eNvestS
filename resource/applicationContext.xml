@@ -72,7 +72,7 @@
       <property name="rules">
          <list>
             <value>testRule</value>
-            <value>userProfile</value>
+            <!-- <value>userProfile</value> -->
             <value>cdProductRule</value>
             <value>hyaProductRule</value>
             <value>hyaProductRule</value>
@@ -158,5 +158,25 @@
 	<bean id="authenticationTokenProcessingFilter" class="com.envest.security.AuthenticationTokenProcessingFilter">
 		<constructor-arg ref="userDao" />
 	</bean>
+	
+	<bean id="createUserProfile" class="com.envest.services.components.userprofile.CreateUserProfile">
+      <!--  list all steps here to create profile, the order should be correct-->
+      <property name="steps">
+         <list>
+            <value>processAsset</value>
+            <value>processLiability</value>
+            <value>buildPersonalInfo</value>
+            <value>buildProfileFlag</value>
+         </list>
+      </property>
+   </bean>
+   <bean id="processAsset" class="com.envest.services.components.userprofile.UserProfileProcessAssetAccounts">
+   </bean>   
+   <bean id="processLiability" class="com.envest.services.components.userprofile.UserProfileProcessLiabilityAccounts">
+   </bean>
+   <bean id="buildPersonalInfo" class="com.envest.services.components.userprofile.UserProfileBuildPersonalInfo">
+   </bean>
+   <bean id="buildProfileFlag" class="com.envest.services.components.userprofile.UserProfileBuildProfilFlag">
+   </bean>
 
 </beans>

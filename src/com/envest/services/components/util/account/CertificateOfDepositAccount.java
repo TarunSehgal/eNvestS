@@ -5,9 +5,10 @@ public class CertificateOfDepositAccount extends Account {
 			double maturity;
 			String startDate;
 			String maturityDate;
-			int routingNumber;
+			String routingNumber;
 
-	protected CertificateOfDepositAccount(String bankName, int accountNumber, AccountType accountType, double apy, int routingNumber, double principal, double maturity, String maturityDate, String startDate)
+	protected CertificateOfDepositAccount(String bankName, String accountNumber, AccountType accountType
+			, double apy, String routingNumber, double principal, double maturity, String maturityDate, String startDate)
 	{
 		super(bankName, accountNumber, accountType, apy);
 		this.principal = principal;

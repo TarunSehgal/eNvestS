@@ -11,7 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
-import com.envest.services.components.userprofile.DataElement;
+import com.envest.services.components.userprofile.cashFlowDataElement.DataElement;
 
 @Component
 public class CategoryToProfileElementFactory {

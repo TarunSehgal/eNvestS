@@ -1,20 +1,18 @@
-package com.envest.services.components.userprofile;
+package com.envest.services.response;
 
 import java.util.List;
 
 import com.envest.services.components.util.account.AccountList;
 import com.envest.services.components.util.account.Employment;
 import com.envest.services.components.util.account.Insurance;
-import com.envest.services.components.util.account.PersonnelInfo;
 import com.envest.services.components.util.account.Tax;
-import com.envest.services.response.EnvestResponse;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EnvestUserProfile extends EnvestResponse{
 
 
-	private PersonnelInfo personnelinfo;
+	private Info personnelinfo;
 	private List<AccountList> assets;
 	private List<AccountList> liabilities;
 	private Insurance insurance;
@@ -22,15 +20,15 @@ public class EnvestUserProfile extends EnvestResponse{
 	private Tax tax;
 	private Employment employment;	
 	
-	private boolean isHaveLoadAccount;
+	private boolean isHaveLoanAccount;
 	private boolean isHaveCreditCard;
 	private boolean isEmployed;
 	
 	
-	public PersonnelInfo getPersonnelinfo() {
+	public Info getPersonnelinfo() {
 		return personnelinfo;
 	}
-	public void setPersonnelinfo(PersonnelInfo personnelinfo) {
+	public void setPersonnelinfo(Info personnelinfo) {
 		this.personnelinfo = personnelinfo;
 	}
 	public List<AccountList> getAssets() {
@@ -69,11 +67,11 @@ public class EnvestUserProfile extends EnvestResponse{
 	public void setEmployment(Employment employment) {
 		this.employment = employment;
 	}
-	public boolean isHaveLoadAccount() {
-		return isHaveLoadAccount;
+	public boolean isHaveLoanAccount() {
+		return isHaveLoanAccount;
 	}
-	public void setHaveLoadAccount(boolean isHaveLoadAccount) {
-		this.isHaveLoadAccount = isHaveLoadAccount;
+	public void setHaveLoanAccount(boolean isHaveLoadAccount) {
+		this.isHaveLoanAccount = isHaveLoadAccount;
 	}
 	public boolean isHaveCreditCard() {
 		return isHaveCreditCard;

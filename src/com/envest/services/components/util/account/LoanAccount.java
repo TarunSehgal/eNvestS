@@ -8,7 +8,7 @@ public class LoanAccount extends Account {
 	String maturityDate;
 	double monthlyPayment;
 	
-	protected LoanAccount(String bankName, int accountNumber, AccountType accountType, double apy,double balance,
+	protected LoanAccount(String bankName, String accountNumber, AccountType accountType, double apy,double balance,
 	double loanAmount,String startDate,String maturityDate,	double monthlyPayment)
 	{
 		super(bankName, accountNumber, accountType, apy);

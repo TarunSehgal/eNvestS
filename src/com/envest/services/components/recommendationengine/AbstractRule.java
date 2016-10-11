@@ -2,7 +2,7 @@ package com.envest.services.components.recommendationengine;
 
 import java.util.Map;
 
-import com.envest.services.components.userprofile.EnvestUserProfile;
+import com.envest.services.response.EnvestUserProfile;
 
 public abstract class AbstractRule extends AbstractComponent {
 

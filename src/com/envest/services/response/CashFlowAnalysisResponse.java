@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.envest.dal.dto.UserProfileDataDTO;
-import com.envest.services.components.userprofile.DataElement;
+import com.envest.services.components.userprofile.cashFlowDataElement.DataElement;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

@@ -19,7 +19,7 @@ IPlaidAccountAdapter accountAdapter = new PlaidAccountAdapter();
 		userInfo.setAccessToken(r.getAccessToken());
 		userInfo.setResponseFor(bank);
 		userInfo.setUserId(userId);
-		UserInfo.Info info = new UserInfo.Info();
+		com.envest.services.response.Info info = new com.envest.services.response.Info();
 		info.setNames(f.getNames());
 		
 		com.envest.services.response.Address address = null;
@@ -38,10 +38,10 @@ IPlaidAccountAdapter accountAdapter = new PlaidAccountAdapter();
 		}
 		info.setAddresses(addList);
 		
-		UserInfo.PhoneNumber userPhone = null;
-		List<UserInfo.PhoneNumber> userPhoneList = new ArrayList<UserInfo.PhoneNumber>(10);
+		com.envest.services.response.PhoneNumber userPhone = null;
+		List<com.envest.services.response.PhoneNumber> userPhoneList = new ArrayList<com.envest.services.response.PhoneNumber>(10);
 		for(PhoneNumber pn : f.getPhoneNumbers()){
-			userPhone = new UserInfo.PhoneNumber();
+			userPhone = new com.envest.services.response.PhoneNumber();
 			userPhone.setNumber(pn.getData());
 			userPhone.setType(pn.getType());
 			userPhone.setPrimary(pn.isPrimary());
@@ -49,10 +49,10 @@ IPlaidAccountAdapter accountAdapter = new PlaidAccountAdapter();
 		}
 		info.setPhoneNumbers(userPhoneList);
 		
-		UserInfo.Email userEmails = null;
-		List<UserInfo.Email> userEmailList = new ArrayList<UserInfo.Email>(10);
+		com.envest.services.response.Email userEmails = null;
+		List<com.envest.services.response.Email> userEmailList = new ArrayList<com.envest.services.response.Email>(10);
 		for(Email em : f.getEmails()){
-			userEmails = new UserInfo.Email();
+			userEmails = new com.envest.services.response.Email();
 			userEmails.setEmail(em.getData());
 			userEmails.setType(em.getType());
 			//userEmails.setPrimary(em.);

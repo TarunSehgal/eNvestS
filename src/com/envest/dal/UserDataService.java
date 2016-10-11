@@ -21,7 +21,10 @@ import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.config.MessageFactory;
 import com.envest.services.components.exceptions.EnvestException;
 import com.envest.services.response.Address;
+import com.envest.services.response.Email;
 import com.envest.services.response.EnvestResponse;
+import com.envest.services.response.Info;
+import com.envest.services.response.PhoneNumber;
 import com.envest.services.response.UserInfo;
 import com.plaid.client.response.InfoResponse;
 
@@ -38,10 +41,10 @@ public class UserDataService implements IUserDataService {
 		UserInfo infoResponse = null;
 		try{
 			infoResponse = new UserInfo();
-			UserInfo.Info info = new UserInfo.Info();
+			Info info = new Info();
 			Address addressResponse = null;
-			UserInfo.Email emailResponse = null;
-			UserInfo.PhoneNumber phoneResponse = null;
+			Email emailResponse = null;
+			PhoneNumber phoneResponse = null;
 			infoResponse.setInfo(info);
 			infoResponse.setUserKey(userKey);
 			
@@ -75,11 +78,11 @@ public class UserDataService implements IUserDataService {
 			info.setAddresses(addList);
 			
 			data = (List)userProfileData.get("UserEmailDTO");
-			List<UserInfo.Email> emailList = new ArrayList<UserInfo.Email>(10);
+			List<Email> emailList = new ArrayList<Email>(10);
 			if(null != data && data.size() > 0){
 				Iterator<Object> iterator = data.iterator();
 				while(iterator.hasNext()){
-					emailResponse = new UserInfo.Email();
+					emailResponse = new Email();
 					email = (UserEmailDTO)iterator.next();
 					emailResponse.setEmail(email.getEmail());
 					emailResponse.setType(email.getType());
@@ -89,11 +92,11 @@ public class UserDataService implements IUserDataService {
 			info.setEmails(emailList);
 			
 			data = (List)userProfileData.get("UserPhoneDTO");
-			List<UserInfo.PhoneNumber> phoneList = new ArrayList<UserInfo.PhoneNumber>(10);
+			List<PhoneNumber> phoneList = new ArrayList<PhoneNumber>(10);
 			if(null != data && data.size() > 0){
 				Iterator<Object> iterator = data.iterator();
 				while(iterator.hasNext()){
-					phoneResponse = new UserInfo.PhoneNumber();
+					phoneResponse = new PhoneNumber();
 					phone = (UserPhoneDTO)iterator.next();
 					phoneResponse.setNumber(phone.getNumber());
 					phoneResponse.setPrimary("Y".equals(phone.getIsprimary()));

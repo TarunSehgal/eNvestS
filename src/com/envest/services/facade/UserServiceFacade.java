@@ -28,10 +28,11 @@ import com.envest.services.components.exceptions.EnvestException;
 import com.envest.services.components.exceptions.ErrorMessage;
 import com.envest.services.components.recommendationengine.InitiateRecommendation;
 import com.envest.services.components.recommendationengine.RecommendationResponse;
-import com.envest.services.components.userprofile.EnvestUserProfile;
+import com.envest.services.components.userprofile.CreateUserProfile;
 import com.envest.services.components.util.CommonUtil;
 import com.envest.services.response.EnvestResponse;
 import com.envest.services.response.CashFlowAnalysisResponse;
+import com.envest.services.response.EnvestUserProfile;
 import com.envest.services.response.UserInfo;
 import com.plaid.client.exception.PlaidMfaException;
 
@@ -62,17 +63,22 @@ public class UserServiceFacade {
 	public CommonUtil commUtil;
 	@Autowired
 	public ConfigFactory config;
+	
+	@Autowired
+	private CreateUserProfile createUserProfile;
 
 	public EnvestResponse getProfileData(Long userKey) {
 		CashFlowAnalysisResponse response = null;
+		EnvestUserProfile userProfile = null;
 		try {
-			EnvestUserProfile userProfileData = new EnvestUserProfile();
-			userProfileData.setUserKey(userKey);
+			/*EnvestUserProfile userProfileData = new EnvestUserProfile();
+			userProfileData.setUserKey(userKey);*/
+			userProfile = createUserProfile.getUserProfile(userKey);
 
-			RecommendationResponse result = recommendationEngine.processRequest(userProfileData);
+			/*RecommendationResponse result = recommendationEngine.processRequest(userProfileData);
 			response = result.getProfile();
 
-			response.setUserKey(userKey);
+			response.setUserKey(userKey);*/
 		} catch (EnvestException e) {
 			logger.error("Error occurred during recomendationsengine", e);
 			getErrorMessage(e);
@@ -80,7 +86,7 @@ public class UserServiceFacade {
 			logger.error("Error occurred during recomendationsengine", e);
 			getErrorMessage(e);
 		}
-		return response;
+		return userProfile;
 	}
 
 	public Map<String, String> getCategories() {

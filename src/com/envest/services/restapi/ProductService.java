@@ -34,7 +34,7 @@ public class ProductService {
 	@RequestMapping(value="/ProductService/getRecommendedProducts",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	
 	public List<Product> getRecommendedProducts(@RequestParam("userKey") Long userKey) throws Exception
 	{
-		return productUtil.GetRecommendedProducts();
+		return productUtil.GetRecommendedProducts(userKey);
 	}
 	
 	@RequestMapping(value="/ProductService/getAvailableUserProducts",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)	

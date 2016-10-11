@@ -18,11 +18,11 @@ import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.exceptions.EnvestException;
 import com.envest.services.response.AccountDetail;
 import com.envest.services.response.Address;
+import com.envest.services.response.Email;
 import com.envest.services.response.EnvestResponse;
+import com.envest.services.response.Info;
+import com.envest.services.response.PhoneNumber;
 import com.envest.services.response.UserInfo;
-import com.envest.services.response.UserInfo.Email;
-import com.envest.services.response.UserInfo.Info;
-import com.envest.services.response.UserInfo.PhoneNumber;
 
 public class ConvertBeanToDTO {
 	

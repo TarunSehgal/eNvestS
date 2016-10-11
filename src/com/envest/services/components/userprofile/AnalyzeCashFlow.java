@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.envest.dal.UserDataService;
-import com.envest.services.components.EnvestConstants;
 import com.envest.services.components.EnvestMessageFactory;
-import com.envest.services.components.recommendationengine.RecommendationResponse;
 import com.envest.services.facade.TransactionServiceFacade;
 import com.envest.services.facade.UserProfileDataCaptureService;
 import com.envest.services.facade.UserServiceFacade;
@@ -47,9 +45,7 @@ public class AnalyzeCashFlow  {
 		log.info("inside doWork method in UserProfile");
 		UserProfileDataCaptureService userProfileService = null;
 
-		try{
-			
-			
+		try{		
 			List<TransactionDetail> transactionList = info.getTransaction();
 			Collections.sort(transactionList);
 			

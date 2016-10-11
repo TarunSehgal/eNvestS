@@ -105,6 +105,14 @@ public class TransactionServiceFacade {
 					
 					if(commUtil.isTestUser(token.getAccessToken())){
 						createDummyData(result.transactionDetails);
+						for(AccountDetail acc : result.accountDetails){
+							if("depository".equals(acc.getType())){
+								acc.setSubtype("checking");
+							}
+							if("credit".equals(acc.getType())){
+								acc.setSubtype("credit");
+							}
+						}
 					}
 					
 					extractDetails(type, accDetails, transactionsList, summaryMap, result);

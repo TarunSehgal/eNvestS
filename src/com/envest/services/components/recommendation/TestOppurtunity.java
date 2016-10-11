@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 import com.envest.services.components.recommendationengine.AbstractRule;
 import com.envest.services.components.recommendationengine.RecommendationResponse;
-import com.envest.services.components.userprofile.EnvestUserProfile;
+import com.envest.services.response.EnvestUserProfile;
 
 public class TestOppurtunity extends AbstractRule {
 	

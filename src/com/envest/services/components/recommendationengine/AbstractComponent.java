@@ -1,6 +1,6 @@
 package com.envest.services.components.recommendationengine;
 
-import com.envest.services.components.userprofile.EnvestUserProfile;
+import com.envest.services.response.EnvestUserProfile;
 
 public abstract class AbstractComponent {
 

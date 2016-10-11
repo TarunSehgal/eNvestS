@@ -2,9 +2,9 @@ package com.envest.services.components.recommendation;
 
 import com.envest.services.components.recommendationengine.AbstractProductRule;
 import com.envest.services.components.recommendationengine.RecommendationResponse;
-import com.envest.services.components.userprofile.EnvestUserProfile;
 import com.envest.services.components.util.Product.HighYieldProduct;
 import com.envest.services.components.util.Product.ProductType;
+import com.envest.services.response.EnvestUserProfile;
 
 public class HYARule extends AbstractProductRule {
 

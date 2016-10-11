@@ -20,12 +20,12 @@ import com.envest.services.components.EnvestMessageFactory;
 import com.envest.services.components.config.MessageFactory;
 import com.envest.services.components.exceptions.EnvestException;
 import com.envest.services.components.recommendationengine.InitiateRecommendation;
-import com.envest.services.components.userprofile.EnvestUserProfile;
 import com.envest.services.components.util.Calculation.AnnuityCalculator;
 import com.envest.services.components.util.Calculation.GoalSeekCalculator;
 import com.envest.services.components.util.Calculation.InterestCalculator;
 import com.envest.services.components.util.Calculation.PayoutResponse;
 import com.envest.services.components.util.Calculation.Response;
+import com.envest.services.response.EnvestUserProfile;
 
 @Component
 public class ProductUtil {
@@ -180,13 +180,9 @@ public class ProductUtil {
 		return products;
 	}
 	
-	public List<Product> GetRecommendedProducts() throws Exception
+	public List<Product> GetRecommendedProducts(Long userKey) throws Exception
 	{
-		
-		//InitiateRecommendation recommendationEngine = new InitiateRecommendation();
-		EnvestUserProfile arg = new EnvestUserProfile();
-		
-		return recommendationEngine.processRequest(arg).getRecommendedProducts();		
+		return recommendationEngine.processRequest(userKey).getRecommendedProducts();		
 	}
 	
 	public List<Product> GetAvailableProducts(ProductType productType)

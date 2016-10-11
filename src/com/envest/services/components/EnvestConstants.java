@@ -20,16 +20,5 @@ public class EnvestConstants {
 	public static final String ENVEST_RESPONSE = "ENVEST_RESPONSE";
 	public static final String USER_PROFILE = "USER_PROFILE";
 	
-	public static final String KEY_INTEREST_TOTAL = "1";
-	public static final String KEY_BANK_FEE_TOTAL = "2";
-	public static final String KEY_UTILITY_BILL_TOTAL = "3";
-	public static final String KEY_CREDIT_BILL_TOTAL = "4";
-	public static final String KEY_LOAN_AMT = "5";
-	public static final String KEY_SALARY_AMT = "6";
-	public static final String KEY_TAX_REFUND = "7";
-	public static final String KEY_TAX_PAYMENT = "8";
-	public static final String KEY_BILL_PAY = "9";
-	public static final String KEY_INFLOW_TOTAL = "10";
-	public static final String KEY_OUTFLOW_TOTAL = "11";
-	public static final String KEY_RENT_PAYMENT = "12";
+	public static final String KEY_CAHSFLOW_SALARY_DATA_ELEMENT = "10";
 }

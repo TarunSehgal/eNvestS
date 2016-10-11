@@ -7,7 +7,7 @@ public class MonthlyInvestmentPlanAccount extends Account {
 	String maturityDate;
 	int routingNumber;
 
-protected MonthlyInvestmentPlanAccount(String bankName, int accountNumber, AccountType accountType, double apy, int routingNumber, double monthlyInvestment, double maturity, String maturityDate, String startDate)
+protected MonthlyInvestmentPlanAccount(String bankName, String accountNumber, AccountType accountType, double apy, int routingNumber, double monthlyInvestment, double maturity, String maturityDate, String startDate)
 {
 super(bankName, accountNumber, accountType, apy);
 this.monthlyInvestment = monthlyInvestment;

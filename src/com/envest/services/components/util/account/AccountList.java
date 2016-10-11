@@ -1,49 +1,46 @@
 package com.envest.services.components.util.account;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import com.envest.services.components.util.Product.Product;
-import com.envest.services.components.util.Product.ProductType;
 
 public class AccountList {
-	ProductType type;
-	int noOfAccounts;
-	double totalBalance;
-
-	Map<AccountType, List<Account>> accounts = new HashMap<AccountType, List<Account>>();
-
-	public int getNoOfAccounts()
-	{
-		return accounts.size();
-	}
-
-	public void addAccount(Account account)
-	{
-		if(accounts.containsKey(account.accountType))
-		{
-		accounts.get(account.accountType).add(account);
-		}else
-		{
-			accounts.put(account.accountType, new ArrayList<Account>());
-			accounts.get(account.accountType).add(account);
-		}
-	}
+	private AccountType accountType;
+	private int noOfAccounts;
+	private double totalBalance;
 	
-	public List<Account> getAccounts(AccountType type)
-	{
-		if(accounts.containsKey(type))
-		{
-		return accounts.get(type);
-		}
-		return null;
+	List<Account> accounts = null;
+
+	public AccountType getAccountType() {
+		return accountType;
 	}
+
+	public void setAccountType(AccountType accountType) {
+		this.accountType = accountType;
+	}
+
+	public int getNoOfAccounts() {
+		return noOfAccounts;
+	}
+
+	public void setNoOfAccounts(int noOfAccounts) {
+		this.noOfAccounts = noOfAccounts;
+	}
+
+	public double getTotalBalance() {
+		return totalBalance;
+	}
+
+	public void setTotalBalance(double totalBalance) {
+		this.totalBalance = totalBalance;
+	}
+
+	public List<Account> getAccounts() {
+		return accounts;
+	}
+
+	public void setAccounts(List<Account> accounts) {
+		this.accounts = accounts;
+	}
+
 	
-	public Collection<List<Account>> getAllAccounts()
-	{
-		return accounts.values();
-	}
+
 }

@@ -1,4 +1,4 @@
-package com.envest.services.components.userprofile;
+package com.envest.services.components.userprofile.cashFlowDataElement;
 
 import java.util.Date;
 
